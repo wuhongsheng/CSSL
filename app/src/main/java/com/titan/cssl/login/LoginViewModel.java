@@ -7,6 +7,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.text.TextUtils;
 
+import com.titan.cssl.BaseViewModel;
 import com.titan.cssl.MyApplication;
 
 /**
@@ -14,7 +15,7 @@ import com.titan.cssl.MyApplication;
  * 用户登录
  */
 
-public class LoginViewModel extends BaseObservable {
+public class LoginViewModel extends BaseViewModel {
     private Context mContext;
     private Login login;
 
@@ -27,16 +28,6 @@ public class LoginViewModel extends BaseObservable {
         this.login = login;
     }
 
-    /**
-     * 初始化数据
-     */
-    public void initData(){
-//        isremember.set(sharedPreferences.getBoolean("isremember",false));
-//        if (isremember.get()){
-//            username.set(sharedPreferences.getString("ic_user_name",""));
-//            password.set(sharedPreferences.getString("ic_password",""));
-//        }
-    }
     /**
      * 登录
      */

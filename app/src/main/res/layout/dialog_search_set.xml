@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.search.SearchViewModel"/>
+    </data>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/divider_horizontal"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <RadioGroup
+            android:id="@+id/set_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/set_time_rd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="时间范围"
+                android:onClick="@{()->viewmodel.timeChoose()}"/>
+
+            <RadioButton
+                android:id="@+id/set_type_rd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="项目类型"
+                android:onClick="@{()->viewmodel.typeChoose()}"/>
+
+            <RadioButton
+                android:id="@+id/set_statu_rd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="审批状态"
+                android:onClick="@{()->viewmodel.statuChoose()}"/>
+        </RadioGroup>
+
+        <ListView
+            android:id="@+id/set_type_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <DatePicker
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"/>
+
+        <TimePicker
+            android:id="@+id/set_time_tm"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:timePickerMode="spinner"/>
+    </LinearLayout>
+</layout>

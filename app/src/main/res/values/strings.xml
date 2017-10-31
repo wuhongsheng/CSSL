@@ -8,4 +8,10 @@
     <string name="rememberuser">记住用户</string>
     <string name="app_version">版本号: </string>
     <string name="login">登录</string>
+    <string name="logging">正在登录</string>
+    <!--项目检索-->
+    <string name="search_set">检索设置</string>
+    <string name="project_type">项目类型:</string>
+    <string name="approval_status">审批状态:</string>
+    <string name="test">测试</string>
 </resources>

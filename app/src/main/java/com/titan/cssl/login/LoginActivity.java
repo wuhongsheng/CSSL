@@ -5,10 +5,9 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 
-import com.titan.baselibrary.util.PadUtil;
+import com.titan.cssl.BaseActivity;
 import com.titan.cssl.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.util.ActivityUtils;
@@ -21,7 +20,7 @@ import com.titan.util.DeviceUtil;
  * 登录
  */
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     public static final String LOGIN_VIEWMODEL_TAG = "LOGIN_VIEWMODEL_TAG";
 
     private LoginViewModel mViewModel;
@@ -66,10 +65,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public LoginFragment findOrCreateViewFragment() {
-        LoginFragment fragment = (LoginFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        LoginFragment fragment = (LoginFragment) getSupportFragmentManager().findFragmentById(R.id.login_frame);
         if (fragment == null) {
             fragment = LoginFragment.newInstance();
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_frame);
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.login_frame);
         }
         return fragment;
     }

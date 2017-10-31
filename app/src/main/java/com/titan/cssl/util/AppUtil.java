@@ -1,8 +1,12 @@
 package com.titan.cssl.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+
+import com.titan.util.DeviceUtil;
 
 /**
  * Created by whs on 2017/9/21
