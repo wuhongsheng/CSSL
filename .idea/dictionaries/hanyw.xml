@@ -2,8 +2,15 @@
   <dictionary name="hanyw">
     <words>
       <w>appname</w>
+      <w>cssl</w>
+      <w>datepicker</w>
+      <w>endtime</w>
+      <w>projectsearch</w>
       <w>rememberuser</w>
       <w>searchview</w>
+      <w>starttime</w>
+      <w>statu</w>
+      <w>timepicker</w>
     </words>
   </dictionary>
 </component>

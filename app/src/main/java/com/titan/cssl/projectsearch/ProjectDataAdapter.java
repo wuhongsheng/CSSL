@@ -1,4 +1,4 @@
-package com.titan.cssl.search;
+package com.titan.cssl.projectsearch;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;

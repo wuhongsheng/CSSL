@@ -25,7 +25,6 @@ public class LoginActivity extends BaseActivity {
 
     private LoginViewModel mViewModel;
     private LoginFragment mFragment;
-    private Context mContext;
     private SharedPreferences sharedPreferences;
 
     //矢量支持
@@ -36,7 +35,6 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
         setContentView(R.layout.activity_login);
         MyApplication.getInstance();
         sharedPreferences = MyApplication.sharedPreferences;
@@ -44,12 +42,6 @@ public class LoginActivity extends BaseActivity {
         mViewModel = findOrCreateViewModel();
         mFragment.setViewModel(mViewModel);
 
-        //判断是否是pad，是则使用横屏
-        if(DeviceUtil.isTablet(mContext)){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
         initData();
     }
 

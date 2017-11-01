@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLoginBinding;
-import com.titan.cssl.search.SearchActivity;
+import com.titan.cssl.projectsearch.ProjectSearchActivity;
 import com.titan.cssl.util.AppUtil;
 import com.titan.cssl.util.ToastUtil;
 
@@ -58,7 +58,7 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void onNext() {
-        Intent intent = new Intent(mContext, SearchActivity.class);
+        Intent intent = new Intent(mContext, ProjectSearchActivity.class);
         startActivity(intent);
     }
 

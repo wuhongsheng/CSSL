@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.titan.cssl.data.local.DataSource;
 import com.titan.cssl.data.local.LocalDataSource;
+import com.titan.cssl.model.ProjectTime;
+
+import java.util.Map;
 
 /**
  * Created by hanyw on 2017/10/30
@@ -29,4 +32,7 @@ public class DataRepository implements DataSource{
         this.mLocalDataSource = localDataSource;
     }
 
+    public Map<String,ProjectTime> getProjectTimeMap(){
+        return mLocalDataSource.getProjectTimeMap();
+    }
 }

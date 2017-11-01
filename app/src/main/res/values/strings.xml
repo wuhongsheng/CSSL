@@ -14,4 +14,8 @@
     <string name="project_type">项目类型:</string>
     <string name="approval_status">审批状态:</string>
     <string name="test">测试</string>
+    <string name="start_time">开始时间</string>
+    <string name="end_time">结束时间</string>
+    <string name="time_range">时间范围</string>
+    <string name="sure">确定</string>
 </resources>
