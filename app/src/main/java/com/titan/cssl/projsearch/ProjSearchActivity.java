@@ -1,4 +1,4 @@
-package com.titan.cssl.projectsearch;
+package com.titan.cssl.projsearch;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,11 +15,11 @@ import com.titan.cssl.util.ViewModelHolder;
  * 项目检索
  */
 
-public class ProjectSearchActivity extends BaseActivity {
+public class ProjSearchActivity extends BaseActivity {
     public static final String SEARCH_VIEWMODEL_TAG = "SEARCH_VIEWMODEL_TAG";
 
-    private ProjectSearchViewModel mViewModel;
-    private ProjectSearchFragment fragment;
+    private ProjSearchViewModel mViewModel;
+    private ProjSearchFragment fragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,25 +32,25 @@ public class ProjectSearchActivity extends BaseActivity {
     }
 
     @Override
-    public ProjectSearchFragment findOrCreateViewFragment() {
-        ProjectSearchFragment fragment = (ProjectSearchFragment) getSupportFragmentManager()
+    public ProjSearchFragment findOrCreateViewFragment() {
+        ProjSearchFragment fragment = (ProjSearchFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.search_frame);
         if (fragment == null) {
-            fragment = ProjectSearchFragment.getInstance();
+            fragment = ProjSearchFragment.getInstance();
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.search_frame);
         }
         return fragment;
     }
 
     @Override
-    public ProjectSearchViewModel findOrCreateViewModel() {
+    public ProjSearchViewModel findOrCreateViewModel() {
         @SuppressWarnings("unchecked")
-        ViewModelHolder<ProjectSearchViewModel> holder = (ViewModelHolder<ProjectSearchViewModel>)
+        ViewModelHolder<ProjSearchViewModel> holder = (ViewModelHolder<ProjSearchViewModel>)
                 getSupportFragmentManager().findFragmentByTag(SEARCH_VIEWMODEL_TAG);
         if (holder==null||holder.getViewmodel()==null){
             LocalDataSource source = LocalDataSource.getInstance(mContext);
             DataRepository dataRepository = DataRepository.getInstance(source);
-            ProjectSearchViewModel model = new ProjectSearchViewModel(fragment,dataRepository);
+            ProjSearchViewModel model = new ProjSearchViewModel(fragment,dataRepository);
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     ViewModelHolder.createContainer(model),SEARCH_VIEWMODEL_TAG);
             return model;

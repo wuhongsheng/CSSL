@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * 项目时间
  */
 
-public class ProjectTime implements Serializable{
+public class ProjTime implements Serializable{
     /**
      * 年
      */

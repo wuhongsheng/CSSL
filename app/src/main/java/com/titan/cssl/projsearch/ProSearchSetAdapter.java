@@ -1,4 +1,4 @@
-package com.titan.cssl.projectsearch;
+package com.titan.cssl.projsearch;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -9,20 +9,25 @@ import android.widget.BaseAdapter;
 
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
-import com.titan.cssl.databinding.ItemProjectSearchBinding;
+import com.titan.cssl.databinding.ItemSearchDialogBinding;
 
 import java.util.List;
 
 /**
- * Created by hanyw on 2017/10/31/031.
+ * Created by hanyw on 2017/11/1/001.
  */
 
-public class ProjectDataAdapter extends BaseAdapter {
+public class ProSearchSetAdapter extends BaseAdapter {
 
     private Context mContext;
+
+    private ProjSearchViewModel viewModel;
+
     private List<String> list;
-    public ProjectDataAdapter(Context context,List<String> list){
+
+    public ProSearchSetAdapter(Context context, ProjSearchViewModel viewModel, List<String> list){
         this.mContext = context;
+        this.viewModel = viewModel;
         this.list = list;
     }
 
@@ -43,14 +48,15 @@ public class ProjectDataAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ItemProjectSearchBinding binding;
+        ItemSearchDialogBinding binding;
         if (view==null){
-            binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.item_project_search,
-                    viewGroup,false);
+            binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
+                    R.layout.item_search_dialog,viewGroup,false);
         }else {
             binding = DataBindingUtil.getBinding(view);
         }
         binding.setVariable(BR.name,list.get(i));
+        binding.setViewmodel(viewModel);
         return binding.getRoot();
     }
 }

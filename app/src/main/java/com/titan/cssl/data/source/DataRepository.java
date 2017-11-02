@@ -4,7 +4,8 @@ import android.content.Context;
 
 import com.titan.cssl.data.local.DataSource;
 import com.titan.cssl.data.local.LocalDataSource;
-import com.titan.cssl.model.ProjectTime;
+import com.titan.cssl.model.ProjSearch;
+import com.titan.cssl.model.ProjTime;
 
 import java.util.Map;
 
@@ -32,7 +33,17 @@ public class DataRepository implements DataSource{
         this.mLocalDataSource = localDataSource;
     }
 
-    public Map<String,ProjectTime> getProjectTimeMap(){
+    /**
+     * @return 检索设置时间参数对象
+     */
+    public Map<String,ProjTime> getProjectTimeMap(){
         return mLocalDataSource.getProjectTimeMap();
+    }
+
+    /**
+     * @return 检索设置参数对象
+     */
+    public ProjSearch getProjSearch(){
+        return mLocalDataSource.getProjSearch();
     }
 }

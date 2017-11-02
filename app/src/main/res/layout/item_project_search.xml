@@ -1,22 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
+
         <variable
             name="name"
             type="String"/>
+
+        <variable
+            name="time"
+            type="String"/>
+
+        <variable
+            name="type"
+            type="String"/>
+
+        <variable
+            name="statu"
+            type="String"/>
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.projsearch.ProjSearchViewModel"/>
     </data>
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:onClick="@{()->viewmodel.projDetails()}">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="@{name}"
-            android:textSize="16sp"/>
+            style="@style/item_search_tv"
+            android:text="@{@string/proj_name+name}"/>
+
+        <TextView
+            style="@style/item_search_tv"
+            android:text="@{@string/proj_time+time}"/>
+
+        <TextView
+            style="@style/item_search_tv"
+            android:text="@{@string/proj_type+type}"/>
+
+        <TextView
+            style="@style/item_search_tv"
+            android:text="@{@string/proj_statu+statu}"/>
 
     </LinearLayout>
 </layout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.projsearch.projdetails.ProjDetailViewModel"/>
+    </data>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/base_info"
+                style="@style/tab_tv"
+                android:text="@string/base_info"
+                android:onClick="@{()->viewmodel.baseInfo()}"/>
+
+            <TextView
+                android:id="@+id/basic_facts"
+                style="@style/tab_tv"
+                android:text="@string/basic_facts"
+                android:onClick="@{()->viewmodel.baseFacts()}"/>
+
+            <TextView
+                android:id="@+id/proj_measure"
+                style="@style/tab_tv"
+                android:text="@string/proj_measure"
+                android:onClick="@{()->viewmodel.projMeasure()}"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/slider"
+            android:layout_width="100dp"
+            android:layout_height="2dp"
+            android:background="@color/colorPrimary"/>
+    </LinearLayout>
+
+</layout>

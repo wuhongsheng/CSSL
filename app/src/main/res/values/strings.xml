@@ -18,4 +18,13 @@
     <string name="end_time">结束时间</string>
     <string name="time_range">时间范围</string>
     <string name="sure">确定</string>
+    <string name="proj_name">项目名称：</string>
+    <string name="proj_time">申请时间：</string>
+    <string name="proj_type">项目类型：</string>
+    <string name="proj_statu">审批状态：</string>
+    <string name="search">搜索</string>
+    <string name="location_search">根据当前位置搜索</string>
+    <string name="base_info">基本信息</string>
+    <string name="basic_facts">项目概况</string>
+    <string name="proj_measure">水土保持措施</string>
 </resources>

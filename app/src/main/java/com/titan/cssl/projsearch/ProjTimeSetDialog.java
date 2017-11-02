@@ -1,4 +1,4 @@
-package com.titan.cssl.projectsearch;
+package com.titan.cssl.projsearch;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -16,19 +16,26 @@ import com.titan.cssl.R;
 import com.titan.cssl.databinding.DialogTimeSetBinding;
 import com.titan.cssl.util.ToastUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by hanyw on 2017/11/1/001.
+ * 时间选择
  */
 
-public class ProjectTimeSetDialog extends DialogFragment implements DateChoose{
+public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
 
     private DialogTimeSetBinding binding;
 
-    private ProjectSearchViewModel viewModel;
+    private ProjSearchViewModel viewModel;
 
-    private ProjectSearchViewModel searchFragViewModel;
+    private ProjSearchViewModel searchFragViewModel;
+    private String startTime;
+    private String endTime;
 
-    public void setViewModel(ProjectSearchViewModel viewModel,ProjectSearchViewModel searchFragViewModel){
+    public void setViewModel(ProjSearchViewModel viewModel, ProjSearchViewModel searchFragViewModel){
         this.viewModel = viewModel;
         this.searchFragViewModel = searchFragViewModel;
     }
@@ -66,21 +73,40 @@ public class ProjectTimeSetDialog extends DialogFragment implements DateChoose{
 
     @Override
     public void startTime() {
-        viewModel.timeSet.set(true);
-        String time = viewModel.year.get()+"-"+viewModel.month.get()+"-"+viewModel.day.get()+" "
-                +viewModel.hour.get()+"-"+viewModel.minute.get();
-        ToastUtil.setToast(getActivity(),time);
-        searchFragViewModel.startTime.set(time);
+        int month = viewModel.month.get()+1;
+        startTime = viewModel.year.get()+"-"+month+"-"+viewModel.day.get()+" "
+                +viewModel.hour.get()+":"+viewModel.minute.get();
+        searchFragViewModel.startTime.set(startTime);
+        searchFragViewModel.projSearch.get().setStartTime(startTime);
         this.dismiss();
     }
 
     @Override
     public void endTime() {
-        String time = viewModel.year.get()+"-"+viewModel.month.get()+"-"+viewModel.day.get()+" "
+        int month = viewModel.month.get()+1;
+        endTime = viewModel.year.get()+"-"+month+"-"+viewModel.day.get()+" "
                 +viewModel.hour.get()+"-"+viewModel.minute.get();
-        ToastUtil.setToast(getActivity(),time);
-        searchFragViewModel.endTime.set(time);
+        searchFragViewModel.endTime.set(endTime);
+        if (!compareTime(startTime,endTime)){
+            ToastUtil.setToast(getActivity(),"结束时间不能小于开始时间");
+            return;
+        }
+        searchFragViewModel.projSearch.get().setEndTime(endTime);
         this.dismiss();
     }
 
+    private boolean compareTime(String start,String end){
+        boolean result = false;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            Date startDate = sdf.parse(start);
+            Date endDate = sdf.parse(end);
+            if (startDate.before(endDate)){
+                result = true;
+            }
+        } catch (ParseException e) {
+            Log.e("tag","timeError:"+e);
+        }
+        return result;
+    }
 }

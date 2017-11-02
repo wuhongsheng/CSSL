@@ -1,4 +1,4 @@
-package com.titan.cssl.projectsearch;
+package com.titan.cssl.projsearch;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -14,27 +14,37 @@ import android.view.WindowManager;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.DialogOptionselectProjectsearchBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by hanyw on 2017/11/1/001.
+ * 检索设置 项目类型、审批状态选择
  */
 
-public class ProjectOptionSelectDialog extends DialogFragment implements OptionSelect {
+public class ProjOptionSelectDialog extends DialogFragment implements OptionSelect {
 
 
     private DialogOptionselectProjectsearchBinding binding;
 
-    private ProjectSearchViewModel viewModel;
+    private ProjSearchViewModel viewModel;
 
-    private ProjectSearchViewModel searchFragViewModel;
+    private ProjSearchViewModel searchFragViewModel;
 
     private List<String> list;
 
-    public void setViewModel(ProjectSearchViewModel viewModel,ProjectSearchViewModel searchFragViewModel){
+    private int type;
+
+    public void setViewModel(ProjSearchViewModel viewModel, ProjSearchViewModel searchFragViewModel) {
         this.viewModel = viewModel;
         this.searchFragViewModel = searchFragViewModel;
+    }
+
+    public static ProjOptionSelectDialog getInstance(int type) {
+        ProjOptionSelectDialog dialog = new ProjOptionSelectDialog();
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", type);
+        dialog.setArguments(bundle);
+        return dialog;
     }
 
     public void setList(List<String> list) {
@@ -45,6 +55,9 @@ public class ProjectOptionSelectDialog extends DialogFragment implements OptionS
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.BottomDialog);
+        if (getArguments() != null) {
+            type = getArguments().getInt("type");
+        }
     }
 
     @Override
@@ -72,13 +85,24 @@ public class ProjectOptionSelectDialog extends DialogFragment implements OptionS
     }
 
     private void initData() {
-        ProjectSearchSetAdapter adapter = new ProjectSearchSetAdapter(getActivity(),viewModel,list);
+        ProSearchSetAdapter adapter = new ProSearchSetAdapter(getActivity(), viewModel, list);
         binding.optionSelectList.setAdapter(adapter);
     }
 
     @Override
-    public void select(String name) {
+    public void select(String value) {
         this.dismiss();
-        searchFragViewModel.projectType.set(name);
+        switch (type) {
+            case 1:
+                searchFragViewModel.projectType.set(value);
+                searchFragViewModel.projSearch.get().setType(value);
+                break;
+            case 2:
+                searchFragViewModel.projectStatus.set(value);
+                searchFragViewModel.projSearch.get().setStatu(value);
+                break;
+            default:
+                break;
+        }
     }
 }

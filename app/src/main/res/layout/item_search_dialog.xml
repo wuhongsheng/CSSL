@@ -2,23 +2,24 @@
 <layout>
     <data>
         <variable
-            name="name"
+            name="value"
             type="String"/>
         <variable
             name="viewmodel"
-            type="com.titan.cssl.projectsearch.ProjectSearchViewModel"/>
+            type="com.titan.cssl.projsearch.ProjSearchViewModel"/>
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <CheckedTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{name}"
+            android:text="@{value}"
             android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:onClick="@{()->viewmodel.optionSelect(name)}"/>
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:onClick="@{()->viewmodel.optionSelect(value)}"/>
     </LinearLayout>
 </layout>

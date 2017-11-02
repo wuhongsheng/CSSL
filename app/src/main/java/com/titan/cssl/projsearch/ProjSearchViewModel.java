@@ -1,13 +1,13 @@
-package com.titan.cssl.projectsearch;
+package com.titan.cssl.projsearch;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
-import android.util.Log;
 
 import com.titan.cssl.BaseViewModel;
 import com.titan.cssl.data.source.DataRepository;
-import com.titan.cssl.model.ProjectTime;
+import com.titan.cssl.model.ProjSearch;
+import com.titan.cssl.model.ProjTime;
 
 import java.util.Map;
 
@@ -16,8 +16,8 @@ import java.util.Map;
  * 项目检索viewmodel
  */
 
-public class ProjectSearchViewModel extends BaseViewModel {
-    private ProjectSearch projectSearch;
+public class ProjSearchViewModel extends BaseViewModel {
+    private ProjSearchSet projSearchSet;
 
     private DateChoose dateChoose;
 
@@ -25,7 +25,12 @@ public class ProjectSearchViewModel extends BaseViewModel {
 
     private DataRepository mDataRepository;
 
-    public ObservableField<Map<String,ProjectTime>> projectTimeMap = new ObservableField<>();
+    public ObservableField<Map<String,ProjTime>> projectTimeMap = new ObservableField<>();
+
+    /**
+     * 检索设置
+     */
+    public ObservableField<ProjSearch> projSearch = new ObservableField<>();
 
     /**
      * 判断设置的时间 true：开始时间；false：结束时间
@@ -40,8 +45,6 @@ public class ProjectSearchViewModel extends BaseViewModel {
 
     public ObservableField<String> projectStatus = new ObservableField<>();
 
-    public ObservableField<String> projectName = new ObservableField<>();
-
     public ObservableInt year = new ObservableInt();
 
     public ObservableInt month = new ObservableInt();
@@ -53,39 +56,40 @@ public class ProjectSearchViewModel extends BaseViewModel {
     public ObservableInt minute = new ObservableInt();
 
 
-    public ProjectSearchViewModel(ProjectSearch projectSearch, DataRepository mDataRepository) {
-        this.projectSearch = projectSearch;
+    public ProjSearchViewModel(ProjSearchSet projSearchSet, DataRepository mDataRepository) {
+        this.projSearchSet = projSearchSet;
         this.mDataRepository = mDataRepository;
         initData();
     }
 
 
-    public ProjectSearchViewModel(DateChoose dateChoose) {
+    public ProjSearchViewModel(DateChoose dateChoose) {
         this.dateChoose = dateChoose;
     }
 
 
-    public ProjectSearchViewModel(OptionSelect optionSelect){
+    public ProjSearchViewModel(OptionSelect optionSelect){
         this.optionSelect = optionSelect;
     }
 
     private void initData(){
         projectTimeMap.set(mDataRepository.getProjectTimeMap());
+        projSearch.set(mDataRepository.getProjSearch());
     }
 
     /**
      * 检索设置dialog
      */
     public void searchSet() {
-        projectSearch.searchSet();
+        projSearchSet.searchSet();
     }
 
     public void startTimeSet(){
-        projectSearch.startTimeSet();
+        projSearchSet.startTimeSet();
     }
 
     public void endTimeSet(){
-        projectSearch.endTimeSet();
+        projSearchSet.endTimeSet();
     }
 
     public void setTimeSure(){
@@ -97,14 +101,23 @@ public class ProjectSearchViewModel extends BaseViewModel {
     }
 
     public void projectTypeSet(){
-        projectSearch.projectTypeSet();
+        projSearchSet.projectTypeSet();
     }
 
     public void approvalStatuSet(){
-        projectSearch.approvalStatuSet();
+        projSearchSet.approvalStatuSet();
     }
 
-    public void optionSelect(String name){
-        optionSelect.select(name);
+    public void optionSelect(String value){
+        optionSelect.select(value);
     }
+
+    public void locaSearch(){
+        projSearchSet.locaSearch();
+    }
+
+    public void projDetails(){
+        projSearchSet.projDetails();
+    }
+
 }

@@ -5,12 +5,19 @@
       <w>cssl</w>
       <w>datepicker</w>
       <w>endtime</w>
+      <w>loca</w>
+      <w>proj</w>
       <w>projectsearch</w>
+      <w>projectstatuset</w>
+      <w>projecttypeset</w>
       <w>rememberuser</w>
       <w>searchview</w>
+      <w>sington</w>
       <w>starttime</w>
       <w>statu</w>
+      <w>textcolor</w>
       <w>timepicker</w>
+      <w>timeset</w>
     </words>
   </dictionary>
 </component>

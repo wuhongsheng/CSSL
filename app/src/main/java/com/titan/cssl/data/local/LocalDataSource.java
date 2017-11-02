@@ -19,7 +19,8 @@ package com.titan.cssl.data.local;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.titan.cssl.model.ProjectTime;
+import com.titan.cssl.model.ProjSearch;
+import com.titan.cssl.model.ProjTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,9 +37,21 @@ public class LocalDataSource implements DataSource {
 
     private Context mContext;
 
-    private Map<String,ProjectTime> projectTimeMap = new HashMap<>();
+    /**
+     * 检索设置参数对象
+     */
+    private ProjSearch projSearch = new ProjSearch();
 
-    public Map<String,ProjectTime> getProjectTimeMap(){
+    public ProjSearch getProjSearch(){
+        return projSearch;
+    }
+
+    /**
+     * 检索设置时间设置
+     */
+    private Map<String,ProjTime> projectTimeMap = new HashMap<>();
+
+    public Map<String,ProjTime> getProjectTimeMap(){
         return projectTimeMap;
     }
 

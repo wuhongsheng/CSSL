@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         tools:replace="android:label"
-        android:theme="@style/AppTheme">
+        android:theme="@style/NoActionBar">
         <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity"/>
-        <activity android:name=".projectsearch.ProjectSearchActivity"/>
+        <activity android:name=".projsearch.ProjSearchActivity"/>
+        <activity android:name=".projsearch.projdetails.ProjDetailActivity"/>
     </application>
 </manifest>

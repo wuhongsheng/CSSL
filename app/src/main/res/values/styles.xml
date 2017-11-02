@@ -8,6 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
     <style name="Light.AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -77,6 +85,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">5dp</item>
         <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -87,6 +96,26 @@
         <item name="android:drawableEnd">@drawable/ic_arrow</item>
         <item name="android:layout_margin">10dp</item>
 
+    </style>
+
+    <style name="item_search_tv">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">10dp</item>
+        <!--<item name="android:paddingTop">5dp</item>-->
+        <!--<item name="android:paddingBottom">5dp</item>-->
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="tab_tv">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:textColor">@drawable/tab_textcolor</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

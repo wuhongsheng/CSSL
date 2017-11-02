@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewmodel"
-            type="com.titan.cssl.projectsearch.ProjectSearchViewModel"/>
+            type="com.titan.cssl.projsearch.ProjSearchViewModel"/>
     </data>
     <ListView
         xmlns:android="http://schemas.android.com/apk/res/android"

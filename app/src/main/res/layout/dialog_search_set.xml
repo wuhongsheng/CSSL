@@ -5,7 +5,7 @@
 
         <variable
             name="viewmodel"
-            type="com.titan.cssl.projectsearch.ProjectSearchViewModel"/>
+            type="com.titan.cssl.projsearch.ProjSearchViewModel"/>
     </data>
 
     <LinearLayout
@@ -134,5 +134,14 @@
                 android:textColor="@color/black"/>
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/location_search"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            android:onClick="@{()->viewmodel.locaSearch()}"/>
     </LinearLayout>
 </layout>
