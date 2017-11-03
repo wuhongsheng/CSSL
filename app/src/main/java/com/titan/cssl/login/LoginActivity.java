@@ -1,18 +1,18 @@
 package com.titan.cssl.login;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDelegate;
+import android.view.LayoutInflater;
 
-import com.titan.cssl.BaseActivity;
-import com.titan.cssl.MyApplication;
+import com.titan.BaseActivity;
+import com.titan.MyApplication;
 import com.titan.cssl.R;
+import com.titan.cssl.databinding.ActivityLoginBinding;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
-import com.titan.util.DeviceUtil;
 
 
 /**
@@ -26,6 +26,7 @@ public class LoginActivity extends BaseActivity {
     private LoginViewModel mViewModel;
     private LoginFragment mFragment;
     private SharedPreferences sharedPreferences;
+    private ActivityLoginBinding binding;
 
     //矢量支持
     static {
@@ -35,13 +36,18 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(this),R.layout.activity_login,
+                null,false);
+        setContentView(binding.getRoot());
         MyApplication.getInstance();
         sharedPreferences = MyApplication.sharedPreferences;
         mFragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
         mFragment.setViewModel(mViewModel);
-
+        setSupportActionBar(binding.loginToolbar);
+        binding.loginToolbar.setTitle(getResources().getString(R.string.appname));
+        binding.loginToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        binding.loginToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         initData();
     }
 

@@ -7,7 +7,7 @@
         android:layout_height="match_parent">
 
         <ListView
-            android:id="@+id/proj_base_info"
+            android:id="@+id/proj_survey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>

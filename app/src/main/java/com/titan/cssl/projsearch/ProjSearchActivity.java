@@ -1,12 +1,15 @@
 package com.titan.cssl.projsearch;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 
-import com.titan.cssl.BaseActivity;
+import com.titan.BaseActivity;
 import com.titan.cssl.R;
-import com.titan.cssl.data.local.LocalDataSource;
-import com.titan.cssl.data.source.DataRepository;
+import com.titan.data.local.LocalDataSource;
+import com.titan.data.source.DataRepository;
+import com.titan.cssl.databinding.ActivitySearchBinding;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
 
@@ -20,15 +23,21 @@ public class ProjSearchActivity extends BaseActivity {
 
     private ProjSearchViewModel mViewModel;
     private ProjSearchFragment fragment;
+    private ActivitySearchBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(this),R.layout.activity_search,
+                null,false);
+        setContentView(binding.getRoot());
         fragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
         fragment.setViewModel(mViewModel);
-
+        setSupportActionBar(binding.searchToolbar);
+        binding.searchToolbar.setTitle(getResources().getString(R.string.appname));
+        binding.searchToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        binding.searchToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
     }
 
     @Override

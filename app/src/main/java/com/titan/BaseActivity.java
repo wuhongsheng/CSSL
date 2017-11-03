@@ -1,4 +1,4 @@
-package com.titan.cssl;
+package com.titan;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,24 +1,16 @@
-package com.titan.cssl;
+package com.titan;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.provider.Settings.Secure;
 
 
 import com.tencent.bugly.crashreport.CrashReport;
+import com.titan.broadcastreceiver.ConnectionChangeReceiver;
 import com.titan.cssl.util.BussUtil;
-import com.titan.cssl.util.ConnectionChangeReceiver;
 import com.titan.cssl.util.NetUtil;
 import com.titan.cssl.util.ScreenTool;
 import com.titan.cssl.util.ToastUtil;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class MyApplication extends Application{
 

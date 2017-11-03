@@ -1,4 +1,4 @@
-package com.titan.cssl.model;
+package com.titan.model;
 
 import java.io.Serializable;
 

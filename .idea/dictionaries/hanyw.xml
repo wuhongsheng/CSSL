@@ -2,11 +2,15 @@
   <dictionary name="hanyw">
     <words>
       <w>appname</w>
+      <w>baseinfo</w>
       <w>cssl</w>
       <w>datepicker</w>
       <w>endtime</w>
+      <w>explv</w>
       <w>loca</w>
+      <w>mapview</w>
       <w>proj</w>
+      <w>projdetails</w>
       <w>projectsearch</w>
       <w>projectstatuset</w>
       <w>projecttypeset</w>

@@ -1,6 +1,7 @@
 package com.titan.cssl.projsearch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +18,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.DialogSearchSetBinding;
 import com.titan.cssl.databinding.FragSearchBinding;
-import com.titan.cssl.model.ProjSearch;
+import com.titan.model.ProjSearch;
+import com.titan.cssl.projdetails.ProjDetailActivity;
 import com.titan.cssl.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -92,8 +94,8 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
             ProjSearch search = new ProjSearch();
             search.setName("项目" + i);
             search.setStartTime("2017-10-"+i%30+" 10:"+(i%60));
-            search.setType(typeArray[i-1%2]);
-            search.setStatu(statuArray[i-1%3]);
+            search.setType(typeArray[i%2]);
+            search.setStatu(statuArray[i%3]);
             list.add(search);
         }
         projDataAdapter = new ProjDataAdapter(mContext, list,mViewModel);
@@ -192,7 +194,8 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
 
     @Override
     public void projDetails() {
-
+        Intent intent = new Intent(mContext, ProjDetailActivity.class);
+        mContext.startActivity(intent);
     }
 
     private void showSetTimeDialog(boolean flag) {

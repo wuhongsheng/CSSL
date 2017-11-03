@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.titan.cssl.data.local;
+package com.titan.data.local;
 
 /**
  * Main entry point for accessing tasks data.

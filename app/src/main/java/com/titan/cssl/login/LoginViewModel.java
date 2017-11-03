@@ -2,13 +2,12 @@ package com.titan.cssl.login;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.text.TextUtils;
 
-import com.titan.cssl.BaseViewModel;
-import com.titan.cssl.MyApplication;
+import com.titan.BaseViewModel;
+import com.titan.MyApplication;
 
 /**
  * Created by hanyw on 2017/9/13/013.

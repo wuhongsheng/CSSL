@@ -1,6 +1,11 @@
 <resources>
     <string name="appname">长沙水土保持</string>
 
+    <!--测试-->
+    <string name="test">测试</string>
+    <string name="test_more">测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试
+        测试测试测试测试测试测试测试测试测试测试</string>
+
     <!--登录-->
     <string name="username">请输入用户名</string>
     <string name="password">请输入密码</string>
@@ -13,7 +18,6 @@
     <string name="search_set">检索设置</string>
     <string name="project_type">项目类型:</string>
     <string name="approval_status">审批状态:</string>
-    <string name="test">测试</string>
     <string name="start_time">开始时间</string>
     <string name="end_time">结束时间</string>
     <string name="time_range">时间范围</string>
@@ -24,7 +28,10 @@
     <string name="proj_statu">审批状态：</string>
     <string name="search">搜索</string>
     <string name="location_search">根据当前位置搜索</string>
+    <!--项目详情-->
     <string name="base_info">基本信息</string>
     <string name="basic_facts">项目概况</string>
     <string name="proj_measure">水土保持措施</string>
+    <string name="map_mode">地图模式</string>
+    <string name="change_layer">图层切换</string>
 </resources>

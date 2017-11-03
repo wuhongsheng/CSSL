@@ -1,11 +1,11 @@
-package com.titan.cssl;
+package com.titan;
 
 import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
-import com.titan.cssl.data.source.DataRepository;
+import com.titan.data.source.DataRepository;
 
 
 /**

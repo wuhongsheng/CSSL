@@ -1,4 +1,4 @@
-package com.titan.cssl.util;
+package com.titan.broadcastreceiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

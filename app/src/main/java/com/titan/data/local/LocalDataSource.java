@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.titan.cssl.data.local;
+package com.titan.data.local;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.titan.cssl.model.ProjSearch;
-import com.titan.cssl.model.ProjTime;
+import com.titan.model.ProjSearch;
+import com.titan.model.ProjTime;
 
 import java.util.HashMap;
 import java.util.Map;

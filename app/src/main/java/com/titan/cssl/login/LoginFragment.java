@@ -58,8 +58,10 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void onNext() {
-        Intent intent = new Intent(mContext, ProjSearchActivity.class);
-        startActivity(intent);
+        if (isAdded()){
+            Intent intent = new Intent(mContext, ProjSearchActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override

@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <application
-        android:name=".MyApplication"
+        android:name="com.titan.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/appname"
@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".activity.MainActivity"/>
         <activity android:name=".projsearch.ProjSearchActivity"/>
-        <activity android:name=".projsearch.projdetails.ProjDetailActivity"/>
+        <activity android:name=".projdetails.ProjDetailActivity"/>
+        <activity android:name=".map.MapBrowseActivity"/>
     </application>
 </manifest>

@@ -4,12 +4,13 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
-import com.titan.cssl.BaseViewModel;
-import com.titan.cssl.data.source.DataRepository;
-import com.titan.cssl.model.ProjSearch;
-import com.titan.cssl.model.ProjTime;
+import com.titan.BaseViewModel;
+import com.titan.data.source.DataRepository;
+import com.titan.model.ProjSearch;
+import com.titan.model.ProjTime;
 
 import java.util.Map;
+
 
 /**
  * Created by hanyw on 2017/10/31/031.

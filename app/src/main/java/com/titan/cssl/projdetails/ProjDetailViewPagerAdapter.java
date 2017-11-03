@@ -1,4 +1,4 @@
-package com.titan.cssl.projsearch.projdetails;
+package com.titan.cssl.projdetails;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +36,6 @@ public class ProjDetailViewPagerAdapter extends FragmentPagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         //注释掉这一行以后就会防止Fragment被销毁，否则根据viewPager默认的缓存机制只缓存当前页面的左右相邻的两个页面，
         //当滑动到第三页时就会默认销毁第一页，注释掉之后就不会销毁了
-        //super.destroyItem(container, position, object);
+        super.destroyItem(container, position, object);
     }
 }

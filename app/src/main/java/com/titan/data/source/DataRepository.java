@@ -1,11 +1,11 @@
-package com.titan.cssl.data.source;
+package com.titan.data.source;
 
 import android.content.Context;
 
-import com.titan.cssl.data.local.DataSource;
-import com.titan.cssl.data.local.LocalDataSource;
-import com.titan.cssl.model.ProjSearch;
-import com.titan.cssl.model.ProjTime;
+import com.titan.data.local.DataSource;
+import com.titan.data.local.LocalDataSource;
+import com.titan.model.ProjSearch;
+import com.titan.model.ProjTime;
 
 import java.util.Map;
 

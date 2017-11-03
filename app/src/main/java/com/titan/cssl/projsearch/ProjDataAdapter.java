@@ -12,7 +12,7 @@ import android.widget.Filter;
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemProjectSearchBinding;
-import com.titan.cssl.model.ProjSearch;
+import com.titan.model.ProjSearch;
 
 import java.util.ArrayList;
 import java.util.List;
