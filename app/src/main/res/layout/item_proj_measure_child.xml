@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="value"
             type="String"/>
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.projdetails.ProjDetailViewModel"/>
     </data>
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"/>
 
         <TextView
             android:id="@+id/proj_measure_type"
@@ -47,7 +55,8 @@
             android:id="@+id/proj_photo_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/proj_photo"/>
+            android:layout_below="@+id/proj_photo"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/proj_doc"
@@ -58,7 +67,7 @@
         <ListView
             android:id="@+id/proj_doc_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_below="@+id/proj_doc"/>
 
         <TextView
@@ -68,11 +77,37 @@
             android:text="审查及专家意见"/>
 
         <TextView
-            android:id="@+id/proj_approval_opinion_value"
-            style="@style/proj_baseinfo_value"
+            android:id="@+id/proj_opinion_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/proj_prompt"
             android:layout_below="@+id/proj_doc_list"
-            android:layout_toEndOf="@+id/proj_approval_opinion"
-            android:text="@string/test"/>
+            android:padding="10dp"
+            android:text="@string/opinion_add"
+            android:onClick="@{()->viewmodel.addCensor()}"/>
 
+        <ListView
+            android:id="@+id/proj_approval_opinion_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/proj_approval_opinion"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/proj_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/proj_approval_opinion_value"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="@string/no_expert_opinion"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray"/>
     </RelativeLayout>
 </layout>

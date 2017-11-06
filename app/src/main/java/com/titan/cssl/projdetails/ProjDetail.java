@@ -6,4 +6,6 @@ package com.titan.cssl.projdetails;
 
 public interface ProjDetail {
     void pagerSelect(int pager);
+
+    void addCensor();
 }

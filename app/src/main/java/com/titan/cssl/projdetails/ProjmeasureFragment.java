@@ -47,7 +47,7 @@ public class ProjmeasureFragment extends Fragment {
         mContext = getActivity();
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_proj_measure,container,false);
         list=Arrays.asList(measureArray);
-        ProjmeasureExpLVAdapter adapter = new ProjmeasureExpLVAdapter(mContext,list);
+        ProjmeasureExpLVAdapter adapter = new ProjmeasureExpLVAdapter(mContext,list,viewModel);
         binding.projMeasureExplv.setGroupIndicator(null);
         binding.projMeasureExplv.setAdapter(adapter);
         return binding.getRoot();

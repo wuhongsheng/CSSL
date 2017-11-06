@@ -27,10 +27,12 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;
     private List<String> list;
+    private ProjDetailViewModel viewModel;
 
-    public ProjmeasureExpLVAdapter(Context context, List<String> list){
+    public ProjmeasureExpLVAdapter(Context context, List<String> list,ProjDetailViewModel viewModel){
         this.list = list;
         this.mContext = context;
+        this.viewModel = viewModel;
     }
     @Override
     public int getGroupCount() {
@@ -101,6 +103,7 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mContext,R.layout.item_arrayadapter_test,docList);
         binding.projDocList.setAdapter(arrayAdapter1);
         setListViewHeightBasedOnChildren(binding.projDocList);
+        binding.setViewmodel(viewModel);
         return binding.getRoot();
     }
 

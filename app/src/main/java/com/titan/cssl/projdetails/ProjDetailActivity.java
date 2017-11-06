@@ -19,6 +19,7 @@ import com.titan.BaseActivity;
 import com.titan.BaseViewModel;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityProjDetailBinding;
+import com.titan.cssl.localcensor.ProjLocalCensorActivity;
 import com.titan.cssl.map.MapBrowseActivity;
 import com.titan.cssl.util.ToastUtil;
 
@@ -117,9 +118,10 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
     }
 
     private void initData() {
-        Fragment infoFragment = ProjBaseInfoFragment.getInstance();
-        Fragment surveyFragment = ProjSurveyFragment.getInstance();
-        Fragment measureFragment = ProjmeasureFragment.getInstance();
+        ProjBaseInfoFragment infoFragment = ProjBaseInfoFragment.getInstance();
+        ProjSurveyFragment surveyFragment = ProjSurveyFragment.getInstance();
+        ProjmeasureFragment measureFragment = ProjmeasureFragment.getInstance();
+        measureFragment.setViewModel(viewModel);
         mList.add(infoFragment);
         mList.add(surveyFragment);
         mList.add(measureFragment);
@@ -173,5 +175,11 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         boolean[] state = new boolean[3];
         state[pager] = true;
         updataViewPager(state[0], state[1], state[2]);
+    }
+
+    @Override
+    public void addCensor() {
+        Intent intent = new Intent(mContext, ProjLocalCensorActivity.class);
+        startActivity(intent);
     }
 }

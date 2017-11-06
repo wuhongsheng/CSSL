@@ -24,8 +24,8 @@ public class ProjDetailViewModel extends BaseViewModel {
         projDetail.pagerSelect(pager);
     }
 
-    public void test() {
-        ToastUtil.setToast(mContext, "asd");
+    public void addCensor() {
+        projDetail.addCensor();
     }
 
 
