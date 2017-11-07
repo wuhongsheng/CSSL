@@ -34,6 +34,7 @@
     <string name="proj_measure">水保措施</string>
     <string name="map_mode">地图模式</string>
     <string name="change_layer">图层切换</string>
+    <string name="location">定位</string>
     <string name="no_expert_opinion">暂无专家意见</string>
     <string name="opinion_add">新增</string>
 </resources>

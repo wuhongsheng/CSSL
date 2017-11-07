@@ -1,17 +1,24 @@
 package com.titan.cssl.map;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.storage.StorageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -22,7 +29,11 @@ import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.BackgroundGrid;
+import com.esri.arcgisruntime.mapping.view.Graphic;
+import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.symbology.MarkerSymbol;
+import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.nostra13.universalimageloader.utils.L;
 import com.titan.BaseActivity;
 import com.titan.BaseViewModel;
@@ -30,48 +41,73 @@ import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityMapBrowseBinding;
 import com.titan.cssl.util.ToastUtil;
 import com.titan.model.ProjSearch;
+import com.titan.util.ResourcesManager;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.RuntimePermissions;
+
 /**
  * Created by hanyw on 2017/11/3/003.
  * 地图浏览
  */
-
 public class MapBrowseActivity extends BaseActivity {
 
     private ActivityMapBrowseBinding binding;
-    private MapView mapView;
     public static final String ROOT_MAPS = "/maps";
     private static final String otitan_map = "/otitan.map";
     private ArcGISMap arcGISMap;
     private Basemap basemap;
     private TileCache cache;
     private ArcGISTiledLayer tiledLayer;
+    private GraphicsOverlay graphicsOverlay;
+    private MarkerSymbol markerSymbol;
+    private List<File> fileList;
+    private ResourcesManager manager = ResourcesManager.getInstance(mContext);
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
-                R.layout.activity_map_browse, null, false);
-        setContentView(binding.getRoot());
-        mapView = binding.mapview;
-        mapView.setBackgroundGrid(new BackgroundGrid(0xffffff, 0xffffff, 0, 3));
         try {
-            cache = new TileCache(getTitlePath());
-            tiledLayer = new ArcGISTiledLayer(cache);
-            basemap = new Basemap(tiledLayer);
-            arcGISMap = new ArcGISMap();
-            arcGISMap.setBasemap(basemap);
-            mapView.setMap(arcGISMap);
+            binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
+                    R.layout.activity_map_browse,null,false);
+            setContentView(binding.getRoot());
+            initView();
+            initData();
+            binding.mapview.setBackgroundGrid(new BackgroundGrid(0xffffff, 0xffffff, 0, 3));
+
+//            cache = new TileCache(getTitlePath());
+//            tiledLayer = new ArcGISTiledLayer(cache);
+//            basemap = new Basemap(tiledLayer);
+//            arcGISMap = new ArcGISMap();
+//            arcGISMap.setBasemap(basemap);
+//            binding.mapview.setMap(arcGISMap);
+//            graphicsOverlay = new GraphicsOverlay();
+//            binding.mapview.getGraphicsOverlays().add(graphicsOverlay);
+
+            markerSymbol = new PictureMarkerSymbol((BitmapDrawable) ContextCompat
+                    .getDrawable(mContext, R.drawable.icon_location));
         } catch (Exception e) {
             Log.e("tag", "mapError:" + e);
         }
-        initView();
+    }
+
+    @Override
+    protected void onPause() {
+        binding.mapview.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.mapview.resume();
     }
 
     private void initView() {
@@ -89,13 +125,8 @@ public class MapBrowseActivity extends BaseActivity {
         });
     }
 
-    private List<File> initData() {
-        return getPahts("/otitan.map", "image");
-    }
-
-    public String getTitlePath() {
-        String name = otitan_map + "/title_gy.tpk";
-        return getFilePath(name);
+    private void initData() {
+        fileList = manager.getPahts("/otitan.map", "image");
     }
 
     @Override
@@ -108,9 +139,9 @@ public class MapBrowseActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.map_change:
-                final List<File> list = initData();
+                final List<File> list = fileList;
                 List<String> stringList = new ArrayList<>();
-                for (File file:list){
+                for (File file : list) {
                     stringList.add(file.getName());
                 }
                 MaterialDialog dialog = new MaterialDialog.Builder(mContext)
@@ -126,7 +157,7 @@ public class MapBrowseActivity extends BaseActivity {
                                     basemap = new Basemap(tiledLayer);
                                     arcGISMap = new ArcGISMap();
                                     arcGISMap.setBasemap(basemap);
-                                    mapView.setMap(arcGISMap);
+                                    binding.mapview.setMap(arcGISMap);
                                 } catch (Exception e) {
                                     Log.e("tag", "dialogError:" + e);
                                 }
@@ -141,6 +172,9 @@ public class MapBrowseActivity extends BaseActivity {
                         .build();
                 dialog.show();
                 break;
+            case R.id.map_location:
+                addLable();
+                break;
             default:
                 break;
         }
@@ -148,54 +182,21 @@ public class MapBrowseActivity extends BaseActivity {
     }
 
 
-    public String[] getMemoryPath() {
-        StorageManager sm = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
-        String[] paths = null;
-        try {
-            //paths = (String[]) sm.getClass().getMethod("getVolumePaths", new Class[0]).invoke(sm,new Object[]{});
-            paths = (String[]) sm.getClass().getMethod("getVolumePaths").invoke(sm);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return paths;
-    }
-
-    public String getFilePath(String path) {
-        String dataPath = "文件可用地址";
-        String[] memoryPath = getMemoryPath();
-        for (int i = 0; i < memoryPath.length; i++) {
-            File file = new File(memoryPath[i] + ROOT_MAPS + path);
-            if (file.exists() && file.isFile()) {
-                dataPath = memoryPath[i] + ROOT_MAPS + path;
-                break;
+    private void addLable() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            float[] floats = intent.getFloatArrayExtra("coordinate");
+            if (floats != null) {
+                com.esri.arcgisruntime.geometry.Point point = new com.esri.arcgisruntime.geometry
+                        .Point(floats[0], floats[1]);
+                Graphic graphic = new Graphic(point, markerSymbol);
+                graphicsOverlay.getGraphics().add(graphic);
+                return;
             }
+            ToastUtil.setToast(mContext,"坐标参数出错");
         }
-        return dataPath;
-    }
 
-    public List<File> getPahts(String path, String keyword) {
-        List<File> list = new ArrayList<>();
-        String[] array = getMemoryPath();
-        for (int i = 0; i < array.length; i++) {
-            File file = new File(array[i] + ROOT_MAPS + path);
-            if (file.exists()) {
-                for (int m = 0; m < file.listFiles().length; m++) {
-                    if (file.listFiles()[m].isFile()
-                            && file.listFiles()[m].getName().contains(keyword)) {
-                        list.add(file.listFiles()[m]);
-                    }
-                }
-            }
-        }
-        return list;
     }
-
 
     @Override
     public Fragment findOrCreateViewFragment() {

@@ -55,8 +55,6 @@ public class ProjSurveyFragment extends Fragment {
         List<ProjDetailBaseinfo> list = new ArrayList<>();
         for (int i = 0;i<20;i++){
             ProjDetailBaseinfo baseinfo = new ProjDetailBaseinfo();
-            baseinfo.setName("测试"+i);
-            baseinfo.setValue("测试"+i);
             list.add(baseinfo);
         }
         this.list = list;

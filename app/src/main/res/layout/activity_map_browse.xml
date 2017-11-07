@@ -21,7 +21,8 @@
             android:id="@+id/mapview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1">
+        </com.esri.arcgisruntime.mapping.view.MapView>
 
         <!--<FrameLayout-->
             <!--android:id="@+id/map_frame"-->

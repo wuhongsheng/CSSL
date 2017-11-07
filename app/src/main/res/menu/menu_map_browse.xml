@@ -7,4 +7,12 @@
         android:icon="@drawable/ic_layer"
         android:title="@string/change_layer"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/map_location"
+        android:icon="@drawable/ic_location"
+        android:title="@string/change_layer"
+        app:showAsAction="always"/>
+
+
 </menu>

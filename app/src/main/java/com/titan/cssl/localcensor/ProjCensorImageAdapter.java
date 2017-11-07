@@ -4,12 +4,12 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemCensorImgBinding;
 
@@ -44,15 +44,21 @@ public class ProjCensorImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ItemCensorImgBinding binding;
-        if (view==null){
-            binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
-                    R.layout.item_censor_img,viewGroup,false);
-        }else {
-            binding = DataBindingUtil.getBinding(view);
-        }
+        ItemCensorImgBinding binding = null;
+        try {
+            if (view==null){
+                binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
+                        R.layout.item_censor_img,viewGroup,false);
+            }else {
+                binding = DataBindingUtil.getBinding(view);
+            }
 //        binding.setVariable(BR.url,list.get(i));
-        binding.itemCensorImg.setImageBitmap(decodeSampledBitmap(list.get(i),100,100));
+            Log.e("tag","list:"+list);
+            binding.itemCensorImg.setImageBitmap(decodeSampledBitmap(list.get(i),100,100));
+
+        } catch (Exception e) {
+            Log.e("tag","result2:"+e);
+        }
         return binding.getRoot();
     }
 
