@@ -77,7 +77,6 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
         startTime = viewModel.year.get()+"-"+month+"-"+viewModel.day.get()+" "
                 +viewModel.hour.get()+":"+viewModel.minute.get();
         searchFragViewModel.startTime.set(startTime);
-        searchFragViewModel.projSearch.get().setStartTime(startTime);
         this.dismiss();
     }
 
@@ -85,13 +84,12 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
     public void endTime() {
         int month = viewModel.month.get()+1;
         endTime = viewModel.year.get()+"-"+month+"-"+viewModel.day.get()+" "
-                +viewModel.hour.get()+"-"+viewModel.minute.get();
+                +viewModel.hour.get()+":"+viewModel.minute.get();
         searchFragViewModel.endTime.set(endTime);
         if (!compareTime(startTime,endTime)){
             ToastUtil.setToast(getActivity(),"结束时间不能小于开始时间");
             return;
         }
-        searchFragViewModel.projSearch.get().setEndTime(endTime);
         this.dismiss();
     }
 
@@ -99,8 +97,9 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
         boolean result = false;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
-            Date startDate = sdf.parse(start);
-            Date endDate = sdf.parse(end);
+            Log.e("tag","start:"+start);
+            Date startDate = (Date) sdf.parseObject(start);
+            Date endDate = (Date) sdf.parseObject(end);
             if (startDate.before(endDate)){
                 result = true;
             }

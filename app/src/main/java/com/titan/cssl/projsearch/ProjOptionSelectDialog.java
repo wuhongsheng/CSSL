@@ -95,11 +95,9 @@ public class ProjOptionSelectDialog extends DialogFragment implements OptionSele
         switch (type) {
             case 1:
                 searchFragViewModel.projectType.set(value);
-                searchFragViewModel.projSearch.get().setType(value);
                 break;
             case 2:
                 searchFragViewModel.projectStatus.set(value);
-                searchFragViewModel.projSearch.get().setStatu(value);
                 break;
             default:
                 break;

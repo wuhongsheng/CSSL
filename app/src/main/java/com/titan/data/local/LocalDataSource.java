@@ -20,7 +20,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.titan.model.ProjSearch;
-import com.titan.model.ProjTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,24 +35,6 @@ public class LocalDataSource implements DataSource {
     //private DbHelper mDbHelper;
 
     private Context mContext;
-
-    /**
-     * 检索设置参数对象
-     */
-    private ProjSearch projSearch = new ProjSearch();
-
-    public ProjSearch getProjSearch(){
-        return projSearch;
-    }
-
-    /**
-     * 检索设置时间设置
-     */
-    private Map<String,ProjTime> projectTimeMap = new HashMap<>();
-
-    public Map<String,ProjTime> getProjectTimeMap(){
-        return projectTimeMap;
-    }
 
     // Prevent direct instantiation.
     private LocalDataSource(@NonNull Context context) {

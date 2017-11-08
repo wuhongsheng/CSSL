@@ -7,7 +7,6 @@ import android.databinding.ObservableInt;
 import com.titan.BaseViewModel;
 import com.titan.data.source.DataRepository;
 import com.titan.model.ProjSearch;
-import com.titan.model.ProjTime;
 
 import java.util.Map;
 
@@ -26,13 +25,6 @@ public class ProjSearchViewModel extends BaseViewModel {
 
     private DataRepository mDataRepository;
 
-    public ObservableField<Map<String,ProjTime>> projectTimeMap = new ObservableField<>();
-
-    /**
-     * 检索设置
-     */
-    public ObservableField<ProjSearch> projSearch = new ObservableField<>();
-
     /**
      * 判断设置的时间 true：开始时间；false：结束时间
      */
@@ -45,6 +37,9 @@ public class ProjSearchViewModel extends BaseViewModel {
     public ObservableField<String> projectType = new ObservableField<>();
 
     public ObservableField<String> projectStatus = new ObservableField<>();
+
+    public ObservableField<String> keyWord = new ObservableField<>();
+
 
     public ObservableInt year = new ObservableInt();
 
@@ -60,7 +55,6 @@ public class ProjSearchViewModel extends BaseViewModel {
     public ProjSearchViewModel(ProjSearchSet projSearchSet, DataRepository mDataRepository) {
         this.projSearchSet = projSearchSet;
         this.mDataRepository = mDataRepository;
-        initData();
     }
 
 
@@ -73,10 +67,6 @@ public class ProjSearchViewModel extends BaseViewModel {
         this.optionSelect = optionSelect;
     }
 
-    private void initData(){
-        projectTimeMap.set(mDataRepository.getProjectTimeMap());
-        projSearch.set(mDataRepository.getProjSearch());
-    }
 
     /**
      * 检索设置dialog
@@ -119,6 +109,10 @@ public class ProjSearchViewModel extends BaseViewModel {
 
     public void projDetails(){
         projSearchSet.projDetails();
+    }
+
+    public void search(){
+        projSearchSet.search();
     }
 
 }

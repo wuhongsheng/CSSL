@@ -68,7 +68,7 @@ public class MapBrowseActivity extends BaseActivity {
     private GraphicsOverlay graphicsOverlay;
     private MarkerSymbol markerSymbol;
     private List<File> fileList;
-    private ResourcesManager manager = ResourcesManager.getInstance(mContext);
+    private ResourcesManager manager;
 
 
     @Override
@@ -78,6 +78,7 @@ public class MapBrowseActivity extends BaseActivity {
             binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
                     R.layout.activity_map_browse,null,false);
             setContentView(binding.getRoot());
+            manager = ResourcesManager.getInstance(mContext);
             initView();
             initData();
             binding.mapview.setBackgroundGrid(new BackgroundGrid(0xffffff, 0xffffff, 0, 3));

@@ -55,8 +55,8 @@ public class ProjBaseInfoFragment extends Fragment {
         List<ProjDetailBaseinfo> list = new ArrayList<>();
         for (int i = 0;i<20;i++){
             ProjDetailBaseinfo baseinfo = new ProjDetailBaseinfo();
-            baseinfo.setName("测试"+i);
-            baseinfo.setValue("建设范围建立完善排水系统；弃渣场设置挡土墙、排水设施并进行土地整治；施工场地进行土地整治；绿化区域土地平整。开挖、填筑边坡挡土墙防护；"+i);
+//            baseinfo.setName("测试"+i);
+//            baseinfo.setValue("建设范围建立完善排水系统；弃渣场设置挡土墙、排水设施并进行土地整治；施工场地进行土地整治；绿化区域土地平整。开挖、填筑边坡挡土墙防护；"+i);
             list.add(baseinfo);
         }
         this.list = list;

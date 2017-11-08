@@ -1,5 +1,7 @@
 package com.titan.model;
 
+import java.util.List;
+
 /**
  * Created by hanyw on 2017/11/3/003.
  * 项目措施
@@ -7,11 +9,14 @@ package com.titan.model;
 
 public class ProjDetailMeasure {
     private String CSNAME;//措施名称
-    private String CSLB;//类别
+    private String JYSM;//简要说明
     private String MS;//描述
-    private String XCZP;//现场照片
-    private String SJFA;//设计方案
-    private String SPSX;//审批手续
+    private List<String> XCZPNAME;//现场照片名称
+    private List<String> XCZPURL;//现场照片对应连接
+    private List<String> DOCNAME;//设计方案及审批手续文档名称
+    private List<String> DOCURL;//设计方案及审批手续文档对应连接
+    private String ZJYJ;//专家意见,以审批提交时间作为显示名称和查询参数,时间格式为:yyyy-MM-dd HH:mm
+
 
     public String getCSNAME() {
         return CSNAME;
@@ -21,12 +26,12 @@ public class ProjDetailMeasure {
         this.CSNAME = CSNAME;
     }
 
-    public String getCSLB() {
-        return CSLB;
+    public String getJYSM() {
+        return JYSM;
     }
 
-    public void setCSLB(String CSLB) {
-        this.CSLB = CSLB;
+    public void setJYSM(String JYSM) {
+        this.JYSM = JYSM;
     }
 
     public String getMS() {
@@ -37,27 +42,43 @@ public class ProjDetailMeasure {
         this.MS = MS;
     }
 
-    public String getXCZP() {
-        return XCZP;
+    public List<String> getXCZPNAME() {
+        return XCZPNAME;
     }
 
-    public void setXCZP(String XCZP) {
-        this.XCZP = XCZP;
+    public void setXCZPNAME(List<String> XCZPNAME) {
+        this.XCZPNAME = XCZPNAME;
     }
 
-    public String getSJFA() {
-        return SJFA;
+    public List<String> getXCZPURL() {
+        return XCZPURL;
     }
 
-    public void setSJFA(String SJFA) {
-        this.SJFA = SJFA;
+    public void setXCZPURL(List<String> XCZPURL) {
+        this.XCZPURL = XCZPURL;
     }
 
-    public String getSPSX() {
-        return SPSX;
+    public List<String> getDOCNAME() {
+        return DOCNAME;
     }
 
-    public void setSPSX(String SPSX) {
-        this.SPSX = SPSX;
+    public void setDOCNAME(List<String> DOCNAME) {
+        this.DOCNAME = DOCNAME;
+    }
+
+    public List<String> getDOCURL() {
+        return DOCURL;
+    }
+
+    public void setDOCURL(List<String> DOCURL) {
+        this.DOCURL = DOCURL;
+    }
+
+    public String getZJYJ() {
+        return ZJYJ;
+    }
+
+    public void setZJYJ(String ZJYJ) {
+        this.ZJYJ = ZJYJ;
     }
 }

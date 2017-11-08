@@ -8,64 +8,58 @@ import java.io.Serializable;
  */
 
 public class ProjSearch implements Serializable{
-    /**
-     * 项目名称
-     */
-    private String name;
-    /**
-     * 开始时间
-     */
-    private String startTime;
-    /**
-     * 结束时间
-     */
-    private String endTime;
-    /**
-     * 项目类型
-     */
-    private String type;
-    /**
-     * 审批状态
-     */
-    private String statu;
+    private String NUM;//项目编号
+    private String NAME;//项目名称
+    private String TIME;//申请时间
+    private String STATE;//审批状态
+    private String TYPE;//项目类型
+    private String DISTANCE;//据当前位置的距离
 
-    public String getName() {
-        return name;
+    public String getNUM() {
+        return NUM;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNUM(String NUM) {
+        this.NUM = NUM;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public String getNAME() {
+        return NAME;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setNAME(String NAME) {
+        this.NAME = NAME;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getTIME() {
+        return TIME;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setTIME(String TIME) {
+        this.TIME = TIME;
     }
 
-    public String getType() {
-        return type;
+    public String getSTATE() {
+        return STATE;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setSTATE(String STATE) {
+        this.STATE = STATE;
     }
 
-    public String getStatu() {
-        return statu;
+    public String getTYPE() {
+        return TYPE;
     }
 
-    public void setStatu(String statu) {
-        this.statu = statu;
+    public void setTYPE(String TYPE) {
+        this.TYPE = TYPE;
+    }
+
+    public String getDISTANCE() {
+        return DISTANCE;
+    }
+
+    public void setDISTANCE(String DISTANCE) {
+        this.DISTANCE = DISTANCE;
     }
 }

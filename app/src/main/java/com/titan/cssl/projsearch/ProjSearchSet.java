@@ -41,4 +41,8 @@ public interface ProjSearchSet {
      * 点击结果项进入详情页面
      */
     void projDetails();
+    /**
+     * 点击结果项进入详情页面
+     */
+    void search();
 }

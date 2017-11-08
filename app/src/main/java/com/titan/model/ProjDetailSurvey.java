@@ -1,5 +1,7 @@
 package com.titan.model;
 
+import java.util.List;
+
 /**
  * Created by hanyw on 2017/11/3/003.
  * 项目概况
@@ -17,8 +19,8 @@ public class ProjDetailSurvey {
     private String XMTSFL;//项目土石方量/万m³
     private String XMQZFA;//项目弃渣方案
     private String XMQTFA;//项目取土方案
-    private String ZB;//坐标
-    private Integer LRFS;//录入方式 0:度数,1:度分秒
+    private List<String>ZB;//坐标
+    private String LRFS;//录入方式 0:度数,1:度分秒
 
     public String getXMFZR() {
         return XMFZR;
@@ -108,19 +110,19 @@ public class ProjDetailSurvey {
         this.XMQTFA = XMQTFA;
     }
 
-    public String getZB() {
+    public List<String> getZB() {
         return ZB;
     }
 
-    public void setZB(String ZB) {
+    public void setZB(List<String> ZB) {
         this.ZB = ZB;
     }
 
-    public Integer getLRFS() {
+    public String getLRFS() {
         return LRFS;
     }
 
-    public void setLRFS(Integer LRFS) {
+    public void setLRFS(String LRFS) {
         this.LRFS = LRFS;
     }
 }

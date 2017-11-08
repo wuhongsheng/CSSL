@@ -55,7 +55,8 @@ public class ProSearchSetAdapter extends BaseAdapter {
         }else {
             binding = DataBindingUtil.getBinding(view);
         }
-        binding.setVariable(BR.name,list.get(i));
+        binding.setVariable(BR.value,list.get(i));
+
         binding.setViewmodel(viewModel);
         return binding.getRoot();
     }

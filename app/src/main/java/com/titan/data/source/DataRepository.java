@@ -5,7 +5,6 @@ import android.content.Context;
 import com.titan.data.local.DataSource;
 import com.titan.data.local.LocalDataSource;
 import com.titan.model.ProjSearch;
-import com.titan.model.ProjTime;
 
 import java.util.Map;
 
@@ -31,19 +30,5 @@ public class DataRepository implements DataSource{
     public DataRepository(LocalDataSource localDataSource) {
         //this.mContext=context;
         this.mLocalDataSource = localDataSource;
-    }
-
-    /**
-     * @return 检索设置时间参数对象
-     */
-    public Map<String,ProjTime> getProjectTimeMap(){
-        return mLocalDataSource.getProjectTimeMap();
-    }
-
-    /**
-     * @return 检索设置参数对象
-     */
-    public ProjSearch getProjSearch(){
-        return mLocalDataSource.getProjSearch();
     }
 }
