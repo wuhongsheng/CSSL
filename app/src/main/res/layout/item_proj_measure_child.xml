@@ -54,9 +54,8 @@
         <ListView
             android:id="@+id/proj_photo_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/proj_photo"
-            android:visibility="gone"/>
+            android:layout_height="60dp"
+            android:layout_below="@+id/proj_photo"/>
 
         <TextView
             android:id="@+id/proj_doc"

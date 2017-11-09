@@ -6,6 +6,9 @@ import android.content.Intent;
 
 import java.util.ArrayList;
 
+/**
+ * 监听网络变化
+ */
 public class ConnectionChangeReceiver extends BroadcastReceiver {
 	public static ArrayList<netEventHandler> mListeners = new ArrayList<netEventHandler>();
 	public static String NET_CHANGE_ACTION = "android.net.conn.CONNECTIVITY_CHANGE";

@@ -19,18 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            android:day="@={viewmodel.day}"
-            android:month="@={viewmodel.month}"
-            android:year="@={viewmodel.year}"/>
+            android:datePickerMode="spinner"/>
 
         <TimePicker
             android:id="@+id/set_timepicker"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_marginTop="-40dp"
-            android:hour="@={viewmodel.hour}"
-            android:minute="@={viewmodel.minute}"
             android:timePickerMode="spinner"/>
 
         <Button

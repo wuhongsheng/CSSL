@@ -33,11 +33,6 @@ public interface ProjSearchSet {
     void approvalStatuSet();
 
     /**
-     * 检索设置：根据当前位置检索
-     */
-    void locaSearch();
-
-    /**
      * 点击结果项进入详情页面
      */
     void projDetails();

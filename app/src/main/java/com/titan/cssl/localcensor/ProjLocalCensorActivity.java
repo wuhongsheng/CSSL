@@ -38,6 +38,9 @@ public class ProjLocalCensorActivity extends BaseActivity {
         initView();
     }
 
+    /**
+     * 布局初始化
+     */
     private void initView() {
         Toolbar toolbar = binding.censorToolbar;
         setSupportActionBar(toolbar);

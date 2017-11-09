@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="value"
+            type="String"/>
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.reserveplan.ProjReservePlanViewModel"/>
+    </data>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{value}"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:onClick="@{()->viewmodel.load()}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:text="查看"
+            android:visibility="gone"/>
+    </LinearLayout>
+</layout>

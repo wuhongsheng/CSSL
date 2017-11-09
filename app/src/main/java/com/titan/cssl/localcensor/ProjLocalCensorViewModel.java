@@ -1,12 +1,12 @@
 package com.titan.cssl.localcensor;
 
 import android.databinding.ObservableBoolean;
-import android.util.Log;
 
 import com.titan.BaseViewModel;
 
 /**
  * Created by hanyw on 2017/11/6/006.
+ * 现场审查viewmodel
  */
 
 public class ProjLocalCensorViewModel extends BaseViewModel {
@@ -15,15 +15,30 @@ public class ProjLocalCensorViewModel extends BaseViewModel {
 
     private ProjLocalCensor localCensor;
 
-    public ProjLocalCensorViewModel(ProjLocalCensor localCensor){
+    public ProjLocalCensorViewModel(ProjLocalCensor localCensor) {
         this.localCensor = localCensor;
     }
 
-    public void addImage(){
+    /**
+     * 添加照片
+     */
+    public void addImage() {
         localCensor.addImage();
     }
-    public void localCensorSubmit(){
+
+    /**
+     * 提交审查数据
+     */
+    public void localCensorSubmit() {
         localCensor.localCensorSubmit();
-        Log.e("tag","isF"+isFalse.get()+",isT"+isTrue.get());
+    }
+
+    /**
+     * 删除照片
+     *
+     * @param position 照片数组下标
+     */
+    public void del(int position) {
+        localCensor.del(position);
     }
 }

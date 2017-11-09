@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ListAdapter;
@@ -14,6 +15,7 @@ import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemProjMeasureChildBinding;
 import com.titan.cssl.databinding.ItemProjMeasureParentBinding;
+import com.titan.util.MyFileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,9 +102,23 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext,R.layout.item_arrayadapter_test,jpgList);
         binding.projPhotoList.setAdapter(arrayAdapter);
         setListViewHeightBasedOnChildren(binding.projPhotoList);
+        binding.projPhotoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String path = "/storage/emulated/0/img_20171109_164347.jpg";
+                mContext.startActivity(MyFileUtil.getImageFileIntent(path));
+            }
+        });
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mContext,R.layout.item_arrayadapter_test,docList);
         binding.projDocList.setAdapter(arrayAdapter1);
         setListViewHeightBasedOnChildren(binding.projDocList);
+        binding.projDocList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String path = "/storage/emulated/0/接口需求.docx";
+                mContext.startActivity(MyFileUtil.getWordFileIntent(path));
+            }
+        });
         binding.setViewmodel(viewModel);
         return binding.getRoot();
     }

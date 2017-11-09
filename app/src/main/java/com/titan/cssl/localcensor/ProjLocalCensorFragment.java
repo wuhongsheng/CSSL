@@ -36,6 +36,7 @@ import java.util.Locale;
 
 /**
  * Created by hanyw on 2017/11/6/006.
+ * 现场审查
  */
 
 public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor {
@@ -43,10 +44,20 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     private ProjLocalCensorViewModel viewModel;
 
     private static ProjLocalCensorFragment fragment;
-    private Context mContext;
-    private List<String> urlList = new ArrayList<>();
-    private String foutPath;
     private FragLocalCensorBinding binding;
+    private Context mContext;
+    /**
+     * 照片地址数组
+     */
+    private List<String> urlList = new ArrayList<>();
+    /**
+     * 照片地址
+     */
+    private String foutPath;
+    /**
+     * 照片列表适配器
+     */
+    private ProjCensorImageAdapter adapter;
 
     public static ProjLocalCensorFragment getInstance() {
         if (fragment == null) {
@@ -55,6 +66,10 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
         return fragment;
     }
 
+    /**
+     * 设置viewmodel
+     * @param viewModel
+     */
     public void setViewModel(ProjLocalCensorViewModel viewModel) {
         this.viewModel = viewModel;
     }
@@ -68,6 +83,9 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
         return binding.getRoot();
     }
 
+    /**
+     * 添加图片
+     */
     @Override
     public void addImage() {
         final String[] array = new String[]{"相机", "相册"};
@@ -102,28 +120,25 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
         dialog.show();
     }
 
+    /**
+     * 拍照
+     */
     private void takePhoto(){
         try {
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            foutPath = "file://"+ResourcesManager.getInstance(mContext).getDCIMPath() +"/"+ getPicName();
             if (currentapiVersion<24){
+                foutPath = ResourcesManager.getInstance(mContext).getDCIMPath() +"/"+ getPicName();
                 makeRootDirectory(ResourcesManager.getInstance(mContext).getDCIMPath());
                 Uri uri = Uri.fromFile(new File(foutPath));
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(intent, 1);
             }else {
-                ContentValues contentValues = new ContentValues(1);
-//                File file = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                 File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-                File image = File.createTempFile("123",".jpg",path);
-                Log.e("tag","photopath:"+path);
+                File image = File.createTempFile("img",".jpg",path);
                 Uri uri = FileProvider.getUriForFile(mContext,
-                        "com.titan.cssl.fileprovider",image);
+                        mContext.getPackageName()+".fileprovider",image);
                 foutPath=image.getAbsolutePath();
-//                contentValues.put(MediaStore.EXTRA_OUTPUT,foutPath);
-//                Uri uri = mContext.getContentResolver().insert(
-//                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(intent,1);
             }
@@ -137,13 +152,13 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
         super.onActivityResult(requestCode, resultCode, data);
 
         try {
-            Log.e("tag","url:"+urlList+","+requestCode+resultCode);
             if (requestCode==1&&resultCode== Activity.RESULT_OK){
-                scanDir(mContext,foutPath);
                 urlList.add(foutPath);
-                Log.e("tag","url:"+urlList);
-                ProjCensorImageAdapter adapter = new ProjCensorImageAdapter(mContext,urlList);
+                adapter = new ProjCensorImageAdapter(mContext,urlList,viewModel);
                 binding.censorGridview.setAdapter(adapter);
+                if (urlList!=null&&urlList.size()>0){
+                    binding.projPrompt.setVisibility(View.GONE);
+                }
             }
         } catch (Exception e) {
             Log.e("tag","result:"+e);
@@ -168,23 +183,24 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
         }
     }
 
-    /*扫描文件*/
-    public static void scanDir(final Context context, String uri) {
-        //判断sdk版本是否大于4.4
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            MediaScannerConnection.scanFile(context, new String[]{uri}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                @Override
-                public void onScanCompleted(String path, Uri uri) {
-                }
-            });
-        } else {
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
-                    + Environment.getExternalStorageDirectory())));
-        }
-    }
-
+    /**
+     * 提交数据
+     */
     @Override
     public void localCensorSubmit() {
         ToastUtil.setToast(mContext,"提交");
+    }
+
+    /**
+     * 删除照片
+     * @param position 照片数组下标
+     */
+    @Override
+    public void del(int position) {
+        urlList.remove(position);
+        adapter.notifyDataSetChanged();
+        if (urlList==null||urlList.size()<=0) {
+            binding.projPrompt.setVisibility(View.VISIBLE);
+        }
     }
 }

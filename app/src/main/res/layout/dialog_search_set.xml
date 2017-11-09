@@ -16,6 +16,27 @@
         android:orientation="vertical"
         android:showDividers="middle">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="关键词"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:text="@={viewmodel.keyWord}"/>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/set_time_rd"
             android:layout_width="match_parent"
@@ -80,11 +101,11 @@
         </RelativeLayout>
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/set_type_rd"
                 android:layout_width="wrap_content"
@@ -93,15 +114,16 @@
                 android:text="@string/project_type"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
+
             <TextView
                 android:id="@+id/set_project_type"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:gravity="end"
+                android:layout_weight="1"
                 android:drawableEnd="@drawable/ic_arrow"
                 android:drawablePadding="10dp"
+                android:gravity="end"
                 android:onClick="@{()->viewmodel.projectTypeSet()}"
                 android:text="@{viewmodel.projectType}"
                 android:textColor="@color/black"/>
@@ -124,24 +146,24 @@
                 android:id="@+id/set_approval_status"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:gravity="end"
+                android:layout_weight="1"
                 android:drawableEnd="@drawable/ic_arrow"
                 android:drawablePadding="10dp"
+                android:gravity="end"
                 android:onClick="@{()->viewmodel.approvalStatuSet()}"
                 android:text="@{viewmodel.projectStatus}"
                 android:textColor="@color/black"/>
 
         </LinearLayout>
 
-        <TextView
+        <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/location_search"
-            android:textSize="16sp"
-            android:textColor="@color/black"
+            android:checked="@={viewmodel.isChecked}"
             android:padding="10dp"
-            android:onClick="@{()->viewmodel.locaSearch()}"/>
+            android:text="@string/location_search"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
     </LinearLayout>
 </layout>

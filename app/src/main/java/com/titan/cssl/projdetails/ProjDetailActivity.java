@@ -64,10 +64,10 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.map_mode:
-                float[] floats = new float[]{};
+                double[] doubles = new double[]{106.34732085874678,26.637601407527747};
                 Intent intent = new Intent(mContext, MapBrowseActivity.class);
                 //传入坐标参数
-//                intent.putExtra("coordinate",)
+                intent.putExtra("coordinate",doubles);
                 startActivity(intent);
                 break;
             default:

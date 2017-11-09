@@ -7,8 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -21,6 +26,7 @@ import com.google.gson.JsonObject;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.DialogSearchSetBinding;
 import com.titan.cssl.databinding.FragSearchBinding;
+import com.titan.cssl.reserveplan.ProjReservePlanActivity;
 import com.titan.model.ProjSearch;
 import com.titan.cssl.projdetails.ProjDetailActivity;
 import com.titan.cssl.util.ToastUtil;
@@ -44,7 +50,14 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
 
     private String[] typeArray = new String[]{"3万㎡以下", "3-8万㎡", "8万㎡以上"};
 
-    private String[] statuArray = new String[]{"审查中", "专家审查中", "审查通过", "审查未通过"};
+    private String[] stateArray = new String[]{"审查中", "专家审查中", "审查通过", "审查未通过"};
+
+    private String[] timeArray = new String[]{"2016-3-9", "2016-5-6", "2013-8-16", "2017-10-17"};
+    private String[] distanceArray = new String[]{"距离:2.5km", "距离:25km", "距离:55km", "距离:7km"};
+
+    private String[] nameArray = new String[]{"中国铁建·18公馆", "泰禹家园六期项目 ",
+            "湖南生物机电职业技术学院学生公寓楼（东湖校区）", "湘天•禧悦汇（奥林匹克花园五期）"};
+
 
     private Context mContext;
 
@@ -77,8 +90,36 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         mContext = getActivity();
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search, container, false);
         binding.setViewmodel(mViewModel);
+        Toolbar toolbar = binding.searchToolbar;
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
+        toolbar.setTitle(getResources().getString(R.string.appname));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         initData();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_search,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.proj_search:
+                searchSet();
+                break;
+            case R.id.proj_plan:
+                Intent intent = new Intent(mContext, ProjReservePlanActivity.class);
+                mContext.startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -92,8 +133,13 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
 
     private void initData() {
         List<ProjSearch> list = new ArrayList<>();
-        for (int i = 1; i < 30; i++) {
+        for (int i = 0; i < 30; i++) {
             ProjSearch search = new ProjSearch();
+            search.setNAME(nameArray[i%4]);
+            search.setSTATE(stateArray[i%4]);
+            search.setTIME(timeArray[i%4]);
+            search.setTYPE(typeArray[i%3]);
+            search.setDISTANCE(distanceArray[i%4]);
             list.add(search);
         }
         projDataAdapter = new ProjDataAdapter(mContext, list,mViewModel);
@@ -120,8 +166,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            //TODO 检索设置完成点击确定立即搜索数据
-                            setProSearchObjectValue();
+                            search();
                             dialog.dismiss();
                         }
                     })
@@ -136,11 +181,14 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     }
 
     private void setProSearchObjectValue() {
-        Gson gson = new Gson();
+        if (mViewModel.isChecked.get()){
+
+        }
     }
 
     public void search() {
-
+        Log.e("tag",mViewModel.startTime.get()+","+mViewModel.endTime.get()+","+mViewModel.projectType.get()
+        +","+mViewModel.projectStatus.get()+","+mViewModel.isChecked.get()+","+mViewModel.keyWord.get());
     }
 
     @Override
@@ -166,17 +214,12 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
 
     @Override
     public void approvalStatuSet() {
-        List<String> list = Arrays.asList(statuArray);
+        List<String> list = Arrays.asList(stateArray);
         ProjOptionSelectDialog dialog = ProjOptionSelectDialog.getInstance(2);
         ProjSearchViewModel model = new ProjSearchViewModel(dialog);
         dialog.setList(list);
         dialog.setViewModel(model, mViewModel);
         dialog.show(getFragmentManager(), PROJECTSTATUSET_TAG);
-    }
-
-    @Override
-    public void locaSearch() {
-        //TODO 根据当前位置搜索项目
     }
 
     @Override

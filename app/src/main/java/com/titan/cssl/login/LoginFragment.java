@@ -45,8 +45,8 @@ public class LoginFragment extends Fragment implements Login {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext = getActivity();
         fragLoginBinding = FragLoginBinding.inflate(inflater, container, false);
-        String appName = getString(R.string.app_version) + AppUtil.getAppVersion(mContext);
-        fragLoginBinding.tvAppversion.setText(appName);
+//        String appName = getString(R.string.app_version) + AppUtil.getAppVersion(mContext);
+//        fragLoginBinding.tvAppversion.setText(appName);
         fragLoginBinding.setViewmodel(loginViewModel);
         return fragLoginBinding.getRoot();
     }

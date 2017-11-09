@@ -15,6 +15,8 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="rememberuser">记住用户</string>
     <string name="app_version">版本号: </string>
+    <string name="tech_support">技术支持：北京航天泰坦科技股份有限公司</string>
+    <string name="copyright">Copyright©2016–2026长沙市水土保持防治监督站 All Right Reserved.</string>
     <string name="login">登录</string>
     <string name="logging">正在登录</string>
     <!--项目检索-->
@@ -40,4 +42,5 @@
     <string name="location">定位</string>
     <string name="no_expert_opinion">暂无专家意见</string>
     <string name="opinion_add">新增</string>
+    <string name="plan">预案</string>
 </resources>

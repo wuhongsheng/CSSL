@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="url"
-            type="String"/>
+            name="position"
+            type="Integer"/>
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.localcensor.ProjLocalCensorViewModel"/>
     </data>
-    <LinearLayout
+    <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/item_censor_img"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@{url}"/>
-    </LinearLayout>
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="12dp"
+            android:scaleType="centerCrop"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_del"
+            android:onClick="@{()->viewmodel.del(position)}"/>
+    </FrameLayout>
 </layout>

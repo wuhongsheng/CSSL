@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,10 +26,15 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.esri.arcgisruntime.data.TileCache;
 import com.esri.arcgisruntime.geometry.Envelope;
+import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.SpatialReference;
+import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.BackgroundGrid;
+import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
@@ -76,24 +82,42 @@ public class MapBrowseActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         try {
             binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
-                    R.layout.activity_map_browse,null,false);
+                    R.layout.activity_map_browse, null, false);
             setContentView(binding.getRoot());
             manager = ResourcesManager.getInstance(mContext);
             initView();
             initData();
             binding.mapview.setBackgroundGrid(new BackgroundGrid(0xffffff, 0xffffff, 0, 3));
 
-//            cache = new TileCache(getTitlePath());
-//            tiledLayer = new ArcGISTiledLayer(cache);
-//            basemap = new Basemap(tiledLayer);
-//            arcGISMap = new ArcGISMap();
-//            arcGISMap.setBasemap(basemap);
-//            binding.mapview.setMap(arcGISMap);
-//            graphicsOverlay = new GraphicsOverlay();
-//            binding.mapview.getGraphicsOverlays().add(graphicsOverlay);
+            double[] doubles = getIntent().getDoubleArrayExtra("coordinate");
+            com.esri.arcgisruntime.geometry.Point point = new com.esri.arcgisruntime.geometry.Point(doubles[0],doubles[1],SpatialReferences.getWgs84());
 
+            cache = new TileCache(fileList.get(0).getAbsolutePath());
+            tiledLayer = new ArcGISTiledLayer(cache);
+            basemap = new Basemap(tiledLayer);
+            arcGISMap = new ArcGISMap();
+            arcGISMap.setBasemap(basemap);
+            binding.mapview.setMap(arcGISMap);
+            graphicsOverlay = new GraphicsOverlay();
+            binding.mapview.getGraphicsOverlays().add(graphicsOverlay);
             markerSymbol = new PictureMarkerSymbol((BitmapDrawable) ContextCompat
                     .getDrawable(mContext, R.drawable.icon_location));
+            graphicsOverlay.getGraphics().add(new Graphic(point,markerSymbol));
+
+            binding.mapview.setViewpointCenterAsync(point);
+            binding.mapview.setOnTouchListener(new DefaultMapViewOnTouchListener(mContext,binding.mapview){
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e) {
+                    com.esri.arcgisruntime.geometry.Point point;
+                    point = binding.mapview
+                            .screenToLocation(new Point((int) e.getX(), (int) e.getY()));
+                    com.esri.arcgisruntime.geometry.Point point1 = (com.esri.arcgisruntime.geometry.Point) GeometryEngine.project(point,SpatialReferences.getWgs84());
+                    Graphic graphic = new Graphic(point1, markerSymbol);
+                    Log.e("tag","point:"+point1.getX()+","+point1.getY());
+                    graphicsOverlay.getGraphics().add(graphic);
+                    return super.onSingleTapConfirmed(e);
+                }
+            });
         } catch (Exception e) {
             Log.e("tag", "mapError:" + e);
         }
@@ -155,10 +179,12 @@ public class MapBrowseActivity extends BaseActivity {
                                 try {
                                     cache = new TileCache(list.get(position).getAbsolutePath());
                                     tiledLayer = new ArcGISTiledLayer(cache);
+
                                     basemap = new Basemap(tiledLayer);
                                     arcGISMap = new ArcGISMap();
                                     arcGISMap.setBasemap(basemap);
                                     binding.mapview.setMap(arcGISMap);
+                                    Log.e("tag", "spat:" + binding.mapview.getSpatialReference());
                                 } catch (Exception e) {
                                     Log.e("tag", "dialogError:" + e);
                                 }
@@ -186,15 +212,16 @@ public class MapBrowseActivity extends BaseActivity {
     private void addLable() {
         Intent intent = getIntent();
         if (intent != null) {
-            float[] floats = intent.getFloatArrayExtra("coordinate");
-            if (floats != null) {
+            double[] doubles = intent.getDoubleArrayExtra("coordinate");
+            if (doubles != null) {
                 com.esri.arcgisruntime.geometry.Point point = new com.esri.arcgisruntime.geometry
-                        .Point(floats[0], floats[1]);
-                Graphic graphic = new Graphic(point, markerSymbol);
-                graphicsOverlay.getGraphics().add(graphic);
+                        .Point(doubles[0], doubles[1],SpatialReferences.getWgs84());
+
+                Log.e("tag","Scale:"+binding.mapview.getMapScale());
+                binding.mapview.setViewpointCenterAsync(point);
                 return;
             }
-            ToastUtil.setToast(mContext,"坐标参数出错");
+            ToastUtil.setToast(mContext, "坐标参数出错");
         }
 
     }

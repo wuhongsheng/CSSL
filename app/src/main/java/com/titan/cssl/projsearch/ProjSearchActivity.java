@@ -2,9 +2,20 @@ package com.titan.cssl.projsearch;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.esri.arcgisruntime.data.TileCache;
+import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
+import com.esri.arcgisruntime.mapping.ArcGISMap;
+import com.esri.arcgisruntime.mapping.Basemap;
 import com.titan.BaseActivity;
 import com.titan.cssl.R;
 import com.titan.data.local.LocalDataSource;
@@ -12,6 +23,10 @@ import com.titan.data.source.DataRepository;
 import com.titan.cssl.databinding.ActivitySearchBinding;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hanyw on 2017/10/31/031.
@@ -34,11 +49,29 @@ public class ProjSearchActivity extends BaseActivity {
         fragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
         fragment.setViewModel(mViewModel);
-        setSupportActionBar(binding.searchToolbar);
-        binding.searchToolbar.setTitle(getResources().getString(R.string.appname));
-        binding.searchToolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        binding.searchToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//        setSupportActionBar(binding.searchToolbar);
+//        binding.searchToolbar.setTitle(getResources().getString(R.string.appname));
+//        binding.searchToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+//        binding.searchToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_search, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.proj_search:
+//
+//                break;
+//            default:
+//                break;
+//        }
+//        return true;
+//    }
 
     @Override
     public ProjSearchFragment findOrCreateViewFragment() {

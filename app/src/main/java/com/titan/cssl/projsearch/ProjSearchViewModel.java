@@ -30,6 +30,8 @@ public class ProjSearchViewModel extends BaseViewModel {
      */
     public ObservableBoolean timeSet = new ObservableBoolean();
 
+    public ObservableBoolean isChecked = new ObservableBoolean();
+
     public ObservableField<String> startTime = new ObservableField<>();
 
     public ObservableField<String> endTime = new ObservableField<>();
@@ -39,17 +41,6 @@ public class ProjSearchViewModel extends BaseViewModel {
     public ObservableField<String> projectStatus = new ObservableField<>();
 
     public ObservableField<String> keyWord = new ObservableField<>();
-
-
-    public ObservableInt year = new ObservableInt();
-
-    public ObservableInt month = new ObservableInt();
-
-    public ObservableInt day = new ObservableInt();
-
-    public ObservableInt hour = new ObservableInt();
-
-    public ObservableInt minute = new ObservableInt();
 
 
     public ProjSearchViewModel(ProjSearchSet projSearchSet, DataRepository mDataRepository) {
@@ -101,10 +92,6 @@ public class ProjSearchViewModel extends BaseViewModel {
 
     public void optionSelect(String value){
         optionSelect.select(value);
-    }
-
-    public void locaSearch(){
-        projSearchSet.locaSearch();
     }
 
     public void projDetails(){

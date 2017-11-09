@@ -53,22 +53,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">-->
 
+        <!--android:background="@drawable/bg_loginform"-->
+        <!--android:divider="@drawable/divider_horizontal"-->
+        <!--android:showDividers="middle"-->
         <LinearLayout
             android:id="@+id/ll_login"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/bg_loginform"
-            android:orientation="vertical"
-            android:divider="@drawable/divider_horizontal"
-            android:showDividers="middle">
+            android:orientation="vertical">
 
             <EditText
                 android:id="@+id/et_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@null"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/bg_loginform"
                 android:drawablePadding="10dp"
                 android:drawableStart="@{@drawable/ic_user_name}"
                 android:gravity="center_vertical"
@@ -82,8 +83,8 @@
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@null"
+                android:padding="10dp"
+                android:background="@drawable/bg_loginform"
                 android:drawablePadding="10dp"
                 android:drawableStart="@{@drawable/ic_password}"
                 android:gravity="center_vertical"
@@ -113,7 +114,7 @@
 
         <Button
             android:id="@+id/btn_login"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_gravity="center"
@@ -140,23 +141,20 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:gravity="center"
-                android:text="@string/app_version"
+                android:text="@string/copyright"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                />
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/textView2"
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="20dp"
                 android:gravity="center"
-                android:text=""
+                android:text="@string/tech_support"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:visibility="gone"/>
+                android:textSize="12sp"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

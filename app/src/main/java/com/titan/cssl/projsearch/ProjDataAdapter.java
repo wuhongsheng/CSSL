@@ -64,10 +64,11 @@ public class ProjDataAdapter extends BaseAdapter {
         } else {
             binding = DataBindingUtil.getBinding(view);
         }
-        binding.setVariable(BR.name, "12");
-        binding.setVariable(BR.time, "12");
-        binding.setVariable(BR.type, "12");
-        binding.setVariable(BR.statu, "12");
+        binding.setVariable(BR.name, list.get(i).getNAME());
+        binding.setVariable(BR.time, list.get(i).getTIME());
+        binding.setVariable(BR.type, list.get(i).getTYPE());
+        binding.setVariable(BR.state, list.get(i).getSTATE());
+        binding.setVariable(BR.distance,list.get(i).getDISTANCE());
         binding.setViewmodel(viewModel);
         return binding.getRoot();
     }

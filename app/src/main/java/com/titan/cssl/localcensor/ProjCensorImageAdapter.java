@@ -4,12 +4,12 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemCensorImgBinding;
 
@@ -17,16 +17,21 @@ import java.util.List;
 
 /**
  * Created by hanyw on 2017/11/6/006.
+ * 现场审查照片适配器
  */
 
 public class ProjCensorImageAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<String> list;
-    public ProjCensorImageAdapter(Context context, List<String> list){
+    private List<String> list;//图片地址
+    private ProjLocalCensorViewModel model;
+
+    public ProjCensorImageAdapter(Context context, List<String> list, ProjLocalCensorViewModel model) {
         this.mContext = context;
         this.list = list;
+        this.model = model;
     }
+
     @Override
     public int getCount() {
         return list.size();
@@ -44,26 +49,22 @@ public class ProjCensorImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ItemCensorImgBinding binding = null;
-        try {
-            if (view==null){
-                binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
-                        R.layout.item_censor_img,viewGroup,false);
-            }else {
-                binding = DataBindingUtil.getBinding(view);
-            }
-//        binding.setVariable(BR.url,list.get(i));
-            Log.e("tag","list:"+list);
-            binding.itemCensorImg.setImageBitmap(decodeSampledBitmap(list.get(i),100,100));
-
-        } catch (Exception e) {
-            Log.e("tag","result2:"+e);
+        ItemCensorImgBinding binding;
+        if (view == null) {
+            binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
+                    R.layout.item_censor_img, viewGroup, false);
+        } else {
+            binding = DataBindingUtil.getBinding(view);
         }
+        binding.itemCensorImg.setImageBitmap(decodeSampledBitmap(list.get(i), 100, 100));
+        binding.setVariable(BR.position, i);
+        binding.setViewmodel(model);
         return binding.getRoot();
     }
 
     /**
      * 压缩图片
+     *
      * @param path
      * @param reqWidth
      * @param reqHeight
@@ -83,6 +84,7 @@ public class ProjCensorImageAdapter extends BaseAdapter {
 
     /**
      * 计算图片压缩比例
+     *
      * @param options
      * @param reqWidth
      * @param reqHeight

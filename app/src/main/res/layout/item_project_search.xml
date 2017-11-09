@@ -16,8 +16,13 @@
             type="String"/>
 
         <variable
-            name="statu"
+            name="state"
             type="String"/>
+
+        <variable
+            name="distance"
+            type="String"/>
+
         <variable
             name="viewmodel"
             type="com.titan.cssl.projsearch.ProjSearchViewModel"/>
@@ -27,24 +32,63 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:onClick="@{()->viewmodel.projDetails()}">
+        android:onClick="@{()->viewmodel.projDetails()}"
+        android:orientation="vertical">
 
         <TextView
-            style="@style/item_search_tv"
-            android:text="@{@string/proj_name+name}"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:text="@{name}"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
 
-        <TextView
-            style="@style/item_search_tv"
-            android:text="@{@string/proj_time+time}"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            style="@style/item_search_tv"
-            android:text="@{@string/proj_type+type}"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:text="@{type}"/>
 
-        <TextView
-            style="@style/item_search_tv"
-            android:text="@{@string/proj_statu+statu}"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:text="@{time}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:text="@{state}"
+                android:visibility="visible"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:text="@{distance}"
+                android:visibility="visible"/>
+        </LinearLayout>
 
     </LinearLayout>
 </layout>

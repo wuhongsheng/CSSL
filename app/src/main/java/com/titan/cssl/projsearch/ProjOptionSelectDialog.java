@@ -23,7 +23,6 @@ import java.util.List;
 
 public class ProjOptionSelectDialog extends DialogFragment implements OptionSelect {
 
-
     private DialogOptionselectProjectsearchBinding binding;
 
     private ProjSearchViewModel viewModel;
