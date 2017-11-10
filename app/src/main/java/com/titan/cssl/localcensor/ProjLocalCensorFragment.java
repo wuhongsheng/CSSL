@@ -25,6 +25,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLocalCensorBinding;
 import com.titan.cssl.util.ToastUtil;
+import com.titan.data.source.DataRepository;
+import com.titan.util.MyFileUtil;
 import com.titan.util.ResourcesManager;
 
 import java.io.File;
@@ -33,6 +35,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import cn.finalteam.rxgalleryfinal.RxGalleryFinal;
+import cn.finalteam.rxgalleryfinal.bean.MediaBean;
+import cn.finalteam.rxgalleryfinal.imageloader.ImageLoaderType;
+import cn.finalteam.rxgalleryfinal.rxbus.RxBusResultDisposable;
+import cn.finalteam.rxgalleryfinal.rxbus.event.BaseResultEvent;
+import cn.finalteam.rxgalleryfinal.rxbus.event.ImageMultipleResultEvent;
+import cn.finalteam.rxgalleryfinal.ui.RxGalleryListener;
+import cn.finalteam.rxgalleryfinal.ui.base.IMultiImageCheckedListener;
 
 /**
  * Created by hanyw on 2017/11/6/006.
@@ -47,9 +58,13 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     private FragLocalCensorBinding binding;
     private Context mContext;
     /**
-     * 照片地址数组
+     * 照片地址
      */
     private List<String> urlList = new ArrayList<>();
+    /**
+     * 相册选择照片
+     */
+    private List<MediaBean> mediaBeanList;
     /**
      * 照片地址
      */
@@ -68,6 +83,7 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
 
     /**
      * 设置viewmodel
+     *
      * @param viewModel
      */
     public void setViewModel(ProjLocalCensorViewModel viewModel) {
@@ -80,7 +96,25 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
         mContext = getActivity();
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_local_censor, container, false);
         binding.setViewmodel(viewModel);
+        initGalleryListener();
         return binding.getRoot();
+    }
+
+    /**
+     * 初始化图片选择监听
+     */
+    private void initGalleryListener() {
+        RxGalleryListener.getInstance().setMultiImageCheckedListener(new IMultiImageCheckedListener() {
+            @Override
+            public void selectedImg(Object t, boolean isChecked) {
+
+            }
+
+            @Override
+            public void selectedImgMax(Object t, boolean isChecked, int maxSize) {
+                ToastUtil.setToast(mContext, "你最多只能选择" + maxSize + "张图片");
+            }
+        });
     }
 
     /**
@@ -88,6 +122,10 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
      */
     @Override
     public void addImage() {
+        if (urlList.size() >= 3) {
+            ToastUtil.setToast(mContext, "你最多只能选择3张图片");
+            return;
+        }
         final String[] array = new String[]{"相机", "相册"};
         MaterialDialog dialog = new MaterialDialog.Builder(mContext)
                 .items(array)
@@ -96,12 +134,11 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         switch (position) {
                             case 0:
-                                ToastUtil.setToast(mContext, array[position]);
                                 takePhoto();
                                 dialog.dismiss();
                                 break;
                             case 1:
-                                ToastUtil.setToast(mContext, array[position]);
+                                selectPhoto();
                                 dialog.dismiss();
                                 break;
                             default:
@@ -123,63 +160,79 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     /**
      * 拍照
      */
-    private void takePhoto(){
+    private void takePhoto() {
         try {
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (currentapiVersion<24){
-                foutPath = ResourcesManager.getInstance(mContext).getDCIMPath() +"/"+ getPicName();
-                makeRootDirectory(ResourcesManager.getInstance(mContext).getDCIMPath());
+            if (currentapiVersion < 24) {
+                foutPath = ResourcesManager.getInstance(mContext).getDCIMPath() + "/"
+                        + ResourcesManager.getPicName();
+                MyFileUtil.makeRootDirectory(ResourcesManager.getInstance(mContext).getDCIMPath());
                 Uri uri = Uri.fromFile(new File(foutPath));
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(intent, 1);
-            }else {
+            } else {
                 File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-                File image = File.createTempFile("img",".jpg",path);
+                File image = File.createTempFile("img", ".jpg", path);
                 Uri uri = FileProvider.getUriForFile(mContext,
-                        mContext.getPackageName()+".fileprovider",image);
-                foutPath=image.getAbsolutePath();
+                        mContext.getPackageName() + ".fileprovider", image);
+                foutPath = image.getAbsolutePath();
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
             }
         } catch (Exception e) {
-            Log.e("tag","photoError:"+e);
+            Log.e("tag", "photoError:" + e);
         }
+    }
+
+
+    /**
+     * 相册选择照片
+     */
+    private void selectPhoto() {
+        RxGalleryFinal.with(mContext)
+                .image()
+                .maxSize(3 - urlList.size())
+                .selected(mediaBeanList)
+                .imageLoader(ImageLoaderType.GLIDE)
+                .subscribe(new RxBusResultDisposable<ImageMultipleResultEvent>() {
+                    @Override
+                    protected void onEvent(ImageMultipleResultEvent imageMultipleResultEvent) throws Exception {
+                        mediaBeanList = imageMultipleResultEvent.getResult();
+                        for (MediaBean bean : mediaBeanList) {
+                            urlList.add(bean.getOriginalPath());
+                        }
+                        refresh();
+                    }
+                })
+                .openGallery();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         try {
-            if (requestCode==1&&resultCode== Activity.RESULT_OK){
+            if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
                 urlList.add(foutPath);
-                adapter = new ProjCensorImageAdapter(mContext,urlList,viewModel);
-                binding.censorGridview.setAdapter(adapter);
-                if (urlList!=null&&urlList.size()>0){
+                refresh();
+                if (urlList != null && urlList.size() > 0) {
                     binding.projPrompt.setVisibility(View.GONE);
                 }
             }
         } catch (Exception e) {
-            Log.e("tag","result:"+e);
+            Log.e("tag", "result:" + e);
         }
     }
 
-    private String getPicName() {
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("'img'_yyyyMMdd_HHmmss", Locale.CHINA);
-        return sdf.format(date) + ".jpg";
-    }
-
-    private void makeRootDirectory(String filePath) {
-        File file;
-        try {
-            file = new File(filePath);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-        } catch (Exception e) {
-            Log.i("error:", e + "");
+    /**
+     * 更新显示图片
+     */
+    private void refresh() {
+        if (adapter == null) {
+            adapter = new ProjCensorImageAdapter(mContext, urlList, viewModel);
+            binding.censorGridview.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -188,18 +241,20 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
      */
     @Override
     public void localCensorSubmit() {
-        ToastUtil.setToast(mContext,"提交");
+        ToastUtil.setToast(mContext, "提交");
+        Log.e("tag", "getProjNum1:" + DataRepository.getProjNum());
     }
 
     /**
      * 删除照片
+     *
      * @param position 照片数组下标
      */
     @Override
     public void del(int position) {
         urlList.remove(position);
         adapter.notifyDataSetChanged();
-        if (urlList==null||urlList.size()<=0) {
+        if (urlList == null || urlList.size() <= 0) {
             binding.projPrompt.setVisibility(View.VISIBLE);
         }
     }

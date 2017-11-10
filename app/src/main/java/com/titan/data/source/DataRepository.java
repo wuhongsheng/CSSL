@@ -31,4 +31,12 @@ public class DataRepository implements DataSource{
         //this.mContext=context;
         this.mLocalDataSource = localDataSource;
     }
+
+    public static String getProjNum(){
+        return LocalDataSource.getProjNum();
+    }
+
+    public void setProjNum(String projNum){
+        mLocalDataSource.setProjNum(projNum);
+    }
 }

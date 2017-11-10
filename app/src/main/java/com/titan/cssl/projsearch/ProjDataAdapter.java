@@ -64,6 +64,7 @@ public class ProjDataAdapter extends BaseAdapter {
         } else {
             binding = DataBindingUtil.getBinding(view);
         }
+        binding.setVariable(BR.num,list.get(i).getNUM());
         binding.setVariable(BR.name, list.get(i).getNAME());
         binding.setVariable(BR.time, list.get(i).getTIME());
         binding.setVariable(BR.type, list.get(i).getTYPE());

@@ -49,29 +49,7 @@ public class ProjSearchActivity extends BaseActivity {
         fragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
         fragment.setViewModel(mViewModel);
-//        setSupportActionBar(binding.searchToolbar);
-//        binding.searchToolbar.setTitle(getResources().getString(R.string.appname));
-//        binding.searchToolbar.setTitleTextColor(getResources().getColor(R.color.white));
-//        binding.searchToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_search, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.proj_search:
-//
-//                break;
-//            default:
-//                break;
-//        }
-//        return true;
-//    }
 
     @Override
     public ProjSearchFragment findOrCreateViewFragment() {

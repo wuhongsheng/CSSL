@@ -36,11 +36,19 @@ public class LocalDataSource implements DataSource {
 
     private Context mContext;
 
+    private static String projNum;
+
+    public static String getProjNum(){
+        return projNum;
+    }
+
+    public void setProjNum(String num){
+        projNum = num;
+    }
+
     // Prevent direct instantiation.
     private LocalDataSource(@NonNull Context context) {
-        //checkNotNull(context);
         this.mContext=context;
-        //mDbHelper = new DbHelper(context);
     }
 
     public static LocalDataSource getInstance(@NonNull Context context) {

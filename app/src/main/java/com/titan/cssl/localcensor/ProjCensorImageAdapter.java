@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.bumptech.glide.Glide;
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemCensorImgBinding;
@@ -56,53 +57,9 @@ public class ProjCensorImageAdapter extends BaseAdapter {
         } else {
             binding = DataBindingUtil.getBinding(view);
         }
-        binding.itemCensorImg.setImageBitmap(decodeSampledBitmap(list.get(i), 100, 100));
+        Glide.with(mContext).load(list.get(i)).into(binding.itemCensorImg);
         binding.setVariable(BR.position, i);
         binding.setViewmodel(model);
         return binding.getRoot();
-    }
-
-    /**
-     * 压缩图片
-     *
-     * @param path
-     * @param reqWidth
-     * @param reqHeight
-     * @return
-     */
-    public static Bitmap decodeSampledBitmap(String path, int reqWidth, int reqHeight) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        //设为true可以先获取图片属性，但不加载图片
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
-        //计算压缩比例
-        options.inSampleSize = computSampleSize(options, reqWidth, reqHeight);
-        //重新设为false，根据上面计算的宽高重新加载图片，得到压缩后的图片
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(path, options);
-    }
-
-    /**
-     * 计算图片压缩比例
-     *
-     * @param options
-     * @param reqWidth
-     * @param reqHeight
-     * @return
-     */
-    private static int computSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        //获取图片的原始宽度和高度
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        //先设图片比例为1
-        int inSampleSize = 1;
-        //判断原图和需要压缩的尺寸大小
-        if (height > reqHeight || width > reqWidth) {
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-            //通过三元运算符选择小的一个比例
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-        }
-        return inSampleSize;
     }
 }

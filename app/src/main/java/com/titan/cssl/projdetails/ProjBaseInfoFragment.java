@@ -5,12 +5,14 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragBaseInfoBinding;
+import com.titan.data.source.DataRepository;
 import com.titan.model.ProjDetailBaseinfo;
 
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class ProjBaseInfoFragment extends Fragment {
     }
 
     private void initData(){
+        Log.e("tag", "getProjNum1:"+ DataRepository.getProjNum());
         List<ProjDetailBaseinfo> list = new ArrayList<>();
         for (int i = 0;i<20;i++){
             ProjDetailBaseinfo baseinfo = new ProjDetailBaseinfo();

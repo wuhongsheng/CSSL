@@ -2,6 +2,10 @@ package com.titan.cssl.projdetails;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +15,19 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemProjMeasureChildBinding;
 import com.titan.cssl.databinding.ItemProjMeasureParentBinding;
+import com.titan.util.LoadDialogUtil;
 import com.titan.util.MyFileUtil;
+import com.titan.util.ResourcesManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +41,16 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private List<String> list;
     private ProjDetailViewModel viewModel;
+    private Handler mHandler;
 
-    public ProjmeasureExpLVAdapter(Context context, List<String> list,ProjDetailViewModel viewModel){
+    public ProjmeasureExpLVAdapter(Context context, List<String> list,ProjDetailViewModel viewModel,
+                                   Handler mHandler){
         this.list = list;
         this.mContext = context;
         this.viewModel = viewModel;
+        this.mHandler = mHandler;
     }
+
     @Override
     public int getGroupCount() {
         return list.size();
@@ -105,8 +120,8 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
         binding.projPhotoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String path = "/storage/emulated/0/img_20171109_164347.jpg";
-                mContext.startActivity(MyFileUtil.getImageFileIntent(path));
+                String path = "http://b.hiphotos.baidu.com/image/pic/item/a686c9177f3e6709085282ec31c79f3df8dc5557.jpg";
+                new getImageCacheAsyncTask(mContext).execute(path);
             }
         });
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mContext,R.layout.item_arrayadapter_test,docList);
@@ -126,6 +141,67 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int i, int i1) {
         return false;
+    }
+
+    private class getImageCacheAsyncTask extends AsyncTask<String, Void, File> {
+        private final Context context;
+        private MaterialDialog dialog;
+        public getImageCacheAsyncTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = LoadDialogUtil.showLoadProgress(mContext,"正在加载...");
+            dialog.show();
+        }
+
+        @Override
+        protected File doInBackground(String... params) {
+            String imgUrl =  params[0];
+            try {
+                return Glide.with(context)
+                        .load(imgUrl)
+                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .get();
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(File result) {
+            if (result == null) {
+                Message message = new Message();
+                message.what = ProjmeasureFragment.LOAD_ERROR;
+                mHandler.sendMessage(message);
+                LoadDialogUtil.stopProgress();
+                return;
+            }
+            //得到缓存文件
+            Log.e("tag",result.getAbsolutePath());
+            //自定义路径
+            String path = ResourcesManager.getInstance(mContext).getDCIMPath() + "/"
+                    + ResourcesManager.getPicName();
+            File file = new File(path);
+            //若文件存在直接打开
+            if (file.exists()){
+                mContext.startActivity(MyFileUtil.getImageFileIntent(path));
+                LoadDialogUtil.stopProgress();
+                return;
+            }
+            //不存在就缓存到自定义路径
+            try {
+                MyFileUtil.copyFile(result.getAbsolutePath(),path);
+                MyFileUtil.clearImageDiskCache(mContext);
+                mContext.startActivity(MyFileUtil.getImageFileIntent(path));
+            } catch (IOException e) {
+                Log.e("tag","image error:"+e);
+            }
+            LoadDialogUtil.stopProgress();
+        }
+
     }
 
     private void setListViewHeightBasedOnChildren(ListView listView) {

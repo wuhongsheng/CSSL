@@ -42,6 +42,8 @@ public class ProjSearchViewModel extends BaseViewModel {
 
     public ObservableField<String> keyWord = new ObservableField<>();
 
+    public ObservableField<String> projNum = new ObservableField<>();
+
 
     public ProjSearchViewModel(ProjSearchSet projSearchSet, DataRepository mDataRepository) {
         this.projSearchSet = projSearchSet;
@@ -94,8 +96,10 @@ public class ProjSearchViewModel extends BaseViewModel {
         optionSelect.select(value);
     }
 
-    public void projDetails(){
+    public void projDetails(String num){
         projSearchSet.projDetails();
+        mDataRepository.setProjNum(num);
+        projNum.set(num);
     }
 
     public void search(){

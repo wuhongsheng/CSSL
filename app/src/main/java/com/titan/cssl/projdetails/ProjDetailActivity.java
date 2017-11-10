@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +23,9 @@ import com.titan.cssl.databinding.ActivityProjDetailBinding;
 import com.titan.cssl.localcensor.ProjLocalCensorActivity;
 import com.titan.cssl.map.MapBrowseActivity;
 import com.titan.cssl.util.ToastUtil;
+import com.titan.data.source.DataRepository;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,10 +67,12 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.map_mode:
-                double[] doubles = new double[]{106.34732085874678,26.637601407527747};
+                List<String> list = new ArrayList<>();
+                list.add("102.97564887393251,24.634365809695332");
+                list.add("102.96198641900425,24.600065189416615");
                 Intent intent = new Intent(mContext, MapBrowseActivity.class);
                 //传入坐标参数
-                intent.putExtra("coordinate",doubles);
+                intent.putExtra("coordinate", (Serializable) list);
                 startActivity(intent);
                 break;
             default:
@@ -121,6 +126,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
     }
 
     private void initData() {
+        Log.e("tag", "getProjNum1:"+DataRepository.getProjNum());
         ProjBaseInfoFragment infoFragment = ProjBaseInfoFragment.getInstance();
         ProjSurveyFragment surveyFragment = ProjSurveyFragment.getInstance();
         ProjmeasureFragment measureFragment = ProjmeasureFragment.getInstance();

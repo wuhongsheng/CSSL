@@ -10,12 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLoginBinding;
 import com.titan.cssl.projsearch.ProjSearchActivity;
-import com.titan.cssl.util.AppUtil;
 import com.titan.cssl.util.ToastUtil;
+import com.titan.util.LoadDialogUtil;
 
 /**
  * Created by hanyw on 2017/9/13/013.
@@ -66,19 +65,16 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void showProgress() {
-        dialog = new MaterialDialog.Builder(mContext)
-                .content(mContext.getString(R.string.logging))
-                .progress(true, 0)
-                .cancelable(false)
-                .build();
+        dialog = LoadDialogUtil.showLoadProgress(mContext,mContext.getString(R.string.logging));
         dialog.show();
     }
 
     @Override
     public void stopProgress() {
-        if (dialog != null&&dialog.isShowing()) {
-            dialog.dismiss();
-        }
+//        if (dialog != null&&dialog.isShowing()) {
+//            dialog.dismiss();
+//        }
+        LoadDialogUtil.stopProgress();
     }
 
     @Override

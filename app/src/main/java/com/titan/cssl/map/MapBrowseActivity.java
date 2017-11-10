@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -27,6 +28,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.esri.arcgisruntime.data.TileCache;
 import com.esri.arcgisruntime.geometry.Envelope;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.Multipoint;
+import com.esri.arcgisruntime.geometry.MultipointBuilder;
+import com.esri.arcgisruntime.geometry.PointCollection;
+import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
@@ -40,6 +45,9 @@ import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.MarkerSymbol;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
+import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
+import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
+import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import com.nostra13.universalimageloader.utils.L;
 import com.titan.BaseActivity;
 import com.titan.BaseViewModel;
@@ -75,6 +83,10 @@ public class MapBrowseActivity extends BaseActivity {
     private MarkerSymbol markerSymbol;
     private List<File> fileList;
     private ResourcesManager manager;
+    /**
+     * 项目所在位置标注
+     */
+    private Graphic graphic;
 
 
     @Override
@@ -87,10 +99,8 @@ public class MapBrowseActivity extends BaseActivity {
             manager = ResourcesManager.getInstance(mContext);
             initView();
             initData();
-            binding.mapview.setBackgroundGrid(new BackgroundGrid(0xffffff, 0xffffff, 0, 3));
-
-            double[] doubles = getIntent().getDoubleArrayExtra("coordinate");
-            com.esri.arcgisruntime.geometry.Point point = new com.esri.arcgisruntime.geometry.Point(doubles[0],doubles[1],SpatialReferences.getWgs84());
+            binding.mapview.setBackgroundGrid(new BackgroundGrid(0xffffff,
+                    0xffffff, 0, 3));
 
             cache = new TileCache(fileList.get(0).getAbsolutePath());
             tiledLayer = new ArcGISTiledLayer(cache);
@@ -100,20 +110,22 @@ public class MapBrowseActivity extends BaseActivity {
             binding.mapview.setMap(arcGISMap);
             graphicsOverlay = new GraphicsOverlay();
             binding.mapview.getGraphicsOverlays().add(graphicsOverlay);
+
             markerSymbol = new PictureMarkerSymbol((BitmapDrawable) ContextCompat
                     .getDrawable(mContext, R.drawable.icon_location));
-            graphicsOverlay.getGraphics().add(new Graphic(point,markerSymbol));
+            createLable();
 
-            binding.mapview.setViewpointCenterAsync(point);
-            binding.mapview.setOnTouchListener(new DefaultMapViewOnTouchListener(mContext,binding.mapview){
+            binding.mapview.setOnTouchListener(new DefaultMapViewOnTouchListener(mContext,
+                    binding.mapview) {
                 @Override
                 public boolean onSingleTapConfirmed(MotionEvent e) {
                     com.esri.arcgisruntime.geometry.Point point;
                     point = binding.mapview
                             .screenToLocation(new Point((int) e.getX(), (int) e.getY()));
-                    com.esri.arcgisruntime.geometry.Point point1 = (com.esri.arcgisruntime.geometry.Point) GeometryEngine.project(point,SpatialReferences.getWgs84());
+                    com.esri.arcgisruntime.geometry.Point point1 = (com.esri.arcgisruntime.geometry
+                            .Point) GeometryEngine.project(point, SpatialReferences.getWgs84());
                     Graphic graphic = new Graphic(point1, markerSymbol);
-                    Log.e("tag","point:"+point1.getX()+","+point1.getY());
+                    Log.e("tag", "point:" + point1.getX() + "," + point1.getY());
                     graphicsOverlay.getGraphics().add(graphic);
                     return super.onSingleTapConfirmed(e);
                 }
@@ -152,6 +164,48 @@ public class MapBrowseActivity extends BaseActivity {
 
     private void initData() {
         fileList = manager.getPahts("/otitan.map", "image");
+    }
+
+    private void createLable() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            List<String> list = getIntent().getStringArrayListExtra("coordinate");
+            try {
+                String[] strings;
+                if (list != null && list.size() == 1) {
+                    strings = list.get(0).split(",");
+                    double d1 = Double.parseDouble(strings[0]);
+                    double d2 = Double.parseDouble(strings[1]);
+
+                    com.esri.arcgisruntime.geometry.Point point = new com.esri.arcgisruntime.geometry
+                            .Point(d1, d2, SpatialReferences.getWgs84());
+                    graphicsOverlay.getGraphics().add(new Graphic(point, markerSymbol));
+                    binding.mapview.setViewpointCenterAsync(point);
+                } else if (list != null && list.size() > 1) {
+                    PointCollection collection = new PointCollection(SpatialReferences.getWgs84());
+                    for (String str : list) {
+                        strings = str.split(",");
+                        double d1 = Double.parseDouble(strings[0]);
+                        double d2 = Double.parseDouble(strings[1]);
+                        collection.add(d1, d2);
+                    }
+                    Polygon polygon = new Polygon(collection);
+                    SimpleLineSymbol outlineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID,
+                            Color.BLUE, 2.0f);
+                    SimpleFillSymbol symbol = new SimpleFillSymbol(SimpleFillSymbol.Style.DIAGONAL_CROSS,
+                            Color.GREEN, outlineSymbol);
+                    graphic = new Graphic(polygon, symbol);
+                    locaLable();
+                    graphicsOverlay.getGraphics().add(graphic);
+                } else {
+                    ToastUtil.setToast(mContext, "坐标参数错误");
+                }
+            } catch (NumberFormatException e) {
+                ToastUtil.setToast(mContext, "坐标参数错误:" + e);
+                Log.e("tag", "坐标参数错误:" + e);
+            }
+
+        }
     }
 
     @Override
@@ -200,7 +254,7 @@ public class MapBrowseActivity extends BaseActivity {
                 dialog.show();
                 break;
             case R.id.map_location:
-                addLable();
+                locaLable();
                 break;
             default:
                 break;
@@ -209,21 +263,9 @@ public class MapBrowseActivity extends BaseActivity {
     }
 
 
-    private void addLable() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            double[] doubles = intent.getDoubleArrayExtra("coordinate");
-            if (doubles != null) {
-                com.esri.arcgisruntime.geometry.Point point = new com.esri.arcgisruntime.geometry
-                        .Point(doubles[0], doubles[1],SpatialReferences.getWgs84());
-
-                Log.e("tag","Scale:"+binding.mapview.getMapScale());
-                binding.mapview.setViewpointCenterAsync(point);
-                return;
-            }
-            ToastUtil.setToast(mContext, "坐标参数出错");
-        }
-
+    private void locaLable() {
+        Envelope envelope = graphic.getGeometry().getExtent();
+        binding.mapview.setViewpointCenterAsync(envelope.getCenter());
     }
 
     @Override

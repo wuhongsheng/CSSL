@@ -135,6 +135,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         List<ProjSearch> list = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             ProjSearch search = new ProjSearch();
+            search.setNUM(""+i);
             search.setNAME(nameArray[i%4]);
             search.setSTATE(stateArray[i%4]);
             search.setTIME(timeArray[i%4]);
