@@ -18,7 +18,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 /**
  * Created by hanyw on 2017/11/8/008.
- *
+ * <p>
  * Retrofit 初始化
  */
 
@@ -29,14 +29,16 @@ public class RetrofitHelper {
     GsonConverterFactory factory = GsonConverterFactory.create(new GsonBuilder().create());
     private static RetrofitHelper instance = null;
     private Retrofit mRetrofit = null;
-    public static RetrofitHelper getInstance(Context context){
-        if (instance == null){
+
+    public static RetrofitHelper getInstance(Context context) {
+        if (instance == null) {
             instance = new RetrofitHelper(context);
-            networkMonitor=new LiveNetworkMonitor(context);
+            networkMonitor = new LiveNetworkMonitor(context);
         }
         return instance;
     }
-    private RetrofitHelper(Context mContext){
+
+    private RetrofitHelper(Context mContext) {
         mCntext = mContext;
         init();
     }
@@ -58,18 +60,19 @@ public class RetrofitHelper {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
     }
-    public RetrofitService getServer(){
+
+    public RetrofitService getServer() {
         return mRetrofit.create(RetrofitService.class);
     }
-    private class MyNetworkInterceptor implements Interceptor
-    {
+
+    private class MyNetworkInterceptor implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
             boolean connected = networkMonitor.isConnected();
             if (networkMonitor.isConnected()) {
                 return chain.proceed(chain.request());
             } else {
-               // ToastUtil.setToast(mCntext,"网络错误，请检查网络连接");
+                // ToastUtil.setToast(mCntext,"网络错误，请检查网络连接");
             }
             return null;
         }

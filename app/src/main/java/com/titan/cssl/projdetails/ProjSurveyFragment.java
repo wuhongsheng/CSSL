@@ -54,7 +54,6 @@ public class ProjSurveyFragment extends Fragment {
     }
 
     private void initData(){
-        Log.e("tag", "getProjNum1:"+ DataRepository.getProjNum());
         List<ProjDetailBaseinfo> list = new ArrayList<>();
         for (int i = 0;i<20;i++){
             ProjDetailBaseinfo baseinfo = new ProjDetailBaseinfo();

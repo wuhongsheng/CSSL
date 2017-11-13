@@ -18,6 +18,7 @@ import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.titan.BaseActivity;
 import com.titan.cssl.R;
+import com.titan.data.Injection;
 import com.titan.data.local.LocalDataSource;
 import com.titan.data.source.DataRepository;
 import com.titan.cssl.databinding.ActivitySearchBinding;
@@ -68,9 +69,7 @@ public class ProjSearchActivity extends BaseActivity {
         ViewModelHolder<ProjSearchViewModel> holder = (ViewModelHolder<ProjSearchViewModel>)
                 getSupportFragmentManager().findFragmentByTag(SEARCH_VIEWMODEL_TAG);
         if (holder==null||holder.getViewmodel()==null){
-            LocalDataSource source = LocalDataSource.getInstance(mContext);
-            DataRepository dataRepository = DataRepository.getInstance(source);
-            ProjSearchViewModel model = new ProjSearchViewModel(fragment,dataRepository);
+            ProjSearchViewModel model = new ProjSearchViewModel(fragment,Injection.provideDataRepository(mContext));
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     ViewModelHolder.createContainer(model),SEARCH_VIEWMODEL_TAG);
             return model;

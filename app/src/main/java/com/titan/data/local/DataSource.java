@@ -21,4 +21,11 @@ package com.titan.data.local;
  */
 public interface DataSource {
 
+    String getProjNum();
+
+    void setProjNum(String num);
+
+    String getRole();
+
+    void setRole(String role);
 }

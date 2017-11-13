@@ -181,12 +181,6 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         mViewModel.projectStatus.set("请选择");
     }
 
-    private void setProSearchObjectValue() {
-        if (mViewModel.isChecked.get()){
-
-        }
-    }
-
     public void search() {
         Log.e("tag",mViewModel.startTime.get()+","+mViewModel.endTime.get()+","+mViewModel.projectType.get()
         +","+mViewModel.projectStatus.get()+","+mViewModel.isChecked.get()+","+mViewModel.keyWord.get());
@@ -240,7 +234,6 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         timeSetDialog.setViewModel(setTimeViewModel, mViewModel);
         timeSetDialog.show(getFragmentManager(), TIMESET_TAG);
     }
-
 
     private String valueFormat(String value){
         if (value==null||value.equals("请选择")){

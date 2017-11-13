@@ -6,8 +6,13 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.titan.BaseViewModel;
 import com.titan.MyApplication;
+import com.titan.cssl.remote.RemoteData;
+import com.titan.cssl.remote.RemoteDataSource;
+import com.titan.data.source.DataRepository;
+import com.titan.model.LoginModel;
 
 /**
  * Created by hanyw on 2017/9/13/013.
@@ -22,9 +27,10 @@ public class LoginViewModel extends BaseViewModel {
     public final ObservableField<String> password = new ObservableField<>();
     public final ObservableBoolean isremember = new ObservableBoolean();
 
-    public LoginViewModel(Context context, Login login) {
+    public LoginViewModel(Context context, Login login, DataRepository dataRepository) {
         this.mContext = context;
         this.login = login;
+        this.mDataRepository = dataRepository;
     }
 
     /**
@@ -36,6 +42,22 @@ public class LoginViewModel extends BaseViewModel {
             return;
         }
         login.showProgress();
+//        mDataRepository.login(username.get().trim(), password.get().trim(), new RemoteData.loginCallback() {
+//            @Override
+//            public void onFailure(String info) {
+//                login.stopProgress();
+//                login.showToast("登录错误："+info);
+//            }
+//
+//            @Override
+//            public void onSuccess(String info) {
+//                login.stopProgress();
+//                Gson gson = new Gson();
+//                LoginModel loginModel = gson.fromJson(info,LoginModel.class);
+//                mDataRepository.setRole(loginModel.getROLE());
+//                login.onNext();
+//            }
+//        });
         if (!username.get().trim().equals("admin")) {
             login.stopProgress();
             login.showToast("用户名错误");

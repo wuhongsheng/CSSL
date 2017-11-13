@@ -38,17 +38,29 @@ public class LocalDataSource implements DataSource {
 
     private static String projNum;
 
-    public static String getProjNum(){
+    private String role;
+
+    public String getProjNum() {
         return projNum;
     }
 
-    public void setProjNum(String num){
+    public void setProjNum(String num) {
         projNum = num;
+    }
+
+    @Override
+    public String getRole() {
+        return role;
+    }
+
+    @Override
+    public void setRole(String role) {
+        this.role = role;
     }
 
     // Prevent direct instantiation.
     private LocalDataSource(@NonNull Context context) {
-        this.mContext=context;
+        this.mContext = context;
     }
 
     public static LocalDataSource getInstance(@NonNull Context context) {

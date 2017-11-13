@@ -242,7 +242,6 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     @Override
     public void localCensorSubmit() {
         ToastUtil.setToast(mContext, "提交");
-        Log.e("tag", "getProjNum1:" + DataRepository.getProjNum());
     }
 
     /**

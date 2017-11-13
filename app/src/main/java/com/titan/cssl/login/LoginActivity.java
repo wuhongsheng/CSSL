@@ -13,6 +13,9 @@ import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityLoginBinding;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
+import com.titan.data.Injection;
+import com.titan.data.local.LocalDataSource;
+import com.titan.data.source.DataRepository;
 
 
 /**
@@ -77,7 +80,7 @@ public class LoginActivity extends BaseActivity {
                 (ViewModelHolder<LoginViewModel>) getSupportFragmentManager()
                         .findFragmentByTag(LOGIN_VIEWMODEL_TAG);
         if (holder == null || holder.getViewmodel() == null) {
-            LoginViewModel viewModel = new LoginViewModel(mContext, mFragment);
+            LoginViewModel viewModel = new LoginViewModel(mContext, mFragment, Injection.provideDataRepository(mContext));
             ActivityUtils.addFragmentToActivity
                     (getSupportFragmentManager(), ViewModelHolder.createContainer(viewModel), LOGIN_VIEWMODEL_TAG);
             return viewModel;

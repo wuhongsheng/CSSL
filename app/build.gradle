@@ -59,4 +59,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile 'com.github.wuhongsheng:TitanLib:0.4.5'
+    compile 'org.jetbrains:annotations-java5:15.0'
 }

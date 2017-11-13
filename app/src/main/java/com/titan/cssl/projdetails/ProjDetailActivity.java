@@ -126,7 +126,6 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
     }
 
     private void initData() {
-        Log.e("tag", "getProjNum1:"+DataRepository.getProjNum());
         ProjBaseInfoFragment infoFragment = ProjBaseInfoFragment.getInstance();
         ProjSurveyFragment surveyFragment = ProjSurveyFragment.getInstance();
         ProjmeasureFragment measureFragment = ProjmeasureFragment.getInstance();
