@@ -17,6 +17,8 @@ android {
             // 设置支持的SO库架构
             abiFilters 'armeabi-v7a', 'armeabi', 'x86'
         }
+        //只支持中英文
+        resConfigs "zh","en"
     }
     sourceSets {
         main {
@@ -34,6 +36,9 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
+    }
+    dexOptions{
+        javaMaxHeapSize "4g"
     }
 }
 

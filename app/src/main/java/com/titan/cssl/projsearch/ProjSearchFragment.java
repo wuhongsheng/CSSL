@@ -1,12 +1,15 @@
 package com.titan.cssl.projsearch;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,29 +20,41 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
+import com.esri.arcgisruntime.geometry.Point;
+import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.DialogSearchSetBinding;
 import com.titan.cssl.databinding.FragSearchBinding;
+import com.titan.cssl.login.LoginActivity;
 import com.titan.cssl.reserveplan.ProjReservePlanActivity;
+import com.titan.location.LocationService;
 import com.titan.model.ProjSearch;
 import com.titan.cssl.projdetails.ProjDetailActivity;
-import com.titan.cssl.util.ToastUtil;
+import com.titan.util.MaterialDialogUtil;
+import com.titan.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 /**
  * Created by hanyw on 2017/10/31/031.
  * 项目检索
  */
-
+@RuntimePermissions
 public class ProjSearchFragment extends Fragment implements ProjSearchSet {
 
     public static final String TIMESET_TAG = "TIMESET_TAG";
@@ -71,6 +86,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     private ProjSearchViewModel setTimeViewModel;
     private ProjTimeSetDialog timeSetDialog;
     private ProjDataAdapter projDataAdapter;
+    private LocationService mLocationService;
 
     public static ProjSearchFragment getInstance() {
         if (fragment == null) {
@@ -91,19 +107,20 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search, container, false);
         binding.setViewmodel(mViewModel);
         Toolbar toolbar = binding.searchToolbar;
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
         toolbar.setTitle(getResources().getString(R.string.appname));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         initData();
+        ProjSearchFragmentPermissionsDispatcher.initBDLocWithCheck(this);
         return binding.getRoot();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_search,menu);
+        inflater.inflate(R.menu.menu_search, menu);
     }
 
     @Override
@@ -116,10 +133,34 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
                 Intent intent = new Intent(mContext, ProjReservePlanActivity.class);
                 mContext.startActivity(intent);
                 break;
+            case R.id.proj_signout:
+                MaterialDialog dialog = MaterialDialogUtil.showSureDialog(mContext,"确定退出吗")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                signOut();
+                                dialog.dismiss();
+                            }
+                        }).build();
+                dialog.show();
+                break;
             default:
                 break;
         }
         return true;
+    }
+
+    /**
+     * 退出登录
+     */
+    private void signOut() {
+        if (mLocationService != null) {
+            mLocationService.unregisterListener(mViewModel);
+            mLocationService.stop();
+        }
+        Intent intent1 = new Intent(mContext, LoginActivity.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent1);
     }
 
     @Override
@@ -135,24 +176,32 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         List<ProjSearch> list = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             ProjSearch search = new ProjSearch();
-            search.setNUM(""+i);
-            search.setNAME(nameArray[i%4]);
-            search.setSTATE(stateArray[i%4]);
-            search.setTIME(timeArray[i%4]);
-            search.setTYPE(typeArray[i%3]);
-            search.setDISTANCE(distanceArray[i%4]);
+            search.setNUM("" + i);
+            search.setNAME(nameArray[i % 4]);
+            search.setSTATE(stateArray[i % 4]);
+            search.setTIME(timeArray[i % 4]);
+            search.setTYPE(typeArray[i % 3]);
+            search.setZB(distanceArray[i % 4]);
             list.add(search);
         }
-        projDataAdapter = new ProjDataAdapter(mContext, list,mViewModel);
+        projDataAdapter = new ProjDataAdapter(mContext, list, mViewModel);
         binding.projectList.setAdapter(projDataAdapter);
         binding.projectList.setTextFilterEnabled(true);
+    }
+
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION})
+    void initBDLoc() {
+        mLocationService = MyApplication.locationService;
+        mLocationService.registerListener(mViewModel);
+        mLocationService.setLocationOption(mLocationService.getDefaultLocationClientOption());
+        mLocationService.start();
     }
 
     @Override
     public void searchSet() {
         searchSetBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
                 R.layout.dialog_search_set, null, false);
-        if (setDialog==null){
+        if (setDialog == null) {
             setDialog = new MaterialDialog.Builder(mContext)
                     .title("项目检索设置")
                     .customView(searchSetBinding.getRoot(), true)
@@ -182,8 +231,13 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     }
 
     public void search() {
-        Log.e("tag",mViewModel.startTime.get()+","+mViewModel.endTime.get()+","+mViewModel.projectType.get()
-        +","+mViewModel.projectStatus.get()+","+mViewModel.isChecked.get()+","+mViewModel.keyWord.get());
+        Log.e("tag", mViewModel.startTime.get() + "," + mViewModel.endTime.get() + "," + mViewModel.projectType.get()
+                + "," + mViewModel.projectStatus.get() + "," + mViewModel.isChecked.get() + "," + mViewModel.keyWord.get());
+    }
+
+    @Override
+    public void locSearch() {
+        ProjSearchFragmentPermissionsDispatcher.initBDLocWithCheck(this);
     }
 
     @Override
@@ -235,10 +289,30 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         timeSetDialog.show(getFragmentManager(), TIMESET_TAG);
     }
 
-    private String valueFormat(String value){
-        if (value==null||value.equals("请选择")){
+    private String valueFormat(String value) {
+        if (value == null || value.equals("请选择")) {
             value = "";
         }
         return value;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ProjSearchFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+
+    }
+
+    @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION})
+    void showRationale(final PermissionRequest request){
+        request.proceed();
+    }
+
+    @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION})
+    void permissionDenied(){
+        Toast.makeText(mContext, "已拒绝权限，定位功能将无法使用，若想使用请开启权限",Toast.LENGTH_LONG).show();
+        if (mViewModel.isChecked.get()){
+            mViewModel.isChecked.set(false);
+        }
     }
 }

@@ -22,9 +22,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.data.TileCache;
 import com.esri.arcgisruntime.geometry.Envelope;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -63,13 +65,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by hanyw on 2017/11/3/003.
  * 地图浏览
  */
+@RuntimePermissions
 public class MapBrowseActivity extends BaseActivity {
 
     private ActivityMapBrowseBinding binding;
@@ -98,38 +103,43 @@ public class MapBrowseActivity extends BaseActivity {
             setContentView(binding.getRoot());
             manager = ResourcesManager.getInstance(mContext);
             initView();
-            initData();
+
+            MapBrowseActivityPermissionsDispatcher.initDataWithCheck(this);
             binding.mapview.setBackgroundGrid(new BackgroundGrid(0xffffff,
                     0xffffff, 0, 3));
+            //去除水印
+            ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud8065403504,none,RP5X0H4AH7CLJ9HSX018");
+            //去除版权声明
+            binding.mapview.setAttributionTextVisible(false);
+            if (fileList!=null&&fileList.size()>0){
+                cache = new TileCache(fileList.get(0).getAbsolutePath());
+                tiledLayer = new ArcGISTiledLayer(cache);
+                basemap = new Basemap(tiledLayer);
+                arcGISMap = new ArcGISMap();
+                arcGISMap.setBasemap(basemap);
+                binding.mapview.setMap(arcGISMap);
+                graphicsOverlay = new GraphicsOverlay();
+                binding.mapview.getGraphicsOverlays().add(graphicsOverlay);
 
-            cache = new TileCache(fileList.get(0).getAbsolutePath());
-            tiledLayer = new ArcGISTiledLayer(cache);
-            basemap = new Basemap(tiledLayer);
-            arcGISMap = new ArcGISMap();
-            arcGISMap.setBasemap(basemap);
-            binding.mapview.setMap(arcGISMap);
-            graphicsOverlay = new GraphicsOverlay();
-            binding.mapview.getGraphicsOverlays().add(graphicsOverlay);
-
-            markerSymbol = new PictureMarkerSymbol((BitmapDrawable) ContextCompat
-                    .getDrawable(mContext, R.drawable.icon_location));
-            createLable();
-
-            binding.mapview.setOnTouchListener(new DefaultMapViewOnTouchListener(mContext,
-                    binding.mapview) {
-                @Override
-                public boolean onSingleTapConfirmed(MotionEvent e) {
-                    com.esri.arcgisruntime.geometry.Point point;
-                    point = binding.mapview
-                            .screenToLocation(new Point((int) e.getX(), (int) e.getY()));
-                    com.esri.arcgisruntime.geometry.Point point1 = (com.esri.arcgisruntime.geometry
-                            .Point) GeometryEngine.project(point, SpatialReferences.getWgs84());
-                    Graphic graphic = new Graphic(point1, markerSymbol);
-                    Log.e("tag", "point:" + point1.getX() + "," + point1.getY());
-                    graphicsOverlay.getGraphics().add(graphic);
-                    return super.onSingleTapConfirmed(e);
-                }
-            });
+                markerSymbol = new PictureMarkerSymbol((BitmapDrawable) ContextCompat
+                        .getDrawable(mContext, R.drawable.icon_location));
+                createLable();
+                binding.mapview.setOnTouchListener(new DefaultMapViewOnTouchListener(mContext,
+                        binding.mapview) {
+                    @Override
+                    public boolean onSingleTapConfirmed(MotionEvent e) {
+                        com.esri.arcgisruntime.geometry.Point point;
+                        point = binding.mapview
+                                .screenToLocation(new Point((int) e.getX(), (int) e.getY()));
+                        com.esri.arcgisruntime.geometry.Point point1 = (com.esri.arcgisruntime.geometry
+                                .Point) GeometryEngine.project(point, SpatialReferences.getWgs84());
+                        Graphic graphic = new Graphic(point1, markerSymbol);
+                        Log.e("tag", "point:" + point1.getX() + "," + point1.getY());
+                        graphicsOverlay.getGraphics().add(graphic);
+                        return super.onSingleTapConfirmed(e);
+                    }
+                });
+            }
         } catch (Exception e) {
             Log.e("tag", "mapError:" + e);
         }
@@ -162,7 +172,8 @@ public class MapBrowseActivity extends BaseActivity {
         });
     }
 
-    private void initData() {
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void initData() {
         fileList = manager.getPahts("/otitan.map", "image");
     }
 
@@ -276,5 +287,21 @@ public class MapBrowseActivity extends BaseActivity {
     @Override
     public BaseViewModel findOrCreateViewModel() {
         return null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MapBrowseActivityPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationale(final PermissionRequest request){
+        request.proceed();
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void permissionDenied(){
+        Toast.makeText(mContext, "已拒绝权限，无法读取地图文件，若想使用请开启权限",Toast.LENGTH_LONG).show();
     }
 }

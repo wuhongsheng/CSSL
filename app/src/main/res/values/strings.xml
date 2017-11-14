@@ -43,4 +43,5 @@
     <string name="no_expert_opinion">暂无专家意见</string>
     <string name="opinion_add">新增</string>
     <string name="plan">预案</string>
+    <string name="sign_out">退出登录</string>
 </resources>

@@ -2,13 +2,14 @@ package com.titan.cssl.projsearch;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.databinding.ObservableInt;
+import android.util.Log;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.mapapi.model.LatLng;
 import com.titan.BaseViewModel;
 import com.titan.data.source.DataRepository;
-import com.titan.model.ProjSearch;
-
-import java.util.Map;
+import com.titan.util.ToastUtil;
 
 
 /**
@@ -16,7 +17,7 @@ import java.util.Map;
  * 项目检索viewmodel
  */
 
-public class ProjSearchViewModel extends BaseViewModel {
+public class ProjSearchViewModel extends BaseViewModel implements BDLocationListener {
     private ProjSearchSet projSearchSet;
 
     private DateChoose dateChoose;
@@ -44,6 +45,11 @@ public class ProjSearchViewModel extends BaseViewModel {
 
     public ObservableField<String> projNum = new ObservableField<>();
 
+    /**
+     * 当前坐标点
+     */
+    public ObservableField<LatLng> locPoint = new ObservableField<>();
+
 
     public ProjSearchViewModel(ProjSearchSet projSearchSet, DataRepository mDataRepository) {
         this.projSearchSet = projSearchSet;
@@ -56,7 +62,7 @@ public class ProjSearchViewModel extends BaseViewModel {
     }
 
 
-    public ProjSearchViewModel(OptionSelect optionSelect){
+    public ProjSearchViewModel(OptionSelect optionSelect) {
         this.optionSelect = optionSelect;
     }
 
@@ -68,42 +74,65 @@ public class ProjSearchViewModel extends BaseViewModel {
         projSearchSet.searchSet();
     }
 
-    public void startTimeSet(){
+    public void startTimeSet() {
         projSearchSet.startTimeSet();
     }
 
-    public void endTimeSet(){
+    public void endTimeSet() {
         projSearchSet.endTimeSet();
     }
 
-    public void setTimeSure(){
-        if (timeSet.get()){
+    public void setTimeSure() {
+        if (timeSet.get()) {
             dateChoose.startTime();
-        }else {
+        } else {
             dateChoose.endTime();
         }
     }
 
-    public void projectTypeSet(){
+    public void projectTypeSet() {
         projSearchSet.projectTypeSet();
     }
 
-    public void approvalStatuSet(){
+    public void approvalStatuSet() {
         projSearchSet.approvalStatuSet();
     }
 
-    public void optionSelect(String value){
+    public void optionSelect(String value) {
         optionSelect.select(value);
     }
 
-    public void projDetails(String num){
+    public void projDetails(String num) {
         projSearchSet.projDetails();
         mDataRepository.setProjNum(num);
         projNum.set(num);
     }
 
-    public void search(){
+    public void search() {
         projSearchSet.search();
     }
 
+    public void locSearch(){
+        projSearchSet.locSearch();
+    }
+
+    @Override
+    public void onReceiveLocation(BDLocation bdLocation) {
+        if (null != bdLocation && bdLocation.getLocType() != BDLocation.TypeServerError) {
+            double latitude = bdLocation.getLatitude();    //获取纬度信息
+            double longitude = bdLocation.getLongitude();    //获取经度信息
+            float radius = bdLocation.getRadius();    //获取定位精度，默认值为0.0f
+            String coorType = bdLocation.getCoorType();
+            locPoint.set(new LatLng(latitude,longitude));
+            //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
+            Log.e("tag","lat:"+latitude+","+"lon:"+longitude+"radius："+radius+","+coorType);
+        }else {
+            ToastUtil.setToast(mContext,"定位失败："+bdLocation.getLocTypeDescription()+",请检查权限是否授予");
+        }
+    }
+
+    @Override
+    public void onConnectHotSpotMessage(String s, int i) {
+
+    }
 }

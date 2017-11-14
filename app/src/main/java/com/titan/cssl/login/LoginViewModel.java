@@ -6,13 +6,9 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.titan.BaseViewModel;
 import com.titan.MyApplication;
-import com.titan.cssl.remote.RemoteData;
-import com.titan.cssl.remote.RemoteDataSource;
 import com.titan.data.source.DataRepository;
-import com.titan.model.LoginModel;
 
 /**
  * Created by hanyw on 2017/9/13/013.
@@ -53,7 +49,7 @@ public class LoginViewModel extends BaseViewModel {
 //            public void onSuccess(String info) {
 //                login.stopProgress();
 //                Gson gson = new Gson();
-//                LoginModel loginModel = gson.fromJson(info,LoginModel.class);
+//                UserModel loginModel = gson.fromJson(info,UserModel.class);
 //                mDataRepository.setRole(loginModel.getROLE());
 //                login.onNext();
 //            }

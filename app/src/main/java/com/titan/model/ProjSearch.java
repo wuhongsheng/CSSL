@@ -13,7 +13,7 @@ public class ProjSearch implements Serializable{
     private String TIME;//申请时间
     private String STATE;//审批状态
     private String TYPE;//项目类型
-    private String DISTANCE;//据当前位置的距离
+    private String ZB;//据当前位置的坐标
 
     public String getNUM() {
         return NUM;
@@ -55,11 +55,11 @@ public class ProjSearch implements Serializable{
         this.TYPE = TYPE;
     }
 
-    public String getDISTANCE() {
-        return DISTANCE;
+    public String getZB() {
+        return ZB;
     }
 
-    public void setDISTANCE(String DISTANCE) {
-        this.DISTANCE = DISTANCE;
+    public void setZB(String ZB) {
+        this.ZB = ZB;
     }
 }

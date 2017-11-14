@@ -40,4 +40,9 @@ public interface ProjSearchSet {
      * 点击结果项进入详情页面
      */
     void search();
+
+    /**
+     * 根据当前位置搜索项目
+     */
+    void locSearch();
 }

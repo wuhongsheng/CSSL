@@ -1,13 +1,11 @@
 package com.titan.cssl.localcensor;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -19,37 +17,38 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLocalCensorBinding;
 import com.titan.cssl.util.ToastUtil;
-import com.titan.data.source.DataRepository;
 import com.titan.util.MyFileUtil;
 import com.titan.util.ResourcesManager;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import cn.finalteam.rxgalleryfinal.RxGalleryFinal;
 import cn.finalteam.rxgalleryfinal.bean.MediaBean;
 import cn.finalteam.rxgalleryfinal.imageloader.ImageLoaderType;
 import cn.finalteam.rxgalleryfinal.rxbus.RxBusResultDisposable;
-import cn.finalteam.rxgalleryfinal.rxbus.event.BaseResultEvent;
 import cn.finalteam.rxgalleryfinal.rxbus.event.ImageMultipleResultEvent;
 import cn.finalteam.rxgalleryfinal.ui.RxGalleryListener;
 import cn.finalteam.rxgalleryfinal.ui.base.IMultiImageCheckedListener;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by hanyw on 2017/11/6/006.
  * 现场审查
  */
-
+@RuntimePermissions
 public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor {
 
     private ProjLocalCensorViewModel viewModel;
@@ -134,11 +133,13 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         switch (position) {
                             case 0:
-                                takePhoto();
+                                ProjLocalCensorFragmentPermissionsDispatcher
+                                        .takePhotoWithCheck(ProjLocalCensorFragment.this);
                                 dialog.dismiss();
                                 break;
                             case 1:
-                                selectPhoto();
+                                ProjLocalCensorFragmentPermissionsDispatcher
+                                        .selectPhotoWithCheck(ProjLocalCensorFragment.this);
                                 dialog.dismiss();
                                 break;
                             default:
@@ -160,7 +161,8 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     /**
      * 拍照
      */
-    private void takePhoto() {
+    @NeedsPermission(Manifest.permission.CAMERA)
+    void takePhoto() {
         try {
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -189,7 +191,8 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     /**
      * 相册选择照片
      */
-    private void selectPhoto() {
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void selectPhoto() {
         RxGalleryFinal.with(mContext)
                 .image()
                 .maxSize(3 - urlList.size())
@@ -215,9 +218,6 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
             if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
                 urlList.add(foutPath);
                 refresh();
-                if (urlList != null && urlList.size() > 0) {
-                    binding.projPrompt.setVisibility(View.GONE);
-                }
             }
         } catch (Exception e) {
             Log.e("tag", "result:" + e);
@@ -233,6 +233,9 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
             binding.censorGridview.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
+        }
+        if (urlList != null && urlList.size() > 0) {
+            binding.projPrompt.setVisibility(View.GONE);
         }
     }
 
@@ -256,5 +259,21 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
         if (urlList == null || urlList.size() <= 0) {
             binding.projPrompt.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ProjLocalCensorFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationale(final PermissionRequest request){
+        request.proceed();
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    void permissionDenied(){
+        Toast.makeText(mContext, "已拒绝权限，若想使用请开启权限",Toast.LENGTH_LONG).show();
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
  * 项目概况
  */
 
-public class ProjDetailSurvey {
+public class ProjDetailSummary {
     private String XMFZR;//项目总负责人
     private String XMDZ;//项目地址
     private String ZDMJ;//占地面积/hm²

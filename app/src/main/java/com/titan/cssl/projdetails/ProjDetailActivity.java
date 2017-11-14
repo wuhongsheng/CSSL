@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,8 +21,6 @@ import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityProjDetailBinding;
 import com.titan.cssl.localcensor.ProjLocalCensorActivity;
 import com.titan.cssl.map.MapBrowseActivity;
-import com.titan.cssl.util.ToastUtil;
-import com.titan.data.source.DataRepository;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -127,7 +124,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 
     private void initData() {
         ProjBaseInfoFragment infoFragment = ProjBaseInfoFragment.getInstance();
-        ProjSurveyFragment surveyFragment = ProjSurveyFragment.getInstance();
+        ProjSummaryFragment surveyFragment = ProjSummaryFragment.getInstance();
         ProjmeasureFragment measureFragment = ProjmeasureFragment.getInstance();
         measureFragment.setViewModel(viewModel);
         mList.add(infoFragment);

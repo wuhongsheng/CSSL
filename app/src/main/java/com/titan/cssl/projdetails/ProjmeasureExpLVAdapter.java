@@ -22,7 +22,7 @@ import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemProjMeasureChildBinding;
 import com.titan.cssl.databinding.ItemProjMeasureParentBinding;
-import com.titan.util.LoadDialogUtil;
+import com.titan.util.MaterialDialogUtil;
 import com.titan.util.MyFileUtil;
 import com.titan.util.ResourcesManager;
 
@@ -153,7 +153,7 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = LoadDialogUtil.showLoadProgress(mContext,"正在加载...");
+            dialog = MaterialDialogUtil.showLoadProgress(mContext,"正在加载...");
             dialog.show();
         }
 
@@ -176,7 +176,7 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
                 Message message = new Message();
                 message.what = ProjmeasureFragment.LOAD_ERROR;
                 mHandler.sendMessage(message);
-                LoadDialogUtil.stopProgress();
+                MaterialDialogUtil.stopProgress();
                 return;
             }
             //得到缓存文件
@@ -188,7 +188,7 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
             //若文件存在直接打开
             if (file.exists()){
                 mContext.startActivity(MyFileUtil.getImageFileIntent(path));
-                LoadDialogUtil.stopProgress();
+                MaterialDialogUtil.stopProgress();
                 return;
             }
             //不存在就缓存到自定义路径
@@ -199,7 +199,7 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
             } catch (IOException e) {
                 Log.e("tag","image error:"+e);
             }
-            LoadDialogUtil.stopProgress();
+            MaterialDialogUtil.stopProgress();
         }
 
     }

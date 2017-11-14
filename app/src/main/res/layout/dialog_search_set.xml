@@ -164,6 +164,7 @@
             android:padding="10dp"
             android:text="@string/location_search"
             android:textColor="@color/black"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:onClick="@{()->viewmodel.locSearch()}"/>
     </LinearLayout>
 </layout>

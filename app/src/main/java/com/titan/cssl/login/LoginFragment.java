@@ -14,7 +14,7 @@ import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLoginBinding;
 import com.titan.cssl.projsearch.ProjSearchActivity;
 import com.titan.cssl.util.ToastUtil;
-import com.titan.util.LoadDialogUtil;
+import com.titan.util.MaterialDialogUtil;
 
 /**
  * Created by hanyw on 2017/9/13/013.
@@ -65,7 +65,7 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void showProgress() {
-        dialog = LoadDialogUtil.showLoadProgress(mContext,mContext.getString(R.string.logging));
+        dialog = MaterialDialogUtil.showLoadProgress(mContext,mContext.getString(R.string.logging));
         dialog.show();
     }
 
@@ -74,7 +74,7 @@ public class LoginFragment extends Fragment implements Login {
 //        if (dialog != null&&dialog.isShowing()) {
 //            dialog.dismiss();
 //        }
-        LoadDialogUtil.stopProgress();
+        MaterialDialogUtil.stopProgress();
     }
 
     @Override

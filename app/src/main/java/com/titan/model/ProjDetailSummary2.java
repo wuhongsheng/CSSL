@@ -8,7 +8,7 @@ import java.util.List;
  * 8万以上项目概要信息
  */
 
-public class ProjDetailSurvey2 implements Serializable {
+public class ProjDetailSummary2 implements Serializable {
     private String MC;// 项目名称
     private String LYGL;// 流域管理
     private String SJSQ;// 省及省区

@@ -23,6 +23,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Actionbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="overlapAnchor">false</item>
+    </style>
+
     <style name="FetionTheme.Dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>

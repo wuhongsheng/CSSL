@@ -2,19 +2,16 @@ package com.titan.cssl.projsearch;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Filter;
 
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemProjectSearchBinding;
 import com.titan.model.ProjSearch;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,7 +66,7 @@ public class ProjDataAdapter extends BaseAdapter {
         binding.setVariable(BR.time, list.get(i).getTIME());
         binding.setVariable(BR.type, list.get(i).getTYPE());
         binding.setVariable(BR.state, list.get(i).getSTATE());
-        binding.setVariable(BR.distance,list.get(i).getDISTANCE());
+        binding.setVariable(BR.distance,list.get(i).getZB());
         binding.setViewmodel(viewModel);
         return binding.getRoot();
     }
