@@ -65,7 +65,8 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void showProgress() {
-        dialog = MaterialDialogUtil.showLoadProgress(mContext,mContext.getString(R.string.logging));
+        dialog = MaterialDialogUtil.showLoadProgress(mContext,
+                mContext.getString(R.string.logging),null);
         dialog.show();
     }
 

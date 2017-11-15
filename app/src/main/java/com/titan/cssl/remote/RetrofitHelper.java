@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.GsonBuilder;
 import com.titan.cssl.R;
+import com.titan.cssl.util.ToastUtil;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +51,7 @@ public class RetrofitHelper {
     private void resetApp() {
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
         okHttpClientBuilder.addNetworkInterceptor(new MyNetworkInterceptor());
-        okHttpClientBuilder.connectTimeout(5, TimeUnit.SECONDS);
+        okHttpClientBuilder.connectTimeout(10, TimeUnit.SECONDS);
 
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(mCntext.getResources().getString(R.string.serverhost))//接口
@@ -69,10 +70,10 @@ public class RetrofitHelper {
         @Override
         public Response intercept(Chain chain) throws IOException {
             boolean connected = networkMonitor.isConnected();
-            if (networkMonitor.isConnected()) {
+            if (connected) {
                 return chain.proceed(chain.request());
             } else {
-                // ToastUtil.setToast(mCntext,"网络错误，请检查网络连接");
+                 ToastUtil.setToast(mCntext,"网络错误，请检查网络连接");
             }
             return null;
         }

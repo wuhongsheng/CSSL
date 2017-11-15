@@ -11,5 +11,6 @@ public interface RemoteData {
         void onFailure(String info);
         void onSuccess(String info);
     }
+
     void login(String name,String password,loginCallback callback);
 }

@@ -1,6 +1,7 @@
 package com.titan.cssl.projdetails;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -42,6 +43,7 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
     private List<String> list;
     private ProjDetailViewModel viewModel;
     private Handler mHandler;
+    private AsyncTask task;
 
     public ProjmeasureExpLVAdapter(Context context, List<String> list,ProjDetailViewModel viewModel,
                                    Handler mHandler){
@@ -121,7 +123,7 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String path = "http://b.hiphotos.baidu.com/image/pic/item/a686c9177f3e6709085282ec31c79f3df8dc5557.jpg";
-                new getImageCacheAsyncTask(mContext).execute(path);
+                task = new getImageCacheAsyncTask(mContext).execute(path);
             }
         });
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mContext,R.layout.item_arrayadapter_test,docList);
@@ -153,7 +155,12 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = MaterialDialogUtil.showLoadProgress(mContext,"正在加载...");
+            dialog = MaterialDialogUtil.showLoadProgress(mContext, "正在加载...", new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    task.cancel(true);
+                }
+            });
             dialog.show();
         }
 

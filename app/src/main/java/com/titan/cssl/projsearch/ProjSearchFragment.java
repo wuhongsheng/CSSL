@@ -37,11 +37,13 @@ import com.titan.location.LocationService;
 import com.titan.model.ProjSearch;
 import com.titan.cssl.projdetails.ProjDetailActivity;
 import com.titan.util.MaterialDialogUtil;
+import com.titan.util.TitanUtil;
 import com.titan.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -66,6 +68,8 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     private String[] typeArray = new String[]{"3万㎡以下", "3-8万㎡", "8万㎡以上"};
 
     private String[] stateArray = new String[]{"审查中", "专家审查中", "审查通过", "审查未通过"};
+
+    private float[] testArray = new float[20];
 
     private String[] timeArray = new String[]{"2016-3-9", "2016-5-6", "2013-8-16", "2017-10-17"};
     private String[] distanceArray = new String[]{"距离:2.5km", "距离:25km", "距离:55km", "距离:7km"};
@@ -113,7 +117,6 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         initData();
-        ProjSearchFragmentPermissionsDispatcher.initBDLocWithCheck(this);
         return binding.getRoot();
     }
 
@@ -134,7 +137,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
                 mContext.startActivity(intent);
                 break;
             case R.id.proj_signout:
-                MaterialDialog dialog = MaterialDialogUtil.showSureDialog(mContext,"确定退出吗")
+                MaterialDialog dialog = MaterialDialogUtil.showSureDialog(mContext, "确定退出吗")
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -174,22 +177,27 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
 
     private void initData() {
         List<ProjSearch> list = new ArrayList<>();
+        ProjSearch[] searches = new ProjSearch[30];
         for (int i = 0; i < 30; i++) {
+            Random random = new Random();
             ProjSearch search = new ProjSearch();
             search.setNUM("" + i);
             search.setNAME(nameArray[i % 4]);
             search.setSTATE(stateArray[i % 4]);
             search.setTIME(timeArray[i % 4]);
             search.setTYPE(typeArray[i % 3]);
-            search.setZB(distanceArray[i % 4]);
-            list.add(search);
+            search.setZB(random.nextFloat() + random.nextInt(20) + "");
+//            list.add(search);
+            searches[i] = search;
         }
+        quickSort(searches, 0, 29);
+        list.addAll(Arrays.asList(searches));
         projDataAdapter = new ProjDataAdapter(mContext, list, mViewModel);
         binding.projectList.setAdapter(projDataAdapter);
         binding.projectList.setTextFilterEnabled(true);
     }
 
-    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION})
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void initBDLoc() {
         mLocationService = MyApplication.locationService;
         mLocationService.registerListener(mViewModel);
@@ -224,6 +232,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         }
         setDialog.show();
         searchSetBinding.setViewmodel(mViewModel);
+        searchSetBinding.setKeyword.setFocusable(false);
         mViewModel.startTime.set("请选择");
         mViewModel.endTime.set("请选择");
         mViewModel.projectType.set("请选择");
@@ -231,6 +240,12 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     }
 
     public void search() {
+        for (int i = 0; i < 20; i++) {
+            Random random = new Random();
+            testArray[i] = random.nextFloat() + random.nextInt(20);
+        }
+//        quickSort(testArray,0,19);
+        Log.e("tag", "array:" + Arrays.toString(testArray));
         Log.e("tag", mViewModel.startTime.get() + "," + mViewModel.endTime.get() + "," + mViewModel.projectType.get()
                 + "," + mViewModel.projectStatus.get() + "," + mViewModel.isChecked.get() + "," + mViewModel.keyWord.get());
     }
@@ -277,6 +292,47 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         mContext.startActivity(intent);
     }
 
+
+    private static void quickSort(ProjSearch[] a, int left, int right) {
+        if (left > right) {
+            return;
+        }
+        int i = left;
+        int j = right;
+        float pivot = Float.parseFloat(a[left].getZB());
+        ProjSearch pivotObj = a[left];
+        while (i != j) {
+            while (Float.parseFloat(a[j].getZB()) >= pivot && i < j)
+                j--;
+            while (Float.parseFloat(a[i].getZB()) <= pivot && i < j)
+                i++;
+            if (i < j) {
+                ProjSearch t = a[i];
+                a[i] = a[j];
+                a[j] = t;
+            }
+        }
+        a[left] = a[i];
+        a[i].setZB(pivot + "");
+        a[i] = pivotObj;
+//        float pivot = a[left];
+//        while (i != j) {
+//            while (a.[j] >= pivot && i < j)
+//                j--;
+//            while (a[i] <= pivot && i < j)
+//                i++;
+//            if (i < j) {
+//                float t = a[i];
+//                a[i] = a[j];
+//                a[j] = t;
+//            }
+//        }
+//        a[left] = a[i];
+//        a[i] = pivot;
+        quickSort(a, left, i - 1);
+        quickSort(a, i + 1, right);
+    }
+
     private void showSetTimeDialog(boolean flag) {
         if (timeSetDialog == null) {
             timeSetDialog = new ProjTimeSetDialog();
@@ -299,19 +355,19 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ProjSearchFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+        ProjSearchFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
 
     }
 
-    @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION})
-    void showRationale(final PermissionRequest request){
+    @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    void showRationale(final PermissionRequest request) {
         request.proceed();
     }
 
-    @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION})
-    void permissionDenied(){
-        Toast.makeText(mContext, "已拒绝权限，定位功能将无法使用，若想使用请开启权限",Toast.LENGTH_LONG).show();
-        if (mViewModel.isChecked.get()){
+    @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    void permissionDenied() {
+        Toast.makeText(mContext, "已拒绝权限，定位功能将无法使用，若想使用请开启权限", Toast.LENGTH_LONG).show();
+        if (mViewModel.isChecked.get()) {
             mViewModel.isChecked.set(false);
         }
     }

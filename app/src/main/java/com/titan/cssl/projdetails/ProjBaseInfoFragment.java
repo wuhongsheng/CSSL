@@ -50,6 +50,7 @@ public class ProjBaseInfoFragment extends Fragment {
         initData();
         ProjDetailAdapter adapter = new ProjDetailAdapter(mContext,list);
         binding.projBaseInfo.setAdapter(adapter);
+
         return binding.getRoot();
     }
 

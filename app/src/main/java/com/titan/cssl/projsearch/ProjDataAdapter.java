@@ -66,7 +66,7 @@ public class ProjDataAdapter extends BaseAdapter {
         binding.setVariable(BR.time, list.get(i).getTIME());
         binding.setVariable(BR.type, list.get(i).getTYPE());
         binding.setVariable(BR.state, list.get(i).getSTATE());
-        binding.setVariable(BR.distance,list.get(i).getZB());
+        binding.setVariable(BR.distance,"距离:"+list.get(i).getZB()+"km");
         binding.setViewmodel(viewModel);
         return binding.getRoot();
     }

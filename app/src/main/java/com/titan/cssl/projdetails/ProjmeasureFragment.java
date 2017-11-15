@@ -46,20 +46,7 @@ public class ProjmeasureFragment extends Fragment {
     private List<String> list = new ArrayList<>();
     public static final int LOAD_ERROR = 0;
 
-    @SuppressLint("HandlerLeak")
-    Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case LOAD_ERROR:
-                    Toast.makeText(mContext,"图片加载错误",Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+    private Handler mHandler;
 
     public static ProjmeasureFragment getInstance() {
         if (Sington == null) {
@@ -85,6 +72,19 @@ public class ProjmeasureFragment extends Fragment {
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void initData(){
+        mHandler = new Handler(mContext.getMainLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case LOAD_ERROR:
+                        Toast.makeText(mContext,"图片加载错误",Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
         list = Arrays.asList(measureArray);
         ProjmeasureExpLVAdapter adapter = new ProjmeasureExpLVAdapter(mContext, list, viewModel,mHandler);
         binding.projMeasureExplv.setGroupIndicator(null);

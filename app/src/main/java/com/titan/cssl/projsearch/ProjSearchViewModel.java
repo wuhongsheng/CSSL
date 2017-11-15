@@ -106,6 +106,7 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
         projSearchSet.projDetails();
         mDataRepository.setProjNum(num);
         projNum.set(num);
+        Log.e("tag","num:"+num);
     }
 
     public void search() {

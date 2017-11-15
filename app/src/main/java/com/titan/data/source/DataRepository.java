@@ -48,7 +48,7 @@ public class DataRepository implements DataSource ,RemoteData{
 
     @Override
     public void setRole(String role) {
-        mLocalDataSource.setProjNum(role);
+        mLocalDataSource.setRole(role);
     }
 
     @Override

@@ -22,11 +22,14 @@ public class MaterialDialogUtil {
      * @param msg
      * @return
      */
-    public static MaterialDialog showLoadProgress(Context context, String msg){
+    public static MaterialDialog showLoadProgress(Context context, String msg,
+                                                  DialogInterface.OnCancelListener listener){
         dialog =  new MaterialDialog.Builder(context)
                 .content(msg)
                 .progress(true, 0)
-                .cancelable(false)
+                .cancelable(true)
+                .canceledOnTouchOutside(false)
+                .cancelListener(listener)
                 .build();
         return dialog;
     }
