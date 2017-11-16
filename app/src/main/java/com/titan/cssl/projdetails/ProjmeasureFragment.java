@@ -1,7 +1,6 @@
 package com.titan.cssl.projdetails;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +16,6 @@ import android.widget.Toast;
 
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragProjMeasureBinding;
-import com.titan.data.source.DataRepository;
-import com.titan.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;

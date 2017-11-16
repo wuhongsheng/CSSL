@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.titan.BaseActivity;
 import com.titan.BaseViewModel;
+import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityReservePlanBinding;
 import com.titan.cssl.remote.DownLoadManager;
@@ -65,12 +66,13 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
         initData();
         initView();
 
+        MyApplication.getInstance().addActivity(this);
     }
 
     private void initData() {
         list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            list.add("测试" + i);
+            list.add("预案文档" + i);
         }
         handler = new Handler(mContext.getMainLooper()) {
             @Override
@@ -126,54 +128,54 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void read() {
 
-        String url = "images/piclib/201110/11/batch/1/112566/1318324033290v7yyq0gfms.jpg";
-        observable = RetrofitHelper.getInstance(mContext).getServer()
-                .downFile(url);
-        dialog = MaterialDialogUtil.showLoadProgress(mContext, "loading...",
-                new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        Log.e("tag", "dialog end");
-                        if (!subscriber.isUnsubscribed()){
-                            //中断网络
-                            subscriber.unsubscribe();
-                        }
-                    }
-                });
+//        String url = "images/piclib/201110/11/batch/1/112566/1318324033290v7yyq0gfms.jpg";
+//        observable = RetrofitHelper.getInstance(mContext).getServer()
+//                .downFile(url);
+//        dialog = MaterialDialogUtil.showLoadProgress(mContext, "loading...",
+//                new DialogInterface.OnCancelListener() {
+//                    @Override
+//                    public void onCancel(DialogInterface dialogInterface) {
+//                        Log.e("tag", "dialog end");
+//                        if (!subscriber.isUnsubscribed()){
+//                            //中断网络
+//                            subscriber.unsubscribe();
+//                        }
+//                    }
+//                });
+//        subscriber = new Subscriber<ResponseBody>() {
+//            @Override
+//            public void onCompleted() {
+//                Log.e("tag", "end");
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                Log.e("tag", "failed1" + e);
+//            }
+//
+//            @Override
+//            public void onNext(ResponseBody responseBody) {
+//                Message message = new Message();
+//                message.what = START;
+//                handler.sendMessage(message);
+//                if (!DownLoadManager.writeResponseBodyToDisk(mContext, responseBody).equals("")) {
+//                    Message message1 = new Message();
+//                    message1.what = STOP;
+//                    handler.sendMessage(message1);
+//                    Log.e("tag", "success");
+//                } else {
+//                    Message message2 = new Message();
+//                    message2.what = STOP;
+//                    handler.sendMessage(message2);
+//                    Log.e("tag", "failed");
+//                }
+//            }
+//        };
+//        observable.subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .subscribe(subscriber);
 //        String path = "/storage/emulated/0/新建 Word 2007.docx";
 //        Intent intent = MyFileUtil.getWordFileIntent(path);
-        subscriber = new Subscriber<ResponseBody>() {
-            @Override
-            public void onCompleted() {
-                Log.e("tag", "end");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("tag", "failed1" + e);
-            }
-
-            @Override
-            public void onNext(ResponseBody responseBody) {
-                Message message = new Message();
-                message.what = START;
-                handler.sendMessage(message);
-                if (!DownLoadManager.writeResponseBodyToDisk(mContext, responseBody).equals("")) {
-                    Message message1 = new Message();
-                    message1.what = STOP;
-                    handler.sendMessage(message1);
-                    Log.e("tag", "success");
-                } else {
-                    Message message2 = new Message();
-                    message2.what = STOP;
-                    handler.sendMessage(message2);
-                    Log.e("tag", "failed");
-                }
-            }
-        };
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(subscriber);
 //        startActivity(intent);
     }
 

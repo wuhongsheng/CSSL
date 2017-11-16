@@ -33,7 +33,7 @@ public class LoginViewModel extends BaseViewModel {
      * 登录
      */
     public void onLogin() {
-        if (checkEmpty()){
+        if (checkEmpty()) {
             login.showToast("请输入用户名和密码");
             return;
         }
@@ -47,11 +47,16 @@ public class LoginViewModel extends BaseViewModel {
 //
 //            @Override
 //            public void onSuccess(String info) {
-//                login.stopProgress();
 //                Gson gson = new Gson();
 //                UserModel loginModel = gson.fromJson(info,UserModel.class);
 //                mDataRepository.setRole(loginModel.getROLE());
+//                SharedPreferences.Editor editor = MyApplication.sharedPreferences.edit();
+//                editor.putBoolean("isremember", isremember.get());
+//                editor.putString("ic_user_name", username.get().trim());
+//                editor.putString("ic_password", password.get().trim());
+//                editor.apply();
 //                login.onNext();
+//                login.stopProgress();
 //            }
 //        });
         if (!username.get().trim().equals("admin")) {
@@ -71,30 +76,31 @@ public class LoginViewModel extends BaseViewModel {
     /**
      * 记住用户名
      */
-    public void onCheckRemember(){
-        if (checkEmpty()){
+    public void onCheckRemember() {
+        if (checkEmpty()) {
             isremember.set(!isremember.get());
             login.showToast("请输入用户名或密码");
             return;
         }
-        if (isremember.get()){
+        if (isremember.get()) {
             isremember.set(true);
-        }else {
+        } else {
             login.showToast("已取消记住用户名");
             isremember.set(false);
         }
         SharedPreferences.Editor editor = MyApplication.sharedPreferences.edit();
-        editor.putBoolean("isremember",isremember.get());
-        editor.putString("ic_user_name",username.get().trim());
-        editor.putString("ic_password",password.get().trim());
+        editor.putBoolean("isremember", isremember.get());
+        editor.putString("ic_user_name", username.get().trim());
+        editor.putString("ic_password", password.get().trim());
         editor.apply();
     }
 
     /**
      * 检查用户名或密码是否为空
+     *
      * @return 任意一个为空返回true，都不为空返回false
      */
-    private boolean checkEmpty(){
-        return TextUtils.isEmpty(username.get())|| TextUtils.isEmpty(password.get());
+    private boolean checkEmpty() {
+        return TextUtils.isEmpty(username.get()) || TextUtils.isEmpty(password.get());
     }
 }

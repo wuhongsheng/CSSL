@@ -51,6 +51,15 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
+        <!-- 注册监听网络变化的广播 -->
+        <receiver
+            android:name="com.titan.broadcastreceiver.ConnectionChangeReceiver"
+            android:label="NetworkConnection">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".login.LoginActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -64,7 +73,7 @@
         <activity
             android:name=".projsearch.ProjSearchActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
 
         </activity>
         <activity android:name=".projdetails.ProjDetailActivity"/>

@@ -2,14 +2,12 @@ package com.titan.cssl.projsearch;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,29 +22,24 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.utils.DistanceUtil;
-import com.esri.arcgisruntime.geometry.Point;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.DialogSearchSetBinding;
 import com.titan.cssl.databinding.FragSearchBinding;
 import com.titan.cssl.login.LoginActivity;
+import com.titan.cssl.projdetails.ProjDetailActivity;
 import com.titan.cssl.reserveplan.ProjReservePlanActivity;
 import com.titan.location.LocationService;
 import com.titan.model.ProjSearch;
-import com.titan.cssl.projdetails.ProjDetailActivity;
 import com.titan.util.MaterialDialogUtil;
-import com.titan.util.TitanUtil;
-import com.titan.util.ToastUtil;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
@@ -91,6 +84,8 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     private ProjTimeSetDialog timeSetDialog;
     private ProjDataAdapter projDataAdapter;
     private LocationService mLocationService;
+    private List<ProjSearch> list = new ArrayList<>();
+    private ProjSearch[] searches;
 
     public static ProjSearchFragment getInstance() {
         if (fragment == null) {
@@ -157,6 +152,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
      * 退出登录
      */
     private void signOut() {
+        //关闭定位监听
         if (mLocationService != null) {
             mLocationService.unregisterListener(mViewModel);
             mLocationService.stop();
@@ -175,9 +171,20 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         layout.requestFocus();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //关闭定位监听
+        if (mLocationService != null) {
+            mLocationService.unregisterListener(mViewModel);
+            mLocationService.stop();
+        }
+    }
+
     private void initData() {
-        List<ProjSearch> list = new ArrayList<>();
-        ProjSearch[] searches = new ProjSearch[30];
+
+        searches = new ProjSearch[30];
+        DecimalFormat fnum = new DecimalFormat("##0.00");
         for (int i = 0; i < 30; i++) {
             Random random = new Random();
             ProjSearch search = new ProjSearch();
@@ -186,11 +193,11 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
             search.setSTATE(stateArray[i % 4]);
             search.setTIME(timeArray[i % 4]);
             search.setTYPE(typeArray[i % 3]);
-            search.setZB(random.nextFloat() + random.nextInt(20) + "");
+            search.setZB(fnum.format(random.nextFloat() + random.nextInt(30)) + "");
 //            list.add(search);
             searches[i] = search;
         }
-        quickSort(searches, 0, 29);
+//        quickSort(searches, 0, 29);
         list.addAll(Arrays.asList(searches));
         projDataAdapter = new ProjDataAdapter(mContext, list, mViewModel);
         binding.projectList.setAdapter(projDataAdapter);
@@ -230,9 +237,9 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
                     })
                     .build();
         }
+        searchSetBinding.setKeyword.clearFocus();
         setDialog.show();
         searchSetBinding.setViewmodel(mViewModel);
-        searchSetBinding.setKeyword.setFocusable(false);
         mViewModel.startTime.set("请选择");
         mViewModel.endTime.set("请选择");
         mViewModel.projectType.set("请选择");
@@ -240,12 +247,12 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     }
 
     public void search() {
-        for (int i = 0; i < 20; i++) {
-            Random random = new Random();
-            testArray[i] = random.nextFloat() + random.nextInt(20);
+        if (mViewModel.isChecked.get()){
+            quickSort(searches,0,29);
+            list.clear();
+            list.addAll(Arrays.asList(searches));
+            projDataAdapter.notifyDataSetChanged();
         }
-//        quickSort(testArray,0,19);
-        Log.e("tag", "array:" + Arrays.toString(testArray));
         Log.e("tag", mViewModel.startTime.get() + "," + mViewModel.endTime.get() + "," + mViewModel.projectType.get()
                 + "," + mViewModel.projectStatus.get() + "," + mViewModel.isChecked.get() + "," + mViewModel.keyWord.get());
     }
@@ -287,8 +294,9 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     }
 
     @Override
-    public void projDetails() {
+    public void projDetails(String type) {
         Intent intent = new Intent(mContext, ProjDetailActivity.class);
+        intent.putExtra("projType", type);
         mContext.startActivity(intent);
     }
 
@@ -299,25 +307,26 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         }
         int i = left;
         int j = right;
+
+        ProjSearch projSearch = a[left];
         float pivot = Float.parseFloat(a[left].getZB());
-        ProjSearch pivotObj = a[left];
+
         while (i != j) {
             while (Float.parseFloat(a[j].getZB()) >= pivot && i < j)
                 j--;
             while (Float.parseFloat(a[i].getZB()) <= pivot && i < j)
                 i++;
             if (i < j) {
-                ProjSearch t = a[i];
+                ProjSearch projSearch1 = a[i];
                 a[i] = a[j];
-                a[j] = t;
+                a[j] = projSearch1;
             }
         }
         a[left] = a[i];
-        a[i].setZB(pivot + "");
-        a[i] = pivotObj;
+        a[i] = projSearch;
 //        float pivot = a[left];
 //        while (i != j) {
-//            while (a.[j] >= pivot && i < j)
+//            while (a[j] >= pivot && i < j)
 //                j--;
 //            while (a[i] <= pivot && i < j)
 //                i++;
@@ -356,7 +365,6 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ProjSearchFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-
     }
 
     @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})

@@ -113,8 +113,8 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
         List<String> jpgList = new ArrayList<>();
         List<String> docList = new ArrayList<>();
         for (int j = 0; j < 3; j++) {
-            jpgList.add("测试"+j+".jpg");
-            docList.add("测试"+j+".doc");
+            jpgList.add("测试图片"+j+".jpg");
+            docList.add("测试文档"+j+".doc");
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext,R.layout.item_arrayadapter_test,jpgList);
         binding.projPhotoList.setAdapter(arrayAdapter);
@@ -122,8 +122,8 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
         binding.projPhotoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String path = "http://b.hiphotos.baidu.com/image/pic/item/a686c9177f3e6709085282ec31c79f3df8dc5557.jpg";
-                task = new getImageCacheAsyncTask(mContext).execute(path);
+//                String path = "http://b.hiphotos.baidu.com/image/pic/item/a686c9177f3e6709085282ec31c79f3df8dc5557.jpg";
+//                task = new getImageCacheAsyncTask(mContext).execute(path);
             }
         });
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mContext,R.layout.item_arrayadapter_test,docList);
@@ -132,8 +132,8 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
         binding.projDocList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String path = "/storage/emulated/0/接口需求.docx";
-                mContext.startActivity(MyFileUtil.getWordFileIntent(path));
+//                String path = "/storage/emulated/0/接口需求.docx";
+//                mContext.startActivity(MyFileUtil.getWordFileIntent(path));
             }
         });
         binding.setViewmodel(viewModel);

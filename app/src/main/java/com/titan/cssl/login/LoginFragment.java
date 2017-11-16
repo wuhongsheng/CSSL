@@ -9,11 +9,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLoginBinding;
 import com.titan.cssl.projsearch.ProjSearchActivity;
-import com.titan.cssl.util.ToastUtil;
 import com.titan.util.MaterialDialogUtil;
 
 /**
@@ -25,7 +25,6 @@ public class LoginFragment extends Fragment implements Login {
     private Context mContext;
     private FragLoginBinding fragLoginBinding;
     private LoginViewModel loginViewModel;
-    private Dialog dialog;
     private static LoginFragment singleton;
 
     public static LoginFragment newInstance() {
@@ -65,9 +64,8 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void showProgress() {
-        dialog = MaterialDialogUtil.showLoadProgress(mContext,
-                mContext.getString(R.string.logging),null);
-        dialog.show();
+        MaterialDialogUtil.showLoadProgress(mContext,
+                mContext.getString(R.string.logging),null).show();
     }
 
     @Override
@@ -80,6 +78,6 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void showToast(String info) {
-        ToastUtil.setToast(getActivity(), info);
+        Toast.makeText(getActivity(), info,Toast.LENGTH_SHORT).show();
     }
 }

@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,13 +22,15 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.JsonObject;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLocalCensorBinding;
-import com.titan.cssl.util.ToastUtil;
 import com.titan.util.MyFileUtil;
 import com.titan.util.ResourcesManager;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,7 +114,7 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
 
             @Override
             public void selectedImgMax(Object t, boolean isChecked, int maxSize) {
-                ToastUtil.setToast(mContext, "你最多只能选择" + maxSize + "张图片");
+                Toast.makeText(mContext, "你最多只能选择" + maxSize + "张图片",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -122,7 +125,7 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     @Override
     public void addImage() {
         if (urlList.size() >= 3) {
-            ToastUtil.setToast(mContext, "你最多只能选择3张图片");
+            Toast.makeText(mContext, "你最多只能选择3张图片",Toast.LENGTH_SHORT).show();
             return;
         }
         final String[] array = new String[]{"相机", "相册"};
@@ -244,7 +247,7 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
      */
     @Override
     public void localCensorSubmit() {
-        ToastUtil.setToast(mContext, "提交");
+        Toast.makeText(mContext, "提交",Toast.LENGTH_SHORT).show();
     }
 
     /**

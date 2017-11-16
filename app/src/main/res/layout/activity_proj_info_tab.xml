@@ -3,6 +3,8 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="viewmodel"
             type="com.titan.cssl.projdetails.ProjDetailViewModel"/>
@@ -21,20 +23,21 @@
             <TextView
                 android:id="@+id/base_info"
                 style="@style/tab_tv"
+                android:onClick="@{()->viewmodel.pagerSelect(0)}"
                 android:text="@string/base_info"
-                android:onClick="@{()->viewmodel.pagerSelect(0)}"/>
+                android:visibility="@{viewmodel.hasBaseinfo?View.VISIBLE: View.GONE}"/>
 
             <TextView
                 android:id="@+id/survey"
                 style="@style/tab_tv"
-                android:text="@string/basic_facts"
-                android:onClick="@{()->viewmodel.pagerSelect(1)}"/>
+                android:onClick="@{()->viewmodel.pagerSelect(1)}"
+                android:text="@string/basic_facts"/>
 
             <TextView
                 android:id="@+id/proj_measure"
                 style="@style/tab_tv"
-                android:text="@string/proj_measure"
-                android:onClick="@{()->viewmodel.pagerSelect(2)}"/>
+                android:onClick="@{()->viewmodel.pagerSelect(2)}"
+                android:text="@string/proj_measure"/>
         </LinearLayout>
 
         <View

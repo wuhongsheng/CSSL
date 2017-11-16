@@ -52,8 +52,8 @@ public class ProjDetailAdapter extends BaseAdapter {
         }else {
             binding = DataBindingUtil.getBinding(view);
         }
-        binding.setVariable(BR.name,"12");
-        binding.setVariable(BR.value,"asd");
+        binding.setVariable(BR.name,"测试字段");
+        binding.setVariable(BR.value,"测试字段值");
         return binding.getRoot();
     }
 }

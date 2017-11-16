@@ -3,13 +3,13 @@ package com.titan.cssl.projsearch;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.mapapi.model.LatLng;
 import com.titan.BaseViewModel;
 import com.titan.data.source.DataRepository;
-import com.titan.util.ToastUtil;
 
 
 /**
@@ -102,8 +102,8 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
         optionSelect.select(value);
     }
 
-    public void projDetails(String num) {
-        projSearchSet.projDetails();
+    public void projDetails(String num,String type) {
+        projSearchSet.projDetails(type);
         mDataRepository.setProjNum(num);
         projNum.set(num);
         Log.e("tag","num:"+num);
@@ -128,7 +128,8 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
             //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
             Log.e("tag","lat:"+latitude+","+"lon:"+longitude+"radius："+radius+","+coorType);
         }else {
-            ToastUtil.setToast(mContext,"定位失败："+bdLocation.getLocTypeDescription()+",请检查权限是否授予");
+            Toast.makeText(mContext,"定位失败："+bdLocation.getLocTypeDescription()+",请检查权限是否授予"
+                    ,Toast.LENGTH_SHORT).show();
         }
     }
 

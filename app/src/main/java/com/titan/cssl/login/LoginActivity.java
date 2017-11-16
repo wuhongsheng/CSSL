@@ -42,7 +42,6 @@ public class LoginActivity extends BaseActivity {
         binding = DataBindingUtil.inflate(LayoutInflater.from(this),R.layout.activity_login,
                 null,false);
         setContentView(binding.getRoot());
-        MyApplication.getInstance();
         sharedPreferences = MyApplication.sharedPreferences;
         mFragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
@@ -52,6 +51,8 @@ public class LoginActivity extends BaseActivity {
         binding.loginToolbar.setTitleTextColor(getResources().getColor(R.color.white));
         binding.loginToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         initData();
+
+        MyApplication.getInstance().addActivity(this);
     }
 
     /**

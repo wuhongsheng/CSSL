@@ -35,7 +35,7 @@ public interface ProjSearchSet {
     /**
      * 点击结果项进入详情页面
      */
-    void projDetails();
+    void projDetails(String type);
     /**
      * 点击结果项进入详情页面
      */

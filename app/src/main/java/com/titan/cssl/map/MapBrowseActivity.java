@@ -1,26 +1,22 @@
 package com.titan.cssl.map;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.storage.StorageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,37 +26,29 @@ import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.data.TileCache;
 import com.esri.arcgisruntime.geometry.Envelope;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
-import com.esri.arcgisruntime.geometry.Multipoint;
-import com.esri.arcgisruntime.geometry.MultipointBuilder;
 import com.esri.arcgisruntime.geometry.PointCollection;
 import com.esri.arcgisruntime.geometry.Polygon;
-import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
-import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.BackgroundGrid;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
-import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.MarkerSymbol;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
-import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
-import com.nostra13.universalimageloader.utils.L;
 import com.titan.BaseActivity;
 import com.titan.BaseViewModel;
+import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityMapBrowseBinding;
-import com.titan.cssl.util.ToastUtil;
-import com.titan.model.ProjSearch;
+import com.titan.util.MaterialDialogUtil;
 import com.titan.util.ResourcesManager;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,38 +99,46 @@ public class MapBrowseActivity extends BaseActivity {
             ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud8065403504,none,RP5X0H4AH7CLJ9HSX018");
             //去除版权声明
             binding.mapview.setAttributionTextVisible(false);
-            if (fileList!=null&&fileList.size()>0){
-                cache = new TileCache(fileList.get(0).getAbsolutePath());
-                tiledLayer = new ArcGISTiledLayer(cache);
-                basemap = new Basemap(tiledLayer);
-                arcGISMap = new ArcGISMap();
-                arcGISMap.setBasemap(basemap);
-                binding.mapview.setMap(arcGISMap);
-                graphicsOverlay = new GraphicsOverlay();
-                binding.mapview.getGraphicsOverlays().add(graphicsOverlay);
+//            if (fileList != null && fileList.size() > 0) {
+//                cache = new TileCache(fileList.get(0).getAbsolutePath());
+//                tiledLayer = new ArcGISTiledLayer(cache);
+//                basemap = new Basemap(tiledLayer);
+            arcGISMap = new ArcGISMap(Basemap.createImageryWithLabelsVector());
+            //arcGISMap.setBasemap(basemap);
+            binding.mapview.setMap(arcGISMap);
+            graphicsOverlay = new GraphicsOverlay();
+            binding.mapview.getGraphicsOverlays().add(graphicsOverlay);
 
-                markerSymbol = new PictureMarkerSymbol((BitmapDrawable) ContextCompat
-                        .getDrawable(mContext, R.drawable.icon_location));
-                createLable();
-                binding.mapview.setOnTouchListener(new DefaultMapViewOnTouchListener(mContext,
-                        binding.mapview) {
-                    @Override
-                    public boolean onSingleTapConfirmed(MotionEvent e) {
+            markerSymbol = new PictureMarkerSymbol((BitmapDrawable) ContextCompat
+                    .getDrawable(mContext, R.drawable.icon_location));
+            createLable();
+            binding.mapview.setOnTouchListener(new DefaultMapViewOnTouchListener(mContext,
+                    binding.mapview) {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e) {
+                    try {
                         com.esri.arcgisruntime.geometry.Point point;
                         point = binding.mapview
                                 .screenToLocation(new Point((int) e.getX(), (int) e.getY()));
                         com.esri.arcgisruntime.geometry.Point point1 = (com.esri.arcgisruntime.geometry
                                 .Point) GeometryEngine.project(point, SpatialReferences.getWgs84());
                         Graphic graphic = new Graphic(point1, markerSymbol);
-                        Log.e("tag", "point:" + point1.getX() + "," + point1.getY());
-                        graphicsOverlay.getGraphics().add(graphic);
-                        return super.onSingleTapConfirmed(e);
+                        Log.e("tag", "point:" + point1.getX() + "," + point1.getY() + ","
+                                + binding.mapview.getMapScale());
+//                        graphicsOverlay.getGraphics().add(graphic);
+                    } catch (Exception e1) {
+                        Toast.makeText(mContext,"map error:"+ e1,Toast.LENGTH_SHORT).show();
+                        Log.e("tag", "map error:" + e1);
                     }
-                });
-            }
+                    return super.onSingleTapConfirmed(e);
+                }
+            });
+//            }
         } catch (Exception e) {
             Log.e("tag", "mapError:" + e);
         }
+
+        MyApplication.getInstance().addActivity(this);
     }
 
     @Override
@@ -174,17 +170,31 @@ public class MapBrowseActivity extends BaseActivity {
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     void initData() {
-        fileList = manager.getPahts("/otitan.map", "image");
+//        fileList = manager.getPahts(otitan_map, "image");
+//        if (fileList == null || fileList.size() <= 0) {
+//            MaterialDialogUtil.showSureDialog(mContext, "没有发现图层数据")
+//                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                        @Override
+//                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                            dialog.dismiss();
+//                        }
+//                    }).build().show();
+//        }
     }
 
     private void createLable() {
         Intent intent = getIntent();
         if (intent != null) {
-            List<String> list = getIntent().getStringArrayListExtra("coordinate");
+            List<String> list1 = getIntent().getStringArrayListExtra("polygon");
+            List<String> list2 = getIntent().getStringArrayListExtra("point");
+            List<String> list3 = getIntent().getStringArrayListExtra("line");
+            com.esri.arcgisruntime.geometry.Point center = new com.esri.arcgisruntime.geometry
+                    .Point(112.98124011822763, 28.18958143125394, SpatialReferences.getWgs84());
+            binding.mapview.setViewpointCenterAsync(center, 20376.198251415677);
             try {
                 String[] strings;
-                if (list != null && list.size() == 1) {
-                    strings = list.get(0).split(",");
+                if (list2 != null && list2.size() == 1) {
+                    strings = list2.get(0).split(",");
                     double d1 = Double.parseDouble(strings[0]);
                     double d2 = Double.parseDouble(strings[1]);
 
@@ -192,31 +202,43 @@ public class MapBrowseActivity extends BaseActivity {
                             .Point(d1, d2, SpatialReferences.getWgs84());
                     graphicsOverlay.getGraphics().add(new Graphic(point, markerSymbol));
                     binding.mapview.setViewpointCenterAsync(point);
-                } else if (list != null && list.size() > 1) {
-                    PointCollection collection = new PointCollection(SpatialReferences.getWgs84());
-                    for (String str : list) {
-                        strings = str.split(",");
-                        double d1 = Double.parseDouble(strings[0]);
-                        double d2 = Double.parseDouble(strings[1]);
-                        collection.add(d1, d2);
-                    }
-                    Polygon polygon = new Polygon(collection);
-                    SimpleLineSymbol outlineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID,
-                            Color.BLUE, 2.0f);
-                    SimpleFillSymbol symbol = new SimpleFillSymbol(SimpleFillSymbol.Style.DIAGONAL_CROSS,
-                            Color.GREEN, outlineSymbol);
-                    graphic = new Graphic(polygon, symbol);
-                    locaLable();
-                    graphicsOverlay.getGraphics().add(graphic);
-                } else {
-                    ToastUtil.setToast(mContext, "坐标参数错误");
                 }
+                if (list1 != null && list1.size() > 1) {
+                    createPolygon(list1);
+                }
+                if (list2 != null && list2.size() > 1) {
+                    createPolygon(list2);
+                }
+                if (list3 != null && list3.size() > 1) {
+                    createPolygon(list3);
+                    return;
+                }
+                Toast.makeText(mContext, "没有坐标参数", Toast.LENGTH_SHORT).show();
             } catch (NumberFormatException e) {
-                ToastUtil.setToast(mContext, "坐标参数错误:" + e);
+                Toast.makeText(mContext, "坐标参数错误:" + e, Toast.LENGTH_SHORT).show();
                 Log.e("tag", "坐标参数错误:" + e);
             }
 
         }
+    }
+
+    private void createPolygon(List<String> list1) {
+        String[] strings;
+        PointCollection collection = new PointCollection(SpatialReferences.getWgs84());
+        for (String str : list1) {
+            strings = str.split(",");
+            double d1 = Double.parseDouble(strings[0]);
+            double d2 = Double.parseDouble(strings[1]);
+            collection.add(d1, d2);
+        }
+        Polygon polygon = new Polygon(collection);
+        SimpleLineSymbol outlineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID,
+                Color.BLUE, 2.0f);
+        SimpleFillSymbol symbol = new SimpleFillSymbol(SimpleFillSymbol.Style.DIAGONAL_CROSS,
+                Color.GREEN, outlineSymbol);
+        graphic = new Graphic(polygon, symbol);
+        locaLable();
+        graphicsOverlay.getGraphics().add(graphic);
     }
 
     @Override
@@ -230,6 +252,10 @@ public class MapBrowseActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.map_change:
                 final List<File> list = fileList;
+                if (fileList == null || fileList.size() <= 0) {
+                    Toast.makeText(mContext, "没有图层数据", Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 List<String> stringList = new ArrayList<>();
                 for (File file : list) {
                     stringList.add(file.getName());
@@ -274,9 +300,21 @@ public class MapBrowseActivity extends BaseActivity {
     }
 
 
+    /**
+     * 定位标注到屏幕中央位置
+     */
     private void locaLable() {
-        Envelope envelope = graphic.getGeometry().getExtent();
-        binding.mapview.setViewpointCenterAsync(envelope.getCenter());
+//        if (graphic!=null){
+//            Envelope envelope = graphic.getGeometry().getExtent();
+//            binding.mapview.setViewpointCenterAsync(envelope.getCenter());
+//        }
+        if (tiledLayer != null) {
+            Envelope envelope = tiledLayer.getFullExtent();
+            binding.mapview.setViewpointCenterAsync(envelope.getCenter());
+        }
+        com.esri.arcgisruntime.geometry.Point center = new com.esri.arcgisruntime.geometry
+                .Point(112.98124011822763, 28.18958143125394, SpatialReferences.getWgs84());
+        binding.mapview.setViewpointCenterAsync(center, 20376.198251415677);
     }
 
     @Override
@@ -292,16 +330,16 @@ public class MapBrowseActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        MapBrowseActivityPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+        MapBrowseActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationale(final PermissionRequest request){
+    void showRationale(final PermissionRequest request) {
         request.proceed();
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void permissionDenied(){
-        Toast.makeText(mContext, "已拒绝权限，无法读取地图文件，若想使用请开启权限",Toast.LENGTH_LONG).show();
+    void permissionDenied() {
+        Toast.makeText(mContext, "已拒绝权限，无法读取地图文件，若想使用请开启权限", Toast.LENGTH_LONG).show();
     }
 }

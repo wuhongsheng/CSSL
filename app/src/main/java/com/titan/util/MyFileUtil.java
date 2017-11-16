@@ -4,15 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Looper;
+import android.util.Base64;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 
 /**
  * Created by hanyw on 2017/11/9/009.
@@ -88,6 +91,7 @@ public class MyFileUtil {
 
     /**
      * 复制文件
+     *
      * @param oldPathFile 准备复制的文件源
      * @param newPathFile 拷贝到新绝对路径带文件名
      * @throws IOException
@@ -129,4 +133,56 @@ public class MyFileUtil {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 将文件转成base64 字符串
+     *
+     * @param path 文件路径
+     */
+    public static String encodeBase64File(String path) throws IOException {
+        File file = new File(path);
+        FileInputStream inputFile;
+        String encodedString = null;
+        inputFile = new FileInputStream(file);
+        byte[] buffer = new byte[(int) file.length()];
+        inputFile.read(buffer);
+        inputFile.close();
+        encodedString = Base64.encodeToString(buffer, Base64.DEFAULT);
+        Log.e("Base64", "Base64---->" + encodedString);
+        return encodedString;
+
+    }
+
+    /**
+     * 将base64字符解码保存文件
+     *
+     * @param base64Code
+     * @param targetPath
+     * @throws Exception
+     */
+
+    public static void decoderBase64File(String base64Code, String targetPath) throws IOException {
+        File desFile = new File(targetPath);
+        FileOutputStream fos;
+        byte[] decodeBytes = Base64.decode(base64Code.getBytes(), Base64.DEFAULT);
+        fos = new FileOutputStream(desFile);
+        fos.write(decodeBytes);
+        fos.close();
+    }
+
+    /**
+     * 将base64字符保存文本文件
+     *
+     * @param base64Code
+     * @param targetPath
+     * @throws Exception
+     */
+
+    public static void toFile(String base64Code, String targetPath) throws Exception {
+        byte[] buffer = base64Code.getBytes();
+        FileOutputStream out = new FileOutputStream(targetPath);
+        out.write(buffer);
+        out.close();
+    }
+
 }

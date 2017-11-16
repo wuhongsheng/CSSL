@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.titan.BaseActivity;
+import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityLocalCensorBinding;
 import com.titan.cssl.util.ActivityUtils;
@@ -36,6 +37,8 @@ public class ProjLocalCensorActivity extends BaseActivity {
         viewModel = findOrCreateViewModel();
         fragment.setViewModel(viewModel);
         initView();
+
+        MyApplication.getInstance().addActivity(this);
     }
 
     /**

@@ -1,22 +1,29 @@
 package com.titan;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
-
+import android.widget.Toast;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.titan.broadcastreceiver.ConnectionChangeReceiver;
 import com.titan.cssl.util.BussUtil;
 import com.titan.cssl.util.NetUtil;
 import com.titan.cssl.util.ScreenTool;
-import com.titan.cssl.util.ToastUtil;
 import com.titan.location.LocationService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyApplication extends Application {
 
     public static MyApplication mApplication;
-    //用户存储
+
+    public List<Activity> activityList = new ArrayList<>();
+    /**
+     * 用户存储
+     */
     public static SharedPreferences sharedPreferences;
 
     /**
@@ -24,6 +31,9 @@ public class MyApplication extends Application {
      */
     public static LocationService locationService;
 
+    /**
+     * 屏幕尺寸
+     */
     public static ScreenTool.Screen screen;
 
     /**
@@ -64,8 +74,6 @@ public class MyApplication extends Application {
          */
         CrashReport.initCrashReport(getApplicationContext(), "c979af8785", true);
         instance = this;
-        /** 注册网络监听 */
-        //initNetworkReceiver();
         /** 百度定位初始化 */
         locationService = new LocationService(getApplicationContext());
         mApplication = this;
@@ -85,7 +93,7 @@ public class MyApplication extends Application {
      * 获取设备信息
      */
     public void getMbInfo() {
-		/* 获取mac地址 作为设备唯一号 */
+        /* 获取mac地址 作为设备唯一号 */
         String mac = BussUtil.getWifiMacAddress(this);
         if (mac != null && !mac.equals("")) {
             macAddress = mac;
@@ -95,7 +103,7 @@ public class MyApplication extends Application {
         mobileType = android.os.Build.MANUFACTURER + "——"
                 + android.os.Build.MODEL;// SM-P601 型号
         // android.os.Build.MANUFACTURER;// samsung 厂商
-		/* 获取屏幕分辨率 */
+        /* 获取屏幕分辨率 */
         screen = ScreenTool.getScreenPix(this);
     }
 
@@ -106,7 +114,7 @@ public class MyApplication extends Application {
     public boolean netWorkTip() {
         if (NetUtil.getNetworkState(instance) == NetUtil.NETWORN_NONE) {
             //Toast.makeText(instance,"网络未连接",Toast.LENGTH_SHORT).show();
-            ToastUtil.setToast(instance, "网络未连接");
+            Toast.makeText(instance, "网络未连接",Toast.LENGTH_SHORT).show();
             return false;
         } else {
             return true;
@@ -121,6 +129,25 @@ public class MyApplication extends Application {
             return false;
         } else {
             return true;
+        }
+    }
+
+    /**
+     * 添加已启动的activity
+     * @param activity
+     */
+    public void addActivity(Activity activity) {
+        activityList.add(activity);
+    }
+
+    /**
+     * 将list中的activity全部销毁
+     */
+    public void exit() {
+        for (Activity activity : activityList) {
+            if (activity != null) {
+                activity.finish();
+            }
         }
     }
 }

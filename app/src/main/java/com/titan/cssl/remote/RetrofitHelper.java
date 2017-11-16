@@ -1,10 +1,10 @@
 package com.titan.cssl.remote;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 import com.titan.cssl.R;
-import com.titan.cssl.util.ToastUtil;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -73,7 +73,7 @@ public class RetrofitHelper {
             if (connected) {
                 return chain.proceed(chain.request());
             } else {
-                 ToastUtil.setToast(mCntext,"网络错误，请检查网络连接");
+                Toast.makeText(mCntext,"网络错误，请检查网络连接",Toast.LENGTH_SHORT).show();
             }
             return null;
         }

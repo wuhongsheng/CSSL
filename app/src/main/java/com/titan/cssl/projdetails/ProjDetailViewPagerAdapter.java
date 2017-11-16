@@ -18,7 +18,17 @@ public class ProjDetailViewPagerAdapter extends FragmentPagerAdapter {
 
     public ProjDetailViewPagerAdapter(FragmentManager fm, List<Fragment> list) {
         super(fm);
-        this.mList = list;
+        this.mList = getmList(list);
+    }
+
+    private List<Fragment> getmList(List<Fragment> list){
+        List<Fragment> list1 = new ArrayList<>();
+        for (Fragment fragment:list){
+            if (fragment!=null){
+                list1.add(fragment);
+            }
+        }
+        return list1;
     }
 
     @Override

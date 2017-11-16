@@ -2,32 +2,18 @@ package com.titan.cssl.projsearch;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.esri.arcgisruntime.data.TileCache;
-import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
-import com.esri.arcgisruntime.mapping.ArcGISMap;
-import com.esri.arcgisruntime.mapping.Basemap;
 import com.titan.BaseActivity;
+import com.titan.MyApplication;
 import com.titan.cssl.R;
-import com.titan.data.Injection;
-import com.titan.data.local.LocalDataSource;
-import com.titan.data.source.DataRepository;
 import com.titan.cssl.databinding.ActivitySearchBinding;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import com.titan.data.Injection;
 
 /**
  * Created by hanyw on 2017/10/31/031.
@@ -40,6 +26,7 @@ public class ProjSearchActivity extends BaseActivity {
     private ProjSearchViewModel mViewModel;
     private ProjSearchFragment fragment;
     private ActivitySearchBinding binding;
+    private long mExitTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +37,22 @@ public class ProjSearchActivity extends BaseActivity {
         fragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
         fragment.setViewModel(mViewModel);
+
+        MyApplication.getInstance().addActivity(this);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            if ((System.currentTimeMillis() - mExitTime) > 1500){
+                Toast.makeText(mContext,"再按一次退出程序",Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();
+            }else {
+                MyApplication.getInstance().exit();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

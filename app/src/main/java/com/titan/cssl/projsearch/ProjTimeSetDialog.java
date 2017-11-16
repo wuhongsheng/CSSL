@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.DialogTimeSetBinding;
-import com.titan.cssl.util.ToastUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -76,11 +76,11 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
         int month = binding.setDatepicker.getMonth()+1;
         startTime = binding.setDatepicker.getYear()+"-"+month+"-"+binding.setDatepicker.getDayOfMonth()+" "
                 +binding.setTimepicker.getCurrentHour()+":"+binding.setTimepicker.getCurrentMinute();
-        searchFragViewModel.startTime.set(startTime);
         if (!compareTime(startTime,endTime)){
-            ToastUtil.setToast(getActivity(),"开始时间不能小于结束时间");
+            Toast.makeText(getActivity(),"开始时间不能小于结束时间",Toast.LENGTH_SHORT).show();
             return;
         }
+        searchFragViewModel.startTime.set(startTime);
         this.dismiss();
     }
 
@@ -89,11 +89,11 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
         int month = binding.setDatepicker.getMonth()+1;
         endTime = binding.setDatepicker.getYear()+"-"+month+"-"+binding.setDatepicker.getDayOfMonth()+" "
                 +binding.setTimepicker.getCurrentHour()+":"+binding.setTimepicker.getCurrentMinute();
-        searchFragViewModel.endTime.set(endTime);
         if (!compareTime(startTime,endTime)){
-            ToastUtil.setToast(getActivity(),"结束时间不能小于开始时间");
+            Toast.makeText(getActivity(),"结束时间不能小于开始时间",Toast.LENGTH_SHORT).show();
             return;
         }
+        searchFragViewModel.endTime.set(endTime);
         this.dismiss();
     }
 
