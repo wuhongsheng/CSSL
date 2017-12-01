@@ -7,5 +7,9 @@ package com.titan.cssl.projsearch;
 
 public interface OptionSelect {
 
+    /**
+     * 选择参数
+     * @param value
+     */
     void select(String value);
 }

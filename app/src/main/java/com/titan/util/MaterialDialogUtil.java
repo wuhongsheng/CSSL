@@ -8,6 +8,8 @@ import android.support.v7.app.AlertDialog;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.util.List;
+
 /**
  * Created by hanyw on 2017/11/10/010.
  * 进度弹窗
@@ -65,5 +67,19 @@ public class MaterialDialogUtil {
                         dialogInterface.dismiss();
                     }
                 });
+    }
+
+    public static MaterialDialog showInfoDialog(Context context, String title,
+                                                        List<String> list){
+        return new MaterialDialog.Builder(context)
+                .negativeText("取消")
+                .title(title)
+                .items(list)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                }).build();
     }
 }

@@ -6,5 +6,8 @@ package com.titan.cssl.reserveplan;
  */
 
 public interface ProjReservePlan {
+    /**
+     * 预案查看
+     */
     void load();
 }

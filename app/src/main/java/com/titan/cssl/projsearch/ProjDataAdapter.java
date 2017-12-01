@@ -31,10 +31,15 @@ public class ProjDataAdapter extends BaseAdapter {
      */
     private ProjSearchViewModel viewModel;
 
-    public ProjDataAdapter(Context context, List<ProjSearch> list, ProjSearchViewModel viewModel) {
+    public ProjDataAdapter(Context context,ProjSearchViewModel viewModel) {
         this.mContext = context;
         this.viewModel = viewModel;
+        this.list = viewModel.projSearchList.get();
+    }
+
+    public void setDate(List<ProjSearch> list){
         this.list = list;
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -61,12 +66,7 @@ public class ProjDataAdapter extends BaseAdapter {
         } else {
             binding = DataBindingUtil.getBinding(view);
         }
-        binding.setVariable(BR.num,list.get(i).getNUM());
-        binding.setVariable(BR.name, list.get(i).getNAME());
-        binding.setVariable(BR.time, list.get(i).getTIME());
-        binding.setVariable(BR.type, list.get(i).getTYPE());
-        binding.setVariable(BR.state, list.get(i).getSTATE());
-        binding.setVariable(BR.distance,"距离:"+list.get(i).getZB()+"km");
+        binding.setVariable(BR.projSearch,list.get(i));
         binding.setViewmodel(viewModel);
         return binding.getRoot();
     }

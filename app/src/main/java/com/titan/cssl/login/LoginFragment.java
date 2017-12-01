@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,12 @@ import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLoginBinding;
 import com.titan.cssl.projsearch.ProjSearchActivity;
 import com.titan.util.MaterialDialogUtil;
+import com.titan.util.ResourcesManager;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by hanyw on 2017/9/13/013.
@@ -25,13 +32,9 @@ public class LoginFragment extends Fragment implements Login {
     private Context mContext;
     private FragLoginBinding fragLoginBinding;
     private LoginViewModel loginViewModel;
-    private static LoginFragment singleton;
 
     public static LoginFragment newInstance() {
-        if (singleton == null) {
-            singleton = new LoginFragment();
-        }
-        return singleton;
+        return new LoginFragment();
     }
 
     public void setViewModel(LoginViewModel viewModel) {
@@ -56,7 +59,7 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void onNext() {
-        if (isAdded()){
+        if (isAdded()) {
             Intent intent = new Intent(mContext, ProjSearchActivity.class);
             startActivity(intent);
         }
@@ -65,7 +68,7 @@ public class LoginFragment extends Fragment implements Login {
     @Override
     public void showProgress() {
         MaterialDialogUtil.showLoadProgress(mContext,
-                mContext.getString(R.string.logging),null).show();
+                mContext.getString(R.string.logging), null).show();
     }
 
     @Override
@@ -78,6 +81,6 @@ public class LoginFragment extends Fragment implements Login {
 
     @Override
     public void showToast(String info) {
-        Toast.makeText(getActivity(), info,Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), info, Toast.LENGTH_SHORT).show();
     }
 }

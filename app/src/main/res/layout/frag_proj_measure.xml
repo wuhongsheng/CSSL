@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.projdetails.ProjDetailViewModel"/>
+    </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <ExpandableListView
             android:id="@+id/proj_measure_explv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/proj_measure_nodata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="暂无数据"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:visibility="@{viewmodel.hasData?View.GONE:View.VISIBLE}"/>
     </LinearLayout>
 </layout>

@@ -5,7 +5,7 @@ package com.titan.cssl.localcensor;
  * 现场审查接口
  */
 
-public interface ProjLocalCensor {
+public interface ProjOpinion {
     /**
      * 添加照片
      */
@@ -21,4 +21,19 @@ public interface ProjLocalCensor {
      * @param position 照片数组下标
      */
     void del(int position);
+    /**
+     * 显示进度条
+     */
+    void  showProgress();
+
+    /**
+     * 关闭进度条
+     */
+    void  stopProgress();
+
+    /**
+     * 显示信息
+     * @param info 信息内容
+     */
+    void  showToast(String info);
 }

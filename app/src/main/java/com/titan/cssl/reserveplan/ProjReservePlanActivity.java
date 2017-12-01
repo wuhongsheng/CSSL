@@ -94,7 +94,7 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
     private void initView() {
         Toolbar toolbar = binding.reserveToolbar;
         setSupportActionBar(toolbar);
-        toolbar.setTitle("长沙水土保持");
+        toolbar.setTitle(mContext.getString(R.string.appname));
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,19 +125,22 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
         ProjReservePlanActivityPermissionsDispatcher.readWithCheck(this);
     }
 
+    /**
+     * 下载预案文档
+     */
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void read() {
 
 //        String url = "images/piclib/201110/11/batch/1/112566/1318324033290v7yyq0gfms.jpg";
 //        observable = RetrofitHelper.getInstance(mContext).getServer()
 //                .downFile(url);
-//        dialog = MaterialDialogUtil.showLoadProgress(mContext, "loading...",
+//        dialog = MaterialDialogUtil.showLoadProgress(mContext, "loading1...",
 //                new DialogInterface.OnCancelListener() {
 //                    @Override
 //                    public void onCancel(DialogInterface dialogInterface) {
 //                        Log.e("tag", "dialog end");
 //                        if (!subscriber.isUnsubscribed()){
-//                            //中断网络
+//                            //中断网络请求
 //                            subscriber.unsubscribe();
 //                        }
 //                    }

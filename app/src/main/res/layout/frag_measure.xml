@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View"/>
+
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.measures.MeasureViewModel"/>
+    </data>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray"/>
+
+            <TextView
+                android:id="@+id/proj_measure_type"
+                style="@style/proj_baseinfo_title"
+                android:text="简要说明"/>
+
+            <TextView
+                android:id="@+id/proj_measure_type_value"
+                style="@style/proj_baseinfo_value"
+                android:layout_toEndOf="@+id/proj_measure_type"
+                android:text="@{viewmodel.brief}"/>
+
+            <TextView
+                android:id="@+id/proj_describe"
+                style="@style/proj_baseinfo_title"
+                android:layout_below="@+id/proj_measure_type_value"
+                android:text="描述"/>
+
+            <TextView
+                android:id="@+id/proj_name_value"
+                style="@style/proj_baseinfo_value"
+                android:layout_below="@+id/proj_measure_type_value"
+                android:layout_toEndOf="@+id/proj_describe"
+                android:text="@{viewmodel.depict}"/>
+
+            <TextView
+                android:id="@+id/proj_invest"
+                style="@style/proj_baseinfo_title"
+                android:layout_below="@+id/proj_name_value"
+                android:text="投资"/>
+
+            <TextView
+                style="@style/proj_baseinfo_value"
+                android:layout_below="@+id/proj_name_value"
+                android:layout_toEndOf="@+id/proj_invest"
+                android:text="@{viewmodel.invest}"/>
+
+            <TextView
+                android:id="@+id/proj_photo"
+                style="@style/proj_baseinfo_title"
+                android:layout_below="@+id/proj_invest"
+                android:text="现场照片"/>
+
+            <ListView
+                android:id="@+id/proj_photo_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/proj_photo"
+                android:layout_marginStart="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/proj_photo"
+                android:layout_marginStart="20dp"
+                android:text="暂无数据"
+                android:textSize="16sp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/proj_doc"
+                style="@style/proj_baseinfo_title"
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/proj_photo_list"
+                android:text="设计方案及审批手续"/>
+
+            <ListView
+                android:id="@+id/proj_doc_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/proj_doc"
+                android:layout_marginStart="10dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/proj_doc"
+                android:layout_marginStart="20dp"
+                android:text="暂无数据"
+                android:textSize="16sp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/proj_approval_opinion"
+                style="@style/proj_baseinfo_title"
+                android:layout_below="@+id/proj_doc_list"
+                android:text="整改意见"/>
+
+            <TextView
+                android:id="@+id/proj_opinion_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/proj_doc_list"
+                android:onClick="@{()->viewmodel.addOpinion()}"
+                android:padding="10dp"
+                android:text="@string/opinion_add"/>
+
+            <TextView
+                android:id="@+id/proj_prompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/proj_approval_opinion"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:text="@string/no_expert_opinion"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="@{viewmodel.hasInfo ? View.GONE : View.VISIBLE}"/>
+
+            <LinearLayout
+                android:id="@+id/measure_linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/proj_approval_opinion"
+                android:orientation="vertical"
+                android:visibility="@{viewmodel.hasInfo ? View.VISIBLE : View.GONE}">
+
+                <TextView
+                    android:id="@+id/measure_opinion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:padding="10dp"
+                    android:text="@{viewmodel.opinion}"
+                    android:textSize="16sp"/>
+
+                <ListView
+                    android:id="@+id/opinion_photo_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"/>
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+</layout>

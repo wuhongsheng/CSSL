@@ -1,9 +1,7 @@
-package com.titan.cssl.localcensor;
+package com.titan.cssl.measures;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,10 @@ import com.bumptech.glide.Glide;
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemCensorImgBinding;
+import com.titan.cssl.databinding.ItemMeasureBinding;
+import com.titan.model.ProjDetailMeasure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,18 +22,26 @@ import java.util.List;
  * 现场审查照片适配器
  */
 
-public class ProjCensorImageAdapter extends BaseAdapter {
+public class MeasureFileAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<String> list;//图片地址
-    private ProjLocalCensorViewModel model;
+    private List<String[]> list;//图片数据
+    private MeasureViewModel viewModel;
 
-    public ProjCensorImageAdapter(Context context, List<String> list, ProjLocalCensorViewModel model) {
+    public MeasureFileAdapter(Context context, List<String[]> list,
+                              MeasureViewModel viewModel) {
         this.mContext = context;
-        this.list = list;
-        this.model = model;
+        this.list = setListData(list);
+        this.viewModel = viewModel;
     }
 
+    private List<String[]> setListData(List<String[]> list){
+        if (list==null||list.size()<=0){
+            list = new ArrayList<>();
+            list.add(new String[]{"暂无数据",""});
+        }
+        return list;
+    }
     @Override
     public int getCount() {
         return list.size();
@@ -50,16 +59,16 @@ public class ProjCensorImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ItemCensorImgBinding binding;
+        ItemMeasureBinding binding;
         if (view == null) {
             binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
-                    R.layout.item_censor_img, viewGroup, false);
+                    R.layout.item_measure, viewGroup, false);
         } else {
             binding = DataBindingUtil.getBinding(view);
         }
-        Glide.with(mContext).load(list.get(i)).into(binding.itemCensorImg);
-        binding.setVariable(BR.position, i);
-        binding.setViewmodel(model);
+        binding.setVariable(BR.name, list.get(i)[0]);
+        binding.setVariable(BR.url, list.get(i)[1]);
+        binding.setViewmodel(viewModel);
         return binding.getRoot();
     }
 }

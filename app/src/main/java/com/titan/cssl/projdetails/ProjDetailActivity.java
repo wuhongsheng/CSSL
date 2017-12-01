@@ -3,26 +3,35 @@ package com.titan.cssl.projdetails;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.titan.BaseActivity;
 import com.titan.BaseViewModel;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityProjDetailBinding;
-import com.titan.cssl.localcensor.ProjLocalCensorActivity;
 import com.titan.cssl.map.MapBrowseActivity;
+import com.titan.cssl.measures.MeasureActivity;
+import com.titan.data.Injection;
+import com.titan.model.ProjDetailMeasure;
+import com.titan.util.MaterialDialogUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +50,9 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
      * 信息页面list
      */
     private List<Fragment> mList = new ArrayList<>();
+
+    private List<String> fragList = new ArrayList<>();
+
     /**
      * 信息页面适配器
      */
@@ -60,7 +72,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         binding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.activity_proj_detail,
                 null, false);
         setContentView(binding.getRoot());
-        viewModel = new ProjDetailViewModel(mContext, this);
+        viewModel = new ProjDetailViewModel(this, Injection.provideDataRepository(mContext), this);
         binding.setViewmodel(viewModel);
         binding.detailTab.setViewmodel(viewModel);
         initView();
@@ -73,38 +85,39 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_detail,menu);
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.map_mode:
-                List<String> list1 = new ArrayList<>();
-                List<String> list2 = new ArrayList<>();
-                List<String> list3 = new ArrayList<>();
-                list1.add("112.97519625669649,28.190151091879166");
-                list1.add("112.97925660276465,28.187339233709384");
-                list1.add("112.97441692070188,28.183706421250637");
-                list1.add("112.9713166414733,28.188153808851457");
-
-                list2.add("112.97878159843323,28.192224655341477");
-
-                list3.add("112.98360324579546,28.186365745578613");
-                list3.add("112.98701507407029,28.191908416694027");
-
-                Intent intent = new Intent(mContext, MapBrowseActivity.class);
-                //传入坐标参数
-                intent.putExtra("polygon", (Serializable) list1);
-                intent.putExtra("point",(Serializable) list2);
-                intent.putExtra("line",(Serializable) list3);
-                startActivity(intent);
+                viewModel.netRequest(1, true);
                 break;
             default:
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void showMap() {
+        Intent intent = new Intent(mContext, MapBrowseActivity.class);
+        //传入坐标参数
+        intent.putExtra("coordinate", (Serializable) viewModel.coordinateList.get());
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (viewModel.isRefresh.get()) {
+                viewModel.isRefresh.set(false);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /**
@@ -124,17 +137,31 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
+        binding.detailRefresh.setColorSchemeResources(R.color.blue, R.color.colorAccent, R.color.aqua);
+        binding.detailRefresh.setDistanceToTriggerSync(100);
+        binding.detailRefresh.setSize(SwipeRefreshLayout.DEFAULT);
+        binding.detailRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!viewModel.isRefresh.get()) {
+                    getData(viewModel.currentFrag.get(), true);
+                }
+            }
+        });
+
         Intent intent = getIntent();
         views = new View[0];
         //如果是8万㎡以上项目就关闭基本信息页面
-        if (intent!=null){
-            Log.e("tag","projtype:"+intent.getStringExtra("projType"));
+        if (intent != null) {
+            Log.e("tag", "projtype:" + intent.getStringExtra("projType"));
             String projType = intent.getStringExtra("projType");
-            if (projType.contains("8万㎡以上")){
-                viewModel.hasBaseinfo.set(false);
-                views = new View[]{binding.detailTab.survey,
+            if (projType == null) {
+                views = new View[]{binding.detailTab.baseInfo, binding.detailTab.survey,
                         binding.detailTab.projMeasure};
-            }else {
+            } else if (projType.contains("8万㎡以上")) {
+                viewModel.hasBaseinfo.set(false);
+                views = new View[]{binding.detailTab.survey, binding.detailTab.projMeasure};
+            } else {
                 views = new View[]{binding.detailTab.baseInfo, binding.detailTab.survey,
                         binding.detailTab.projMeasure};
             }
@@ -146,9 +173,9 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) binding.detailTab.slider
                         .getLayoutParams();
 
-                lp.leftMargin = (int) (positionOffset*sliderWidth+position*sliderWidth);
-                if (position!= views.length-1){
-                    setTabSelected(positionOffset, views[position], views[position+1]);
+                lp.leftMargin = (int) (positionOffset * sliderWidth + position * sliderWidth);
+                if (position != views.length - 1) {
+                    setTabSelected(positionOffset, views[position], views[position + 1]);
                 }
                 binding.detailTab.slider.setLayoutParams(lp);
             }
@@ -171,7 +198,9 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
      */
     private void initData() {
         ProjBaseInfoFragment infoFragment = ProjBaseInfoFragment.getInstance();
+        infoFragment.setViewModel(viewModel);
         ProjSummaryFragment surveyFragment = ProjSummaryFragment.getInstance();
+        surveyFragment.setViewModel(viewModel);
         ProjmeasureFragment measureFragment = ProjmeasureFragment.getInstance();
         measureFragment.setViewModel(viewModel);
         boolean b = views.length == 3 ? mList.add(infoFragment) : mList.add(null);
@@ -179,6 +208,25 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         mList.add(measureFragment);
         FragmentManager manager = getSupportFragmentManager();
         adapter = new ProjDetailViewPagerAdapter(manager, mList);
+        getData(0, false);
+    }
+
+    private void getData(int position, boolean flag) {
+        String projType = getIntent().getExtras().get("projType").toString();
+        if (projType != null && projType.equals("8万㎡以上")) {
+            viewModel.getData(position + 1, flag);
+            viewModel.currentFrag.set(position + 1);
+            if (!fragList.contains((position + 1) + "")) {
+                fragList.add((position + 1) + "");
+            }
+        } else {
+            viewModel.getData(position, flag);
+            viewModel.currentFrag.set(position);
+            if (!fragList.contains(position + "")) {
+                fragList.add(position + "");
+            }
+        }
+        viewModel.fragList.set(fragList);
     }
 
     /**
@@ -186,6 +234,12 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
      */
     private void updataViewPager(int position) {
         views[position].setSelected(true);
+        for (View view : views) {
+            if (view != views[position]) {
+                view.setSelected(false);
+            }
+        }
+        getData(position, false);
     }
 
     /**
@@ -228,23 +282,69 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 
     /**
      * 点击table选择页面
+     *
      * @param pager 页面下标
      */
     @Override
     public void pagerSelect(int pager) {
-        if (views.length==2){
-            pager = pager-1;
-        }
-        if (pager<0){
+        if (pager < 0) {
             return;
+        }
+        if (views.length == 2) {
+            pager = pager - 1;
         }
         binding.projInfoPager.setCurrentItem(pager);
         updataViewPager(pager);
     }
 
+    /**
+     * 查看项目措施详细信息
+     */
     @Override
-    public void addCensor() {
-        Intent intent = new Intent(mContext, ProjLocalCensorActivity.class);
+    public void measureInfo(ProjDetailMeasure.subBean subBean) {
+        Intent intent = new Intent(mContext, MeasureActivity.class);
+        intent.putExtra("subBean", subBean);
         startActivity(intent);
+    }
+
+    @Override
+    public void showToast(String info) {
+        Toast.makeText(mContext, info, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgress() {
+        MaterialDialogUtil.showLoadProgress(mContext, mContext.getString(R.string.loading), null).show();
+    }
+
+    @Override
+    public void stopProgress() {
+        MaterialDialogUtil.stopProgress();
+    }
+
+    @Override
+    public void refresh(int type) {
+        switch (type) {
+            case 0:
+                ProjBaseInfoFragment fragment1 = (ProjBaseInfoFragment) mList.get(0);
+                fragment1.setData();
+                break;
+            case 1:
+                ProjSummaryFragment fragment2 = (ProjSummaryFragment) mList.get(1);
+                fragment2.setData();
+                break;
+            case 2:
+                ProjmeasureFragment fragment3 = (ProjmeasureFragment) mList.get(2);
+                fragment3.setData();
+                break;
+            default:
+                break;
+        }
+        binding.detailRefresh.setRefreshing(false);
+    }
+
+    @Override
+    public void showSubInfo(List<String> list) {
+        MaterialDialogUtil.showInfoDialog(mContext,"详细信息",list).show();
     }
 }

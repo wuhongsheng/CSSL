@@ -29,9 +29,9 @@
     <application
         android:name="com.titan.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="@string/appname"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/NoActionBar"
         tools:replace="android:label">
@@ -56,7 +56,7 @@
             android:name="com.titan.broadcastreceiver.ConnectionChangeReceiver"
             android:label="NetworkConnection">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
 
@@ -65,30 +65,35 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
+                <!--<action android:name="android.intent.action.MAIN"/>-->
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".projsearch.ProjSearchActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden">
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
+        <activity android:name=".projdetails.ProjDetailActivity">
 
         </activity>
-        <activity android:name=".projdetails.ProjDetailActivity"/>
-        <activity android:name=".map.MapBrowseActivity"/>
-        <activity android:name=".localcensor.ProjLocalCensorActivity"/>
+        <activity android:name=".content.MapBrowseActivity"/>
+        <activity android:name=".localcensor.ProjOpinionActivity"/>
         <activity android:name=".reserveplan.ProjReservePlanActivity"/>
         <activity
             android:name="cn.finalteam.rxgalleryfinal.ui.activity.MediaActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBar"/>
+
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBar"/>
+        <activity android:name=".measures.MeasureActivity">
+
+        </activity>
+        <activity android:name=".map.MapBrowseActivity"/>
 
         <service
             android:name="com.baidu.location.f"

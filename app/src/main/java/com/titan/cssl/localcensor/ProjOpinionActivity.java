@@ -13,19 +13,20 @@ import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityLocalCensorBinding;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
+import com.titan.data.Injection;
+import com.titan.model.ProjDetailMeasure;
 
 /**
  * Created by hanyw on 2017/11/6/006.
- * 项目现场审查
+ * 项目整改意见
  */
 
-public class ProjLocalCensorActivity extends BaseActivity {
-
+public class ProjOpinionActivity extends BaseActivity {
 
     private static final String LOCALCENSOR_TAG = "LOCALCENSOR_TAG";
     private ActivityLocalCensorBinding binding;
-    private ProjLocalCensorFragment fragment;
-    private ProjLocalCensorViewModel viewModel;
+    private ProjOpinionFragment fragment;
+    private ProjOpinionViewModel viewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,23 +61,24 @@ public class ProjLocalCensorActivity extends BaseActivity {
     }
 
     @Override
-    public ProjLocalCensorFragment findOrCreateViewFragment() {
-        ProjLocalCensorFragment fragment = (ProjLocalCensorFragment) getSupportFragmentManager()
+    public ProjOpinionFragment findOrCreateViewFragment() {
+        ProjOpinionFragment fragment = (ProjOpinionFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.censor_frame);
         if (fragment == null) {
-            fragment = ProjLocalCensorFragment.getInstance();
+            fragment = ProjOpinionFragment.getInstance((ProjDetailMeasure.subBean)
+                    getIntent().getExtras().get("measure"));
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.censor_frame);
         }
         return fragment;
     }
 
     @Override
-    public ProjLocalCensorViewModel findOrCreateViewModel() {
+    public ProjOpinionViewModel findOrCreateViewModel() {
         @SuppressWarnings("unchecked")
-        ViewModelHolder<ProjLocalCensorViewModel> holder = (ViewModelHolder<ProjLocalCensorViewModel>)
+        ViewModelHolder<ProjOpinionViewModel> holder = (ViewModelHolder<ProjOpinionViewModel>)
                 getSupportFragmentManager().findFragmentByTag(LOCALCENSOR_TAG);
         if (holder==null||holder.getViewmodel()==null){
-            ProjLocalCensorViewModel model = new ProjLocalCensorViewModel(fragment);
+            ProjOpinionViewModel model = new ProjOpinionViewModel(fragment, Injection.provideDataRepository(mContext));
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     ViewModelHolder.createContainer(model),LOCALCENSOR_TAG);
             return model;

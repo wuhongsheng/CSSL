@@ -57,7 +57,7 @@ public class ProjDetailSummary2 implements Serializable {
     private String QHLX;// 气候类型
     private String TRLX;// 土壤类型
     private String ZBLX;// 植被类型
-    private List<String> ZB;//) 坐标集合
+    private String ZB;//) 坐标集合
     private String YDMTRQSMS;// 原地貌土壤侵蚀模数/[t/km²·a]
     private String ORG;// 所属单位(水土保持监督管理单位)
 }

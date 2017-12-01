@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +21,17 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.gson.JsonObject;
+import com.google.gson.Gson;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLocalCensorBinding;
+import com.titan.model.ProjCensor;
+import com.titan.model.ProjDetailMeasure;
+import com.titan.util.MaterialDialogUtil;
 import com.titan.util.MyFileUtil;
 import com.titan.util.ResourcesManager;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,13 +53,13 @@ import permissions.dispatcher.RuntimePermissions;
  * 现场审查
  */
 @RuntimePermissions
-public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor {
+public class ProjOpinionFragment extends Fragment implements ProjOpinion {
 
-    private ProjLocalCensorViewModel viewModel;
+    private ProjOpinionViewModel viewModel;
 
-    private static ProjLocalCensorFragment fragment;
     private FragLocalCensorBinding binding;
     private Context mContext;
+    private static ProjDetailMeasure.subBean mSubBean;
     /**
      * 照片地址
      */
@@ -74,13 +75,11 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     /**
      * 照片列表适配器
      */
-    private ProjCensorImageAdapter adapter;
+    private ProjOpinionImageAdapter adapter;
 
-    public static ProjLocalCensorFragment getInstance() {
-        if (fragment == null) {
-            fragment = new ProjLocalCensorFragment();
-        }
-        return fragment;
+    public static ProjOpinionFragment getInstance(ProjDetailMeasure.subBean subBean) {
+        mSubBean = subBean;
+        return new ProjOpinionFragment();
     }
 
     /**
@@ -88,7 +87,7 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
      *
      * @param viewModel
      */
-    public void setViewModel(ProjLocalCensorViewModel viewModel) {
+    public void setViewModel(ProjOpinionViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
@@ -136,13 +135,13 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         switch (position) {
                             case 0:
-                                ProjLocalCensorFragmentPermissionsDispatcher
-                                        .takePhotoWithCheck(ProjLocalCensorFragment.this);
+                                ProjOpinionFragmentPermissionsDispatcher
+                                        .takePhotoWithCheck(ProjOpinionFragment.this);
                                 dialog.dismiss();
                                 break;
                             case 1:
-                                ProjLocalCensorFragmentPermissionsDispatcher
-                                        .selectPhotoWithCheck(ProjLocalCensorFragment.this);
+                                ProjOpinionFragmentPermissionsDispatcher
+                                        .selectPhotoWithCheck(ProjOpinionFragment.this);
                                 dialog.dismiss();
                                 break;
                             default:
@@ -164,7 +163,7 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     /**
      * 拍照
      */
-    @NeedsPermission(Manifest.permission.CAMERA)
+    @NeedsPermission({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
     void takePhoto() {
         try {
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
@@ -232,7 +231,7 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
      */
     private void refresh() {
         if (adapter == null) {
-            adapter = new ProjCensorImageAdapter(mContext, urlList, viewModel);
+            adapter = new ProjOpinionImageAdapter(mContext, urlList, viewModel);
             binding.censorGridview.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
@@ -247,7 +246,13 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
      */
     @Override
     public void localCensorSubmit() {
-        Toast.makeText(mContext, "提交",Toast.LENGTH_SHORT).show();
+        if (urlList.size()<=0){
+            Toast.makeText(mContext,"图片不能为空",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        viewModel.urlList.set(urlList);
+        viewModel.subBean.set(mSubBean);
+        viewModel.upData();
     }
 
     /**
@@ -258,6 +263,7 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     @Override
     public void del(int position) {
         urlList.remove(position);
+        viewModel.urlList.set(urlList);
         adapter.notifyDataSetChanged();
         if (urlList == null || urlList.size() <= 0) {
             binding.projPrompt.setVisibility(View.VISIBLE);
@@ -265,9 +271,24 @@ public class ProjLocalCensorFragment extends Fragment implements ProjLocalCensor
     }
 
     @Override
+    public void showProgress() {
+        MaterialDialogUtil.showLoadProgress(mContext,getString(R.string.loading),null).show();
+    }
+
+    @Override
+    public void stopProgress() {
+        MaterialDialogUtil.stopProgress();
+    }
+
+    @Override
+    public void showToast(String info) {
+        Toast.makeText(mContext,info,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ProjLocalCensorFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+        ProjOpinionFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
     }
 
     @OnShowRationale({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})

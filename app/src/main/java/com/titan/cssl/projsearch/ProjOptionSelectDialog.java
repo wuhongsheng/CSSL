@@ -29,8 +29,14 @@ public class ProjOptionSelectDialog extends DialogFragment implements OptionSele
 
     private ProjSearchViewModel searchFragViewModel;
 
+    /**
+     * 参数
+     */
     private List<String> list;
 
+    /**
+     * 参数类型 1：项目类型；2：审批状态
+     */
     private int type;
 
     public void setViewModel(ProjSearchViewModel viewModel, ProjSearchViewModel searchFragViewModel) {

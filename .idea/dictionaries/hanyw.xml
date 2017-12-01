@@ -8,19 +8,28 @@
       <w>dcim</w>
       <w>endtime</w>
       <w>explv</w>
+      <w>fileprovider</w>
+      <w>getdata</w>
       <w>gridview</w>
       <w>hmmss</w>
       <w>img</w>
+      <w>isremember</w>
+      <w>lightgray</w>
       <w>loca</w>
       <w>localcensor</w>
       <w>mapview</w>
       <w>msword</w>
+      <w>nodata</w>
+      <w>nolocpoint</w>
+      <w>onload</w>
       <w>optionselect</w>
       <w>proj</w>
       <w>projdetails</w>
       <w>projectsearch</w>
       <w>projectstatuset</w>
+      <w>projecttype</w>
       <w>projecttypeset</w>
+      <w>projmeasure</w>
       <w>projtype</w>
       <w>rememberuser</w>
       <w>searchview</w>
@@ -30,6 +39,7 @@
       <w>textcolor</w>
       <w>timepicker</w>
       <w>timeset</w>
+      <w>updata</w>
     </words>
   </dictionary>
 </component>

@@ -1,8 +1,10 @@
 <resources>
     <string name="appname">长沙水土保持</string>
 
+    <string name="loading">正在加载……</string>
+
     <!--serverhost-->
-    <string name="serverhost">http://img.pcgames.com.cn/</string>
+    <string name="serverhost">http://101.201.54.143:8020/</string>
 
     <!--测试-->
     <string name="test">测试</string>

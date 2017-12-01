@@ -32,7 +32,13 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
     private ProjSearchViewModel viewModel;
 
     private ProjSearchViewModel searchFragViewModel;
+    /**
+     * 开始时间
+     */
     private String startTime;
+    /**
+     * 结束时间
+     */
     private String endTime;
 
     public void setViewModel(ProjSearchViewModel viewModel, ProjSearchViewModel searchFragViewModel){
@@ -97,6 +103,12 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
         this.dismiss();
     }
 
+    /**
+     * 时间大小比较
+     * @param start
+     * @param end
+     * @return
+     */
     private boolean compareTime(String start,String end){
         boolean result = false;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");

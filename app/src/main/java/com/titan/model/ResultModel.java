@@ -1,6 +1,8 @@
 package com.titan.model;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hanyw on 2017/11/13/013.
@@ -15,7 +17,9 @@ public class ResultModel<T> implements Serializable {
     /**
      * 具体数据 "content":{"NUM":"","NAME":"","TIME":"","STATE":"","TYPE":"","DISTANCE":""}
      */
-    private T content;
+//    private T content;
+
+    private List<Map<String,T>> content;
     /**
      * 错误信息
      */
@@ -29,13 +33,13 @@ public class ResultModel<T> implements Serializable {
         this.result = result;
     }
 
-    public T getContent() {
-        return content;
-    }
-
-    public void setContent(T content) {
-        this.content = content;
-    }
+//    public T getContent() {
+//        return content;
+//    }
+//
+//    public void setContent(T content) {
+//        this.content = content;
+//    }
 
     public String getMessage() {
         return message;
@@ -43,5 +47,13 @@ public class ResultModel<T> implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<Map<String, T>> getContent() {
+        return content;
+    }
+
+    public void setContent(List<Map<String, T>> content) {
+        this.content = content;
     }
 }

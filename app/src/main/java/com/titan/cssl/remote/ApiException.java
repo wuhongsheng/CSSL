@@ -1,7 +1,5 @@
 package com.titan.cssl.remote;
 
-import com.google.gson.JsonParseException;
-
 import org.json.JSONException;
 
 import java.net.ConnectException;
@@ -12,6 +10,7 @@ import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * Created by hanyw on 2017/11/13/013.
+ * 错误处理
  */
 
 public class ApiException extends Exception {
@@ -52,9 +51,7 @@ public class ApiException extends Exception {
         }else if (e instanceof RuntimeException){    //服务器返回的错误
             RuntimeException resultException = (RuntimeException) e;
             ex.message = resultException.getMessage();
-        } else if (e instanceof JsonParseException
-                || e instanceof JSONException
-                || e instanceof ParseException){
+        } else if (e instanceof JSONException || e instanceof ParseException){
             ex.message = "解析错误";            //均视为解析错误
         }else if(e instanceof ConnectException){
             ex.message = "连接失败";  //均视为网络错误

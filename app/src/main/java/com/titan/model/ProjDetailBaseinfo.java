@@ -6,6 +6,7 @@ package com.titan.model;
  */
 
 public class ProjDetailBaseinfo {
+    private String ID;//项目ID
     private String NUM;//项目编号
     private String NAME;//项目名称
     private String GLDW;//水土保持监督管理单位
@@ -113,5 +114,13 @@ public class ProjDetailBaseinfo {
 
     public void setSBSJ(String SBSJ) {
         this.SBSJ = SBSJ;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

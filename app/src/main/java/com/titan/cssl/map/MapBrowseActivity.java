@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,6 +25,7 @@ import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.data.TileCache;
 import com.esri.arcgisruntime.geometry.Envelope;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.PointCollection;
 import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
@@ -45,7 +45,6 @@ import com.titan.BaseViewModel;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityMapBrowseBinding;
-import com.titan.util.MaterialDialogUtil;
 import com.titan.util.ResourcesManager;
 
 import java.io.File;
@@ -72,6 +71,9 @@ public class MapBrowseActivity extends BaseActivity {
     private Basemap basemap;
     private TileCache cache;
     private ArcGISTiledLayer tiledLayer;
+    /**
+     * 绘制图层
+     */
     private GraphicsOverlay graphicsOverlay;
     private MarkerSymbol markerSymbol;
     private List<File> fileList;
@@ -80,6 +82,7 @@ public class MapBrowseActivity extends BaseActivity {
      * 项目所在位置标注
      */
     private Graphic graphic;
+    private List<Double[]> list;
 
 
     @Override
@@ -89,21 +92,23 @@ public class MapBrowseActivity extends BaseActivity {
             binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
                     R.layout.activity_map_browse, null, false);
             setContentView(binding.getRoot());
-            manager = ResourcesManager.getInstance(mContext);
             initView();
 
-            MapBrowseActivityPermissionsDispatcher.initDataWithCheck(this);
+//            MapBrowseActivityPermissionsDispatcher.initDataWithCheck(this);
             binding.mapview.setBackgroundGrid(new BackgroundGrid(0xffffff,
                     0xffffff, 0, 3));
             //去除水印
             ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud8065403504,none,RP5X0H4AH7CLJ9HSX018");
             //去除版权声明
             binding.mapview.setAttributionTextVisible(false);
-//            if (fileList != null && fileList.size() > 0) {
-//                cache = new TileCache(fileList.get(0).getAbsolutePath());
-//                tiledLayer = new ArcGISTiledLayer(cache);
-//                basemap = new Basemap(tiledLayer);
+            //创建地图
             arcGISMap = new ArcGISMap(Basemap.createImageryWithLabelsVector());
+            arcGISMap.addDoneLoadingListener(new Runnable() {
+                @Override
+                public void run() {
+                    locaLable();
+                }
+            });
             //arcGISMap.setBasemap(basemap);
             binding.mapview.setMap(arcGISMap);
             graphicsOverlay = new GraphicsOverlay();
@@ -117,17 +122,17 @@ public class MapBrowseActivity extends BaseActivity {
                 @Override
                 public boolean onSingleTapConfirmed(MotionEvent e) {
                     try {
-                        com.esri.arcgisruntime.geometry.Point point;
+                        Point point;
                         point = binding.mapview
-                                .screenToLocation(new Point((int) e.getX(), (int) e.getY()));
-                        com.esri.arcgisruntime.geometry.Point point1 = (com.esri.arcgisruntime.geometry
-                                .Point) GeometryEngine.project(point, SpatialReferences.getWgs84());
+                                .screenToLocation(new android.graphics.Point((int) e.getX(), (int) e.getY()));
+                        Point point1 = (Point)
+                        GeometryEngine.project(point, SpatialReferences.getWgs84());
                         Graphic graphic = new Graphic(point1, markerSymbol);
                         Log.e("tag", "point:" + point1.getX() + "," + point1.getY() + ","
                                 + binding.mapview.getMapScale());
 //                        graphicsOverlay.getGraphics().add(graphic);
                     } catch (Exception e1) {
-                        Toast.makeText(mContext,"map error:"+ e1,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "map error:" + e1, Toast.LENGTH_SHORT).show();
                         Log.e("tag", "map error:" + e1);
                     }
                     return super.onSingleTapConfirmed(e);
@@ -182,35 +187,22 @@ public class MapBrowseActivity extends BaseActivity {
 //        }
     }
 
+    /**
+     * 创建标注
+     */
     private void createLable() {
         Intent intent = getIntent();
         if (intent != null) {
-            List<String> list1 = getIntent().getStringArrayListExtra("polygon");
-            List<String> list2 = getIntent().getStringArrayListExtra("point");
-            List<String> list3 = getIntent().getStringArrayListExtra("line");
-            com.esri.arcgisruntime.geometry.Point center = new com.esri.arcgisruntime.geometry
-                    .Point(112.98124011822763, 28.18958143125394, SpatialReferences.getWgs84());
-            binding.mapview.setViewpointCenterAsync(center, 20376.198251415677);
+            list = (List<Double[]>) getIntent().getExtras().get("coordinate");
             try {
-                String[] strings;
-                if (list2 != null && list2.size() == 1) {
-                    strings = list2.get(0).split(",");
-                    double d1 = Double.parseDouble(strings[0]);
-                    double d2 = Double.parseDouble(strings[1]);
-
-                    com.esri.arcgisruntime.geometry.Point point = new com.esri.arcgisruntime.geometry
-                            .Point(d1, d2, SpatialReferences.getWgs84());
+                if (list != null && list.size() == 1) {
+                    Point point = new Point(list.get(0)[0], list.get(0)[1], SpatialReferences.getWgs84());
                     graphicsOverlay.getGraphics().add(new Graphic(point, markerSymbol));
                     binding.mapview.setViewpointCenterAsync(point);
+                    return;
                 }
-                if (list1 != null && list1.size() > 1) {
-                    createPolygon(list1);
-                }
-                if (list2 != null && list2.size() > 1) {
-                    createPolygon(list2);
-                }
-                if (list3 != null && list3.size() > 1) {
-                    createPolygon(list3);
+                if (list != null && list.size() > 1) {
+                    createPolygon(list);
                     return;
                 }
                 Toast.makeText(mContext, "没有坐标参数", Toast.LENGTH_SHORT).show();
@@ -222,14 +214,15 @@ public class MapBrowseActivity extends BaseActivity {
         }
     }
 
-    private void createPolygon(List<String> list1) {
-        String[] strings;
+    /**
+     * 添加几何标注
+     *
+     * @param list1
+     */
+    private void createPolygon(List<Double[]> list1) {
         PointCollection collection = new PointCollection(SpatialReferences.getWgs84());
-        for (String str : list1) {
-            strings = str.split(",");
-            double d1 = Double.parseDouble(strings[0]);
-            double d2 = Double.parseDouble(strings[1]);
-            collection.add(d1, d2);
+        for (Double[] d : list1) {
+            collection.add(d[0], d[1]);
         }
         Polygon polygon = new Polygon(collection);
         SimpleLineSymbol outlineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID,
@@ -312,9 +305,10 @@ public class MapBrowseActivity extends BaseActivity {
             Envelope envelope = tiledLayer.getFullExtent();
             binding.mapview.setViewpointCenterAsync(envelope.getCenter());
         }
-        com.esri.arcgisruntime.geometry.Point center = new com.esri.arcgisruntime.geometry
-                .Point(112.98124011822763, 28.18958143125394, SpatialReferences.getWgs84());
-        binding.mapview.setViewpointCenterAsync(center, 20376.198251415677);
+        if (list != null && list.size() > 0) {
+            Point center = new Point(list.get(0)[0], list.get(0)[1], SpatialReferences.getWgs84());
+            binding.mapview.setViewpointCenterAsync(center, 20376.198251415677);
+        }
     }
 
     @Override

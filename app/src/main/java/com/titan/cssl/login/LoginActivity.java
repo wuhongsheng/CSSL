@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import com.titan.BaseActivity;
@@ -16,6 +17,7 @@ import com.titan.cssl.util.ViewModelHolder;
 import com.titan.data.Injection;
 import com.titan.data.local.LocalDataSource;
 import com.titan.data.source.DataRepository;
+import com.titan.util.MyFileUtil;
 
 
 /**
@@ -51,7 +53,6 @@ public class LoginActivity extends BaseActivity {
         binding.loginToolbar.setTitleTextColor(getResources().getColor(R.color.white));
         binding.loginToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         initData();
-
         MyApplication.getInstance().addActivity(this);
     }
 

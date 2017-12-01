@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by hanyw on 2017/11/1/001.
+ * 项目检索参数适配器
  */
 
 public class ProSearchSetAdapter extends BaseAdapter {

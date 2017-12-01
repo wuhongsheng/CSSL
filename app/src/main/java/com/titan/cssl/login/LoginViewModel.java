@@ -5,10 +5,19 @@ import android.content.SharedPreferences;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.titan.BaseViewModel;
 import com.titan.MyApplication;
+import com.titan.cssl.remote.RemoteData;
 import com.titan.data.source.DataRepository;
+import com.titan.model.UserModel;
+
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hanyw on 2017/9/13/013.
@@ -19,8 +28,17 @@ public class LoginViewModel extends BaseViewModel {
     private Context mContext;
     private Login login;
 
+    /**
+     * 用户名
+     */
     public final ObservableField<String> username = new ObservableField<>();
+    /**
+     * 密码
+     */
     public final ObservableField<String> password = new ObservableField<>();
+    /**
+     * 记住密码
+     */
     public final ObservableBoolean isremember = new ObservableBoolean();
 
     public LoginViewModel(Context context, Login login, DataRepository dataRepository) {
@@ -38,39 +56,42 @@ public class LoginViewModel extends BaseViewModel {
             return;
         }
         login.showProgress();
-//        mDataRepository.login(username.get().trim(), password.get().trim(), new RemoteData.loginCallback() {
-//            @Override
-//            public void onFailure(String info) {
-//                login.stopProgress();
-//                login.showToast("登录错误："+info);
-//            }
-//
-//            @Override
-//            public void onSuccess(String info) {
-//                Gson gson = new Gson();
-//                UserModel loginModel = gson.fromJson(info,UserModel.class);
-//                mDataRepository.setRole(loginModel.getROLE());
-//                SharedPreferences.Editor editor = MyApplication.sharedPreferences.edit();
-//                editor.putBoolean("isremember", isremember.get());
-//                editor.putString("ic_user_name", username.get().trim());
-//                editor.putString("ic_password", password.get().trim());
-//                editor.apply();
-//                login.onNext();
-//                login.stopProgress();
-//            }
-//        });
-        if (!username.get().trim().equals("admin")) {
-            login.stopProgress();
-            login.showToast("用户名错误");
-            return;
-        }
-        if (!password.get().trim().equals("123456")) {
-            login.stopProgress();
-            login.showToast("密码错误");
-            return;
-        }
-        login.stopProgress();
-        login.onNext();
+
+        mDataRepository.login(username.get().trim(), password.get().trim(), new RemoteData.Callback() {
+            @Override
+            public void onFailure(String info) {
+                login.stopProgress();
+                login.showToast(info);
+                Log.e("tag","error："+info);
+            }
+
+            @Override
+            public void onSuccess(List<? extends Map<String, ?>> info) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<UserModel>>(){}.getType();
+                List<UserModel> userModel = gson.fromJson(gson.toJson(info),type);
+                mDataRepository.setUserModel(userModel.get(0));
+                SharedPreferences.Editor editor = MyApplication.sharedPreferences.edit();
+                editor.putBoolean("isremember", isremember.get());
+                editor.putString("ic_user_name", username.get().trim());
+                editor.putString("ic_password", password.get().trim());
+                editor.apply();
+                login.onNext();
+                login.stopProgress();
+            }
+        });
+//        if (!username.get().trim().equals("admin")) {
+//            login.stopProgress();
+//            login.showToast("用户名错误");
+//            return;
+//        }
+//        if (!password.get().trim().equals("123456")) {
+//            login.stopProgress();
+//            login.showToast("密码错误");
+//            return;
+//        }
+//        login.stopProgress();
+//        login.onNext();
     }
 
     /**

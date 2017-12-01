@@ -9,12 +9,14 @@ import android.util.Log;
 
 import com.bumptech.glide.Glide;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Properties;
 
 
 /**
@@ -148,7 +150,6 @@ public class MyFileUtil {
         inputFile.read(buffer);
         inputFile.close();
         encodedString = Base64.encodeToString(buffer, Base64.DEFAULT);
-        Log.e("Base64", "Base64---->" + encodedString);
         return encodedString;
 
     }
@@ -183,6 +184,23 @@ public class MyFileUtil {
         FileOutputStream out = new FileOutputStream(targetPath);
         out.write(buffer);
         out.close();
+    }
+
+    public static String getProperties(Context context, String proName) {
+        String pro_value;
+        Properties props = new Properties();
+        try {
+            InputStream in = context.getAssets().open("config");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+            props.load(bufferedReader);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        pro_value = props.getProperty(proName);
+        if (pro_value == null) {
+            pro_value = "";
+        }
+        return pro_value;
     }
 
 }

@@ -51,7 +51,7 @@ public class RetrofitHelper {
     private void resetApp() {
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
         okHttpClientBuilder.addNetworkInterceptor(new MyNetworkInterceptor());
-        okHttpClientBuilder.connectTimeout(10, TimeUnit.SECONDS);
+        okHttpClientBuilder.connectTimeout(60, TimeUnit.SECONDS);
 
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(mCntext.getResources().getString(R.string.serverhost))//接口

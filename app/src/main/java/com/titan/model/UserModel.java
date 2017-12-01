@@ -17,14 +17,19 @@ public class UserModel implements Serializable {
      */
     private String PASSWORD;
     /**
-     * 用户所在区域
+     * 用户所属区域ID
      */
-    private String ROGE;
+    private String ORG;
 
     /**
-     * 用户权限
+     * 用户角色ID
      */
     private String ROLE;
+
+    /**
+     * 用户id
+     */
+    private String ID;
 
     public String getUSERNAME() {
         return USERNAME;
@@ -42,12 +47,12 @@ public class UserModel implements Serializable {
         this.PASSWORD = PASSWORD;
     }
 
-    public String getROGE() {
-        return ROGE;
+    public String getORG() {
+        return ORG;
     }
 
-    public void setROGE(String ROGE) {
-        this.ROGE = ROGE;
+    public void setORG(String ORG) {
+        this.ORG = ORG;
     }
 
     public String getROLE() {
@@ -56,5 +61,13 @@ public class UserModel implements Serializable {
 
     public void setROLE(String ROLE) {
         this.ROLE = ROLE;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

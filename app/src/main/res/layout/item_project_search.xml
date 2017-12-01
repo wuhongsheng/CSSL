@@ -4,28 +4,8 @@
     <data>
 
         <variable
-            name="name"
-            type="String"/>
-
-        <variable
-            name="time"
-            type="String"/>
-
-        <variable
-            name="type"
-            type="String"/>
-
-        <variable
-            name="state"
-            type="String"/>
-
-        <variable
-            name="distance"
-            type="String"/>
-
-        <variable
-            name="num"
-            type="String"/>
+            name="projSearch"
+            type="com.titan.model.ProjSearch"/>
 
         <variable
             name="viewmodel"
@@ -36,7 +16,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->viewmodel.projDetails(num,type)}"
+        android:onClick="@{()->viewmodel.projDetails(projSearch)}"
         android:orientation="vertical">
 
         <TextView
@@ -44,7 +24,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:singleLine="true"
-            android:text="@{name}"
+            android:text="@{projSearch.NAME}"
             android:textColor="@color/black"
             android:textSize="18sp"/>
 
@@ -58,14 +38,14 @@
                 android:layout_weight="1"
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
-                android:text="@{type}"/>
+                android:text="@{projSearch.TYPE}"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
-                android:text="@{time}"/>
+                android:text="@{projSearch.TIME}"/>
 
         </LinearLayout>
 
@@ -81,7 +61,7 @@
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
                 android:paddingTop="5dp"
-                android:text="@{state}"
+                android:text="@{projSearch.STATE}"
                 android:visibility="visible"/>
 
             <TextView
@@ -90,7 +70,7 @@
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
                 android:paddingTop="5dp"
-                android:text="@{distance}"
+                android:text="@{`距离:`+projSearch.ZB}"
                 android:visibility="visible"/>
         </LinearLayout>
 

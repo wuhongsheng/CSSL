@@ -99,6 +99,11 @@ public class ResourcesManager implements Serializable {
         return sdf.format(date) + ".jpg";
     }
 
+    public static String getCSPicName(String csName){
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat(csName+"_yyyyMMddHHmmss", Locale.CHINA);
+        return sdf.format(date) + ".jpg";
+    }
     /**
      * 取文件可用地址
      */

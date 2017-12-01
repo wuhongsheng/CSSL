@@ -6,7 +6,7 @@
             type="Integer"/>
         <variable
             name="viewmodel"
-            type="com.titan.cssl.localcensor.ProjLocalCensorViewModel"/>
+            type="com.titan.cssl.localcensor.ProjOpinionViewModel"/>
     </data>
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

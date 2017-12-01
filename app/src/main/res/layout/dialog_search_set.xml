@@ -161,7 +161,7 @@
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="@={viewmodel.isChecked}"
+            android:checked="@={viewmodel.isLocal}"
             android:padding="10dp"
             android:text="@string/location_search"
             android:textColor="@color/black"

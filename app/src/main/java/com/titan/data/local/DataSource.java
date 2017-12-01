@@ -16,16 +16,19 @@
 
 package com.titan.data.local;
 
+import com.titan.model.ProjSearch;
+import com.titan.model.UserModel;
+
 /**
  * Main entry point for accessing tasks data.
  */
 public interface DataSource {
 
-    String getProjNum();
+    ProjSearch getProjSearch();
 
-    void setProjNum(String num);
+    void setProjSearch(ProjSearch num);
 
-    String getRole();
+    UserModel getUserModel();
 
-    void setRole(String role);
+    void setUserModel(UserModel userModel);
 }

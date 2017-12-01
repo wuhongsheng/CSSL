@@ -20,9 +20,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.titan.model.ProjSearch;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.titan.model.UserModel;
 
 
 /**
@@ -36,26 +34,26 @@ public class LocalDataSource implements DataSource {
 
     private Context mContext;
 
-    private static String projNum;
+    private static ProjSearch projSearch;
 
-    private String role;
+    private UserModel userModel;
 
-    public String getProjNum() {
-        return projNum;
+    public ProjSearch getProjSearch() {
+        return projSearch;
     }
 
-    public void setProjNum(String num) {
-        projNum = num;
-    }
-
-    @Override
-    public String getRole() {
-        return role;
+    public void setProjSearch(ProjSearch search) {
+        projSearch = search;
     }
 
     @Override
-    public void setRole(String role) {
-        this.role = role;
+    public UserModel getUserModel() {
+        return userModel;
+    }
+
+    @Override
+    public void setUserModel(UserModel userModel) {
+        this.userModel = userModel;
     }
 
     // Prevent direct instantiation.

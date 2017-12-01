@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.titan.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
@@ -31,6 +32,7 @@ public class ProjSearchActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //SDKInitializer.initialize(getApplicationContext());
         binding = DataBindingUtil.inflate(LayoutInflater.from(this),R.layout.activity_search,
                 null,false);
         setContentView(binding.getRoot());
@@ -41,6 +43,12 @@ public class ProjSearchActivity extends BaseActivity {
         MyApplication.getInstance().addActivity(this);
     }
 
+    /**
+     * 按两次退出程序
+     * @param keyCode
+     * @param event
+     * @return
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode==KeyEvent.KEYCODE_BACK){
@@ -72,7 +80,7 @@ public class ProjSearchActivity extends BaseActivity {
         ViewModelHolder<ProjSearchViewModel> holder = (ViewModelHolder<ProjSearchViewModel>)
                 getSupportFragmentManager().findFragmentByTag(SEARCH_VIEWMODEL_TAG);
         if (holder==null||holder.getViewmodel()==null){
-            ProjSearchViewModel model = new ProjSearchViewModel(fragment,Injection.provideDataRepository(mContext));
+            ProjSearchViewModel model = new ProjSearchViewModel(mContext,fragment,Injection.provideDataRepository(mContext));
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     ViewModelHolder.createContainer(model),SEARCH_VIEWMODEL_TAG);
             return model;

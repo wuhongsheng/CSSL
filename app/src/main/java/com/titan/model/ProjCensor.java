@@ -8,51 +8,62 @@ import java.util.List;
  */
 
 public class ProjCensor {
-    private String NUM;//项目编号
-    private String ZJYJ;//专家意见以审批提交时间作为显示名称和查询参数,时间格式为:yyyy-MM-dd HH:mm
-    private List<String> ZPMC;//照片名称
-    private List<String> ZPURL;//照片对应链接
-    private Boolean SCYJ;//审查意见; true:属实;false:不属实
+    private String ID;//措施id
+    private List<photo> ZPMC;//照片名称
+    private String SCYJ;//审查意见; 属实;不属实
+    private String USERID;//用户id
 
-    public String getNUM() {
-        return NUM;
+    public String getID() {
+        return ID;
     }
 
-    public void setNUM(String NUM) {
-        this.NUM = NUM;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
-    public String getZJYJ() {
-        return ZJYJ;
-    }
-
-    public void setZJYJ(String ZJYJ) {
-        this.ZJYJ = ZJYJ;
-    }
-
-    public List<String> getZPMC() {
+    public List<photo> getZPMC() {
         return ZPMC;
     }
 
-    public void setZPMC(List<String> ZPMC) {
+    public void setZPMC(List<photo> ZPMC) {
         this.ZPMC = ZPMC;
     }
 
-    public List<String> getZPURL() {
-        return ZPURL;
-    }
-
-    public void setZPURL(List<String> ZPURL) {
-        this.ZPURL = ZPURL;
-    }
-
-    public Boolean getSCYJ() {
+    public String getSCYJ() {
         return SCYJ;
     }
 
-    public void setSCYJ(Boolean SCYJ) {
+    public void setSCYJ(String SCYJ) {
         this.SCYJ = SCYJ;
     }
 
+    public String getUSERID() {
+        return USERID;
+    }
 
+    public void setUSERID(String USERID) {
+        this.USERID = USERID;
+    }
+
+    public static class photo{
+        private String NAME;
+        private String DATA;
+
+        public String getNAME() {
+            return NAME;
+        }
+
+        public void setNAME(String NAME) {
+            this.NAME = NAME;
+        }
+
+        public String getDATA() {
+            return DATA;
+        }
+
+        public void setDATA(String DATA) {
+            this.DATA = DATA;
+        }
+
+    }
 }

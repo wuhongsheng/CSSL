@@ -5,7 +5,7 @@
 
         <variable
             name="viewmodel"
-            type="com.titan.cssl.localcensor.ProjLocalCensorViewModel"/>
+            type="com.titan.cssl.localcensor.ProjOpinionViewModel"/>
     </data>
 
     <LinearLayout

@@ -3,35 +3,45 @@
 
     <data>
 
-        <variable
-            name="value"
-            type="String"/>
+        <import type="java.util.ArrayList"/>
 
         <variable
-            name="name"
-            type="String"/>
+            name="list"
+            type="ArrayList&lt;String[]>"/>
+
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.projdetails.ProjDetailViewModel"/>
     </data>
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{()->viewmodel.showSubInfo(list)}"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@{name}"
+            android:singleLine="true"
+            android:text="@{list.get(0)[0]}"
             android:textColor="@color/black"
             android:textSize="16sp"/>
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/item_detail_value"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:padding="10dp"
-            android:text="@{value}"
-            android:textColor="@color/black"
+            android:singleLine="true"
+            android:text="@{list.get(0)[1]}"
             android:textSize="16sp"/>
+
+        <!--<ExpandableListView-->
+        <!--android:id="@+id/proj_detail_explv"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"/>-->
     </LinearLayout>
 </layout>

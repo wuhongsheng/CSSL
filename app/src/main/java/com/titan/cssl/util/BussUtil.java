@@ -4,6 +4,17 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
+import com.titan.MyApplication;
+import com.titan.model.Row;
+import com.titan.util.PullParseXml;
+import com.titan.util.ResourcesManager;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.List;
+
 /**
  * Created by hanyw on 2017/10/30/030.
  *
@@ -28,4 +39,5 @@ public class BussUtil {
         }
         return macAddress;
     }
+
 }
