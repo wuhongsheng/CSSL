@@ -1,8 +1,6 @@
 package com.titan.cssl.remote;
 
 
-import com.titan.model.ProjSearch;
-
 import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -74,7 +72,7 @@ public interface RetrofitService {
      *
      * @return
      */
-    @Headers("Content-Type: application/x-www-form-urlencoded;charset=UTF-8")
+    @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("/CSSTBCMobileWebservice.asmx/InsertXCZFData")
     Observable<String> InsertXCZFData(@Field("JsonString") String json);
@@ -90,4 +88,7 @@ public interface RetrofitService {
     @GET("/CSSTBCMobileWebservice.asmx/ProjectInfo")
     Observable<String> ProjectInfo(@Query("ID") String ID, @Query("type") int type,
                                    @Query("projecttype") String projecttype);
+
+    @GET("/CSSTBCMobileWebservice.asmx/Statistics")
+    Observable<String> Statistics();
 }

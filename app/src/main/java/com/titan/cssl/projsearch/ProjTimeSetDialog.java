@@ -56,6 +56,7 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
     @Override
     public void onStart() {
         super.onStart();
+        //设置dialog样式在底部
         Window dialogWindow = getDialog().getWindow();
         getDialog().setCanceledOnTouchOutside(true);
         if (dialogWindow != null) {
@@ -105,8 +106,8 @@ public class ProjTimeSetDialog extends DialogFragment implements DateChoose{
 
     /**
      * 时间大小比较
-     * @param start
-     * @param end
+     * @param start 开始时间
+     * @param end 结束时间
      * @return
      */
     private boolean compareTime(String start,String end){

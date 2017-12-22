@@ -25,7 +25,6 @@ import java.util.Map;
  */
 
 public class LoginViewModel extends BaseViewModel {
-    private Context mContext;
     private Login login;
 
     /**
@@ -41,8 +40,7 @@ public class LoginViewModel extends BaseViewModel {
      */
     public final ObservableBoolean isremember = new ObservableBoolean();
 
-    public LoginViewModel(Context context, Login login, DataRepository dataRepository) {
-        this.mContext = context;
+    public LoginViewModel(Login login, DataRepository dataRepository) {
         this.login = login;
         this.mDataRepository = dataRepository;
     }

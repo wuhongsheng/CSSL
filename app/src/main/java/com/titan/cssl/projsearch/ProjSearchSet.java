@@ -59,7 +59,13 @@ public interface ProjSearchSet {
      */
     void refresh(boolean isLoadMore);
 
+    /**
+     * 显示listview底部end提示
+     */
     void showEnd();
 
+    /**
+     * 显示listview底部loading提示
+     */
     void showLoading();
 }

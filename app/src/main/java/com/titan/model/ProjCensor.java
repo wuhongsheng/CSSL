@@ -13,6 +13,13 @@ public class ProjCensor {
     private String SCYJ;//审查意见; 属实;不属实
     private String USERID;//用户id
 
+
+    public ProjCensor(String id, List<photo> zpmc, String scyj, String userid) {
+        ID = id;
+        ZPMC = zpmc;
+        SCYJ = scyj;
+        USERID = userid;
+    }
     public String getID() {
         return ID;
     }

@@ -2,6 +2,7 @@ package com.titan.data.source;
 
 import android.content.Context;
 
+import com.esri.arcgisruntime.geometry.Point;
 import com.titan.cssl.remote.RemoteData;
 import com.titan.cssl.remote.RemoteDataSource;
 import com.titan.data.local.DataSource;
@@ -30,7 +31,6 @@ public class DataRepository implements DataSource, RemoteData {
     }
 
     public DataRepository(LocalDataSource localDataSource, RemoteDataSource dataSource) {
-        //this.mContext=context;
         this.mLocalDataSource = localDataSource;
         this.dataSource = dataSource;
     }
@@ -54,6 +54,16 @@ public class DataRepository implements DataSource, RemoteData {
     }
 
     @Override
+    public Point getLocalPoint() {
+        return mLocalDataSource.getLocalPoint();
+    }
+
+    @Override
+    public void setLocalPoint(Point point) {
+        mLocalDataSource.setLocalPoint(point);
+    }
+
+    @Override
     public void login(String name, String password, Callback callback) {
         dataSource.login(name, password, callback);
     }
@@ -74,5 +84,15 @@ public class DataRepository implements DataSource, RemoteData {
     @Override
     public void InsertXCZFData(String json, infoCallback callback) {
         dataSource.InsertXCZFData(json, callback);
+    }
+
+    @Override
+    public void Statistics(Callback callback) {
+        dataSource.Statistics(callback);
+    }
+
+    @Override
+    public void downLoadFile(String url,infoCallback callback) {
+        dataSource.downLoadFile(url,callback);
     }
 }

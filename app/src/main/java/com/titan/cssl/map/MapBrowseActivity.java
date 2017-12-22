@@ -8,7 +8,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,10 +40,11 @@ import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.titan.BaseActivity;
-import com.titan.BaseViewModel;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityMapBrowseBinding;
+import com.titan.cssl.statistics.StatisticsFragment;
+import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.util.ResourcesManager;
 
 import java.io.File;
@@ -83,6 +83,7 @@ public class MapBrowseActivity extends BaseActivity {
      */
     private Graphic graphic;
     private List<Double[]> list;
+    private Double[] curPoint;
 
 
     @Override
@@ -106,7 +107,7 @@ public class MapBrowseActivity extends BaseActivity {
             arcGISMap.addDoneLoadingListener(new Runnable() {
                 @Override
                 public void run() {
-                    locaLable();
+                    locationLable();
                 }
             });
             //arcGISMap.setBasemap(basemap);
@@ -126,8 +127,8 @@ public class MapBrowseActivity extends BaseActivity {
                         point = binding.mapview
                                 .screenToLocation(new android.graphics.Point((int) e.getX(), (int) e.getY()));
                         Point point1 = (Point)
-                        GeometryEngine.project(point, SpatialReferences.getWgs84());
-                        Graphic graphic = new Graphic(point1, markerSymbol);
+                                GeometryEngine.project(point, SpatialReferences.getWgs84());
+//                        Graphic graphic = new Graphic(point1, markerSymbol);
                         Log.e("tag", "point:" + point1.getX() + "," + point1.getY() + ","
                                 + binding.mapview.getMapScale());
 //                        graphicsOverlay.getGraphics().add(graphic);
@@ -138,7 +139,6 @@ public class MapBrowseActivity extends BaseActivity {
                     return super.onSingleTapConfirmed(e);
                 }
             });
-//            }
         } catch (Exception e) {
             Log.e("tag", "mapError:" + e);
         }
@@ -160,8 +160,8 @@ public class MapBrowseActivity extends BaseActivity {
 
     private void initView() {
         Toolbar toolbar = binding.mapBrowseToolbar;
+        toolbar.setTitle(mContext.getResources().getString(R.string.map_browse));
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getResources().getString(R.string.appname));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -194,24 +194,73 @@ public class MapBrowseActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null) {
             list = (List<Double[]>) getIntent().getExtras().get("coordinate");
-            try {
-                if (list != null && list.size() == 1) {
-                    Point point = new Point(list.get(0)[0], list.get(0)[1], SpatialReferences.getWgs84());
-                    graphicsOverlay.getGraphics().add(new Graphic(point, markerSymbol));
-                    binding.mapview.setViewpointCenterAsync(point);
-                    return;
+            if (list == null) {
+                locationCur();
+            } else {
+                if (judgmentRange(list)) {
+                    locationProj(list);
+                } else {
+                    locationCur();
                 }
-                if (list != null && list.size() > 1) {
-                    createPolygon(list);
-                    return;
-                }
-                Toast.makeText(mContext, "没有坐标参数", Toast.LENGTH_SHORT).show();
-            } catch (NumberFormatException e) {
-                Toast.makeText(mContext, "坐标参数错误:" + e, Toast.LENGTH_SHORT).show();
-                Log.e("tag", "坐标参数错误:" + e);
             }
-
         }
+    }
+
+    /**
+     * 定位到项目位置
+     */
+    private void locationProj(List<Double[]> list) {
+        try {
+            if (list.size() == 1) {
+                Point point = new Point(list.get(0)[0], list.get(0)[1], SpatialReferences.getWgs84());
+                graphicsOverlay.getGraphics().add(new Graphic(point, markerSymbol));
+                binding.mapview.setViewpointCenterAsync(point, 20376.198251415677);
+                return;
+            }
+            if (list.size() > 1) {
+                createPolygon(list);
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(mContext, "坐标参数错误:" + e, Toast.LENGTH_SHORT).show();
+            Log.e("tag", "坐标参数错误:" + e);
+        }
+    }
+
+    /**
+     * 定位到当前位置
+     */
+    private void locationCur() {
+        curPoint = (Double[]) getIntent().getExtras().get("location");
+        if (curPoint == null) {
+            Toast.makeText(mContext, "获取设备位置失败，已定位到默认位置", Toast.LENGTH_SHORT).show();
+            Point point = new Point(112.9820620841, 28.1787790346, SpatialReferences.getWgs84());
+            curPoint[0] = 112.9820620841;
+            curPoint[1] = 28.1787790346;
+            graphicsOverlay.getGraphics().add(new Graphic(point, markerSymbol));
+            return;
+        }
+        Point point = new Point(curPoint[0], curPoint[1], SpatialReferences.getWgs84());
+        graphicsOverlay.getGraphics().add(new Graphic(point, markerSymbol));
+        Toast.makeText(mContext, "没有坐标参数，已定位到设备当前位置", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 坐标范围判断
+     *
+     * @param list
+     * @return
+     */
+    private boolean judgmentRange(List<Double[]> list) {
+        boolean flag = false;
+        for (Double[] doubles : list) {
+            if (doubles != null) {
+                boolean f = doubles[0] < 111.9 || doubles[0] > 114.25 || doubles[1] < 27.85 || doubles[1] > 28.7;
+                if (!f) {
+                    flag = true;
+                }
+            }
+        }
+        return flag;
     }
 
     /**
@@ -230,7 +279,7 @@ public class MapBrowseActivity extends BaseActivity {
         SimpleFillSymbol symbol = new SimpleFillSymbol(SimpleFillSymbol.Style.DIAGONAL_CROSS,
                 Color.GREEN, outlineSymbol);
         graphic = new Graphic(polygon, symbol);
-        locaLable();
+        locationLable();
         graphicsOverlay.getGraphics().add(graphic);
     }
 
@@ -284,7 +333,7 @@ public class MapBrowseActivity extends BaseActivity {
                 dialog.show();
                 break;
             case R.id.map_location:
-                locaLable();
+                locationLable();
                 break;
             default:
                 break;
@@ -296,28 +345,33 @@ public class MapBrowseActivity extends BaseActivity {
     /**
      * 定位标注到屏幕中央位置
      */
-    private void locaLable() {
+    private void locationLable() {
 //        if (graphic!=null){
 //            Envelope envelope = graphic.getGeometry().getExtent();
 //            binding.mapview.setViewpointCenterAsync(envelope.getCenter());
 //        }
+        Point point;
         if (tiledLayer != null) {
             Envelope envelope = tiledLayer.getFullExtent();
-            binding.mapview.setViewpointCenterAsync(envelope.getCenter());
+            binding.mapview.setViewpointCenterAsync(envelope.getCenter(), 20376.198251415677);
         }
-        if (list != null && list.size() > 0) {
-            Point center = new Point(list.get(0)[0], list.get(0)[1], SpatialReferences.getWgs84());
-            binding.mapview.setViewpointCenterAsync(center, 20376.198251415677);
+        if (curPoint != null && curPoint.length > 0) {
+            point = new Point(curPoint[0],curPoint[1],SpatialReferences.getWgs84());
+        }else if (list!=null&&list.size()>0){
+            point = new Point(list.get(0)[0],list.get(0)[1],SpatialReferences.getWgs84());
+        }else {
+            point = new Point(112.9820620841, 28.1787790346,SpatialReferences.getWgs84());
         }
+        binding.mapview.setViewpointCenterAsync(point, 20376.198251415677);
     }
 
     @Override
-    public Fragment findOrCreateViewFragment() {
+    public StatisticsFragment findOrCreateViewFragment() {
         return null;
     }
 
     @Override
-    public BaseViewModel findOrCreateViewModel() {
+    public StatisticsViewModel findOrCreateViewModel() {
         return null;
     }
 

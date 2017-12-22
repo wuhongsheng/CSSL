@@ -1,6 +1,5 @@
 package com.titan.cssl.login;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,16 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLoginBinding;
 import com.titan.cssl.projsearch.ProjSearchActivity;
+import com.titan.cssl.statistics.StatisticsActivity;
 import com.titan.util.MaterialDialogUtil;
-import com.titan.util.ResourcesManager;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.titan.util.MyFileUtil;
 
 /**
  * Created by hanyw on 2017/9/13/013.
@@ -32,6 +28,7 @@ public class LoginFragment extends Fragment implements Login {
     private Context mContext;
     private FragLoginBinding fragLoginBinding;
     private LoginViewModel loginViewModel;
+    private MaterialDialog dialog;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -46,8 +43,6 @@ public class LoginFragment extends Fragment implements Login {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext = getActivity();
         fragLoginBinding = FragLoginBinding.inflate(inflater, container, false);
-//        String appName = getString(R.string.app_version) + AppUtil.getAppVersion(mContext);
-//        fragLoginBinding.tvAppversion.setText(appName);
         fragLoginBinding.setViewmodel(loginViewModel);
         return fragLoginBinding.getRoot();
     }
@@ -60,23 +55,22 @@ public class LoginFragment extends Fragment implements Login {
     @Override
     public void onNext() {
         if (isAdded()) {
-            Intent intent = new Intent(mContext, ProjSearchActivity.class);
+            Intent intent = new Intent(mContext, StatisticsActivity.class);
             startActivity(intent);
         }
     }
 
     @Override
     public void showProgress() {
-        MaterialDialogUtil.showLoadProgress(mContext,
-                mContext.getString(R.string.logging), null).show();
+        dialog = MaterialDialogUtil.showLoadProgress(mContext, mContext.getString(R.string.logging)).build();
+        dialog.show();
     }
 
     @Override
     public void stopProgress() {
-//        if (dialog != null&&dialog.isShowing()) {
-//            dialog.dismiss();
-//        }
-        MaterialDialogUtil.stopProgress();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.titan.BaseViewModel;
@@ -36,12 +37,24 @@ public class ProjOpinionViewModel extends BaseViewModel {
      */
     public ObservableBoolean isFalse = new ObservableBoolean();
 
+    /**
+     * 图片地址
+     */
     public ObservableField<List<String>> urlList = new ObservableField<>();
 
+    /**
+     * 水保措施详情对象
+     */
     public ObservableField<ProjDetailMeasure.subBean> subBean = new ObservableField<>();
 
+    /**
+     * 整改意见对象json
+     */
     public ObservableField<String> json = new ObservableField<>();
 
+    /**
+     * json转换完成标识位
+     */
     private final int FINISH = 0;
 
 
@@ -80,20 +93,25 @@ public class ProjOpinionViewModel extends BaseViewModel {
         projOpinion.del(position);
     }
 
-    public void upData() {
+    /**
+     * 提交数据
+     */
+    public void submit() {
         projOpinion.showProgress();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.e("tag", "firstTime");
                 createJson();
             }
         }).start();
-        handler = new Handler(Looper.getMainLooper()){
+        handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                if (msg.what==FINISH){
+                if (msg.what == FINISH) {
+                    Log.e("tag", "SecondTime");
                     mDataRepository.InsertXCZFData(json.get(), new RemoteData.infoCallback() {
                         @Override
                         public void onFailure(String info) {
@@ -115,25 +133,29 @@ public class ProjOpinionViewModel extends BaseViewModel {
 
     }
 
+    /**
+     * json转换
+     */
     private void createJson() {
+        String id = mDataRepository.getUserModel().getID();
+        String[] ids = id.split("\\.");
         Gson gson = new Gson();
         ProjCensor.photo photo = new ProjCensor.photo();
         List<ProjCensor.photo> list = new ArrayList<>();
-        photo.setNAME(ResourcesManager.getCSPicName(subBean.get().getCSNAME()));
-
+        photo.setNAME(ResourcesManager.getCSPicName(subBean.get().getCSNAME(), ids[0]));
         try {
             String a = MyFileUtil.encodeBase64File(urlList.get().get(0));
-            photo.setDATA(a);
+            if (!a.equals("")) {
+                photo.setDATA(a);
+            } else {
+                Toast.makeText(mContext, "图片转换错误", Toast.LENGTH_SHORT).show();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("tag","tobase64Error:"+e);
         }
         list.add(photo);
-        ProjCensor censor = new ProjCensor();
-        censor.setUSERID(mDataRepository.getUserModel().getID());
-        censor.setID(subBean.get().getID());
-        censor.setSCYJ(isTrue.get() ? "属实" : "不属实");
-        censor.setZPMC(list);
-//        Log.e("tag","json:"+gson.toJson(censor));
+        ProjCensor censor = new ProjCensor(subBean.get().getID(), list,
+                isTrue.get() ? "属实" : "不属实", id);
         json.set(gson.toJson(censor));
         Message message = new Message();
         message.what = FINISH;

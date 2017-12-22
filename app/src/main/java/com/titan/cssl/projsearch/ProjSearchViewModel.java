@@ -3,6 +3,7 @@ package com.titan.cssl.projsearch;
 import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.databinding.ObservableFloat;
 import android.databinding.ObservableInt;
 import android.util.Log;
 import android.widget.Toast;
@@ -109,11 +110,6 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
     public ObservableField<String> keyWord = new ObservableField<>();
 
     /**
-     * 项目编号
-     */
-    public ObservableField<String> projNum = new ObservableField<>();
-
-    /**
      * 当前坐标点
      */
     public ObservableField<Point> locPoint = new ObservableField<>();
@@ -128,10 +124,19 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
      */
     public ObservableBoolean hasLocPoint = new ObservableBoolean();
 
+    /**
+     * 项目检索结果数据list
+     */
     public ObservableField<List<ProjSearch>> projSearchList = new ObservableField<>();
 
+    /**
+     * 项目检索结果数据备份list
+     */
     public ObservableField<List<ProjSearch>> projSearchListBack = new ObservableField<>();
 
+    /**
+     * 是否在刷新状态 true：是；false：否
+     */
     public ObservableBoolean isRefresh = new ObservableBoolean(false);
 
     /**
@@ -139,17 +144,39 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
      */
     public ObservableBoolean hasMore = new ObservableBoolean(true);
 
+    /**
+     * 项目类型 1："3",2:"3-8",3:"8"
+     */
+    public ObservableInt projType = new ObservableInt();
 
+
+    /**
+     * 项目检索
+     *
+     * @param context
+     * @param projSearchSet
+     * @param mDataRepository
+     */
     public ProjSearchViewModel(Context context, ProjSearchSet projSearchSet, DataRepository mDataRepository) {
         this.mContext = context;
         this.projSearchSet = projSearchSet;
         this.mDataRepository = mDataRepository;
     }
 
+    /**
+     * 时间选择
+     *
+     * @param dateChoose
+     */
     public ProjSearchViewModel(DateChoose dateChoose) {
         this.dateChoose = dateChoose;
     }
 
+    /**
+     * 项目类型与审批状态选择
+     *
+     * @param optionSelect
+     */
     public ProjSearchViewModel(OptionSelect optionSelect) {
         this.optionSelect = optionSelect;
     }
@@ -220,11 +247,17 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
      * 项目检索
      */
     public void search(final boolean isloadMore) {
+//        getProjType();
         projSearchSet.showProgress();
         isRefresh.set(true);
         UserModel userModel = mDataRepository.getUserModel();
-        Log.e("tag","search:"+getAlias(getString(projectType))+","+
-                getAlias(getString(projectStatus)));
+        if (userModel == null) {
+            return;
+        }
+        Log.e("tag","search:"+projectType.get()+","+
+                projectStatus.get()+","+userModel.toString());
+//        mDataRepository.projSearch(getString(startTime), getString(endTime), getAlias(getString(projectType)),
+//                getAlias(getString(projectStatus)), getString(keyWord), userModel.getROLE(),
         mDataRepository.projSearch(getString(startTime), getString(endTime), getAlias(getString(projectType)),
                 getAlias(getString(projectStatus)), getString(keyWord), userModel.getROLE(),
                 userModel.getORG(), userModel.getID(), "10", pageIndex.get() + "",
@@ -277,6 +310,9 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
                 });
     }
 
+    /**
+     * 项目距离排序
+     */
     public void distanceSort() {
         List<ProjSearch> list = projSearchList.get();
         List<ProjSearch> tempList1 = new ArrayList<>();
@@ -285,16 +321,16 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
             try {
                 float f = Float.parseFloat(list.get(i).getZB());
                 tempList1.add(list.get(i));
-            }catch (Exception e){
-                Log.e("tag",""+e);
+            } catch (Exception e) {
+                Log.e("tag", "" + e);
                 tempList2.add(list.get(i));
             }
         }
         ProjSearch[] array = tempList1.toArray(new ProjSearch[tempList1.size()]);
-        quickSort(array,0,array.length-1);
+        quickSort(array, 0, array.length - 1);
 
         tempList1.clear();
-        tempList1 = Arrays.asList(array);
+        tempList1 = new ArrayList<>(Arrays.asList(array));
         tempList1.addAll(tempList2);
         projSearchList.set(tempList1);
     }
@@ -319,6 +355,15 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
         return list1;
     }
 
+    /**
+     * list深度复制
+     *
+     * @param src
+     * @param <T>
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static <T> List<T> deepCopy(List<T> src) throws IOException, ClassNotFoundException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(byteOut);
@@ -335,6 +380,21 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
         return MyFileUtil.getProperties(mContext, value);
     }
 
+    public void getProjType() {
+        switch (projType.get()) {
+            case 1:
+                projectType.set("3万㎡以下");
+                break;
+            case 2:
+                projectType.set("3-8万㎡");
+                break;
+            case 3:
+                projectType.set("8万㎡以上");
+                break;
+            default:
+                break;
+        }
+    }
 
     /**
      * 快速排序
@@ -382,8 +442,8 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
                 state = "提交审核中";
                 break;
             case "2":
-            case "审核通过":
-                state = "审核通过";
+            case "行政审批通过,项目审核中":
+                state = "行政审批通过,项目审核中";
                 break;
             case "3":
             case "审核不通过":
@@ -392,6 +452,10 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
             case "4":
             case "出窗":
                 state = "出窗";
+                break;
+            case "5":
+            case "审核通过":
+                state = "审核通过";
                 break;
             default:
                 break;
@@ -433,6 +497,12 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
         return fnum.format(distance);
     }
 
+    /**
+     * 以分号分割字符串
+     *
+     * @param str 待分割字符串
+     * @return 分割好的字符list
+     */
     private List<String> cutString(String str) {
         List<String> list = new ArrayList<>();
         String[] strings = str.split(";");
@@ -441,6 +511,10 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
 
     }
 
+    /**
+     * @param value
+     * @return
+     */
     private String getString(ObservableField<String> value) {
         String str = "";
         if (value.get() == null || value.get().equals("请选择")) {
@@ -462,14 +536,16 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
             Gps gps = PositionUtil.gcj_To_Gps84(longitude, latitude);
             double d1 = gps.getWgLon();
             double d2 = gps.getWgLat();
-            locPoint.set(new Point(d1, d2, SpatialReferences.getWgs84()));
+            Point point = new Point(d1, d2, SpatialReferences.getWgs84());
+            locPoint.set(point);
             hasLocPoint.set(true);
+            mDataRepository.setLocalPoint(point);
             //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
 //            Log.e("tag", "lat:" + latitude + "," + "lon:" + longitude + "radius：" + radius + "," + coorType);
         } else {
             hasLocPoint.set(false);
-            Toast.makeText(mContext, "定位失败：" + bdLocation.getLocTypeDescription() + ",请检查权限是否授予"
-                    , Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mContext, "定位失败：" + bdLocation.getLocTypeDescription() + ",请检查权限是否授予"
+//                    , Toast.LENGTH_SHORT).show();
         }
     }
 

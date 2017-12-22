@@ -11,7 +11,6 @@ import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemProjMeasureParentBinding;
 import com.titan.cssl.databinding.ItemProjSummaryChildBinding;
-import com.titan.util.ListViewUtil;
 import com.titan.util.MyFileUtil;
 
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import java.util.Map;
 
 /**
  * Created by hanyw on 2017/11/28/028.
+ * 概要信息二级内容适配器
  */
 
 public class ProjSummaryExpLVAdapter extends BaseExpandableListAdapter {

@@ -7,11 +7,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
-import com.baidu.mapapi.SDKInitializer;
 import com.titan.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivitySearchBinding;
+import com.titan.cssl.statistics.StatisticsFragment;
+import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
 import com.titan.data.Injection;
@@ -39,7 +40,8 @@ public class ProjSearchActivity extends BaseActivity {
         fragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
         fragment.setViewModel(mViewModel);
-
+        mViewModel.projType.set(getIntent().getExtras().getInt("type"));
+        mViewModel.getProjType();
         MyApplication.getInstance().addActivity(this);
     }
 
@@ -51,15 +53,15 @@ public class ProjSearchActivity extends BaseActivity {
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode==KeyEvent.KEYCODE_BACK){
-            if ((System.currentTimeMillis() - mExitTime) > 1500){
-                Toast.makeText(mContext,"再按一次退出程序",Toast.LENGTH_SHORT).show();
-                mExitTime = System.currentTimeMillis();
-            }else {
-                MyApplication.getInstance().exit();
-            }
-            return true;
-        }
+//        if (keyCode==KeyEvent.KEYCODE_BACK){
+//            if ((System.currentTimeMillis() - mExitTime) > 1500){
+//                Toast.makeText(mContext,"再按一次退出程序",Toast.LENGTH_SHORT).show();
+//                mExitTime = System.currentTimeMillis();
+//            }else {
+//                MyApplication.getInstance().exit();
+//            }
+//            return true;
+//        }
         return super.onKeyDown(keyCode, event);
     }
 

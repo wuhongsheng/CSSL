@@ -2,6 +2,8 @@ package com.titan.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Looper;
 import android.util.Base64;
@@ -10,6 +12,8 @@ import android.util.Log;
 import com.bumptech.glide.Glide;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -143,15 +147,15 @@ public class MyFileUtil {
      */
     public static String encodeBase64File(String path) throws IOException {
         File file = new File(path);
-        FileInputStream inputFile;
-        String encodedString = null;
-        inputFile = new FileInputStream(file);
-        byte[] buffer = new byte[(int) file.length()];
-        inputFile.read(buffer);
-        inputFile.close();
-        encodedString = Base64.encodeToString(buffer, Base64.DEFAULT);
-        return encodedString;
-
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if (file.exists()) {
+            Bitmap image = BitmapFactory.decodeFile(path);
+            image.compress(Bitmap.CompressFormat.PNG, 40, baos);//100表示不压缩，把压缩后的数据存放到baos中
+            byte[] buffer = baos.toByteArray();
+            return Base64.encodeToString(buffer, Base64.DEFAULT);
+        } else {
+            return "";
+        }
     }
 
     /**

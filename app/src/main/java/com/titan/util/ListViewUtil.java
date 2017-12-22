@@ -34,11 +34,10 @@ public class ListViewUtil {
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         /*
          * listView.getDividerHeight()获取子项间分隔符占用的高度，有多少项就乘以多少个,
-         * 5是在listview中填充的子view的padding值
          * params.height最后得到整个ListView完整显示需要的高度
          * 最后将params.height设置为listview的高度
          */
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount())) + 5;
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount()));
         listView.setLayoutParams(params);
     }
 }

@@ -3,13 +3,13 @@ package com.titan.cssl.reserveplan;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,13 +18,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.titan.BaseActivity;
-import com.titan.BaseViewModel;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityReservePlanBinding;
 import com.titan.cssl.remote.DownLoadManager;
 import com.titan.cssl.remote.RetrofitHelper;
+import com.titan.cssl.statistics.StatisticsFragment;
+import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.util.MaterialDialogUtil;
+import com.titan.util.MyFileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,7 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
     private Dialog dialog;
     private Observable<ResponseBody> observable;
     private Subscriber<ResponseBody> subscriber;
+    private String path;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +85,13 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
                         dialog.show();
                         break;
                     case STOP:
-                        MaterialDialogUtil.stopProgress();
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        if (!path.equals("")){
+                            Intent intent = MyFileUtil.getImageFileIntent(path);
+                            startActivity(intent);
+                        }
                         break;
                     default:
                         break;
@@ -93,8 +102,8 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
 
     private void initView() {
         Toolbar toolbar = binding.reserveToolbar;
+        toolbar.setTitle(mContext.getResources().getString(R.string.proj_plan));
         setSupportActionBar(toolbar);
-        toolbar.setTitle(mContext.getString(R.string.appname));
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,12 +120,12 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
     }
 
     @Override
-    public Fragment findOrCreateViewFragment() {
+    public StatisticsFragment findOrCreateViewFragment() {
         return null;
     }
 
     @Override
-    public BaseViewModel findOrCreateViewModel() {
+    public StatisticsViewModel findOrCreateViewModel() {
         return null;
     }
 
@@ -131,7 +140,7 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void read() {
 
-//        String url = "images/piclib/201110/11/batch/1/112566/1318324033290v7yyq0gfms.jpg";
+//        String url = "http://218.77.44.9:8020/UpLoadFiles/%E6%B9%96%E5%8D%97%E9%87%91%E9%B9%B0%E5%9F%8E%E7%BD%AE%E4%B8%9A%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8/2017-07/334f5f57-76a0-4ce5-9c72-b5f5ca206572_1827_IMG_5410.jpg";
 //        observable = RetrofitHelper.getInstance(mContext).getServer()
 //                .downFile(url);
 //        dialog = MaterialDialogUtil.showLoadProgress(mContext, "loading1...",
@@ -144,7 +153,7 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
 //                            subscriber.unsubscribe();
 //                        }
 //                    }
-//                });
+//                }).build();
 //        subscriber = new Subscriber<ResponseBody>() {
 //            @Override
 //            public void onCompleted() {
@@ -161,7 +170,8 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
 //                Message message = new Message();
 //                message.what = START;
 //                handler.sendMessage(message);
-//                if (!DownLoadManager.writeResponseBodyToDisk(mContext, responseBody).equals("")) {
+//                path = DownLoadManager.writeResponseBodyToDisk(mContext, responseBody);
+//                if (!path.equals("")) {
 //                    Message message1 = new Message();
 //                    message1.what = STOP;
 //                    handler.sendMessage(message1);
@@ -177,9 +187,6 @@ public class ProjReservePlanActivity extends BaseActivity implements ProjReserve
 //        observable.subscribeOn(Schedulers.io())
 //                .observeOn(Schedulers.io())
 //                .subscribe(subscriber);
-//        String path = "/storage/emulated/0/新建 Word 2007.docx";
-//        Intent intent = MyFileUtil.getWordFileIntent(path);
-//        startActivity(intent);
     }
 
     @Override

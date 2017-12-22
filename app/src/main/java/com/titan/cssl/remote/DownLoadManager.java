@@ -51,8 +51,6 @@ public class DownLoadManager {
             OutputStream outputStream = null;
             try {
                 byte[] fileReader = new byte[4096];
-                long fileSize = body.contentLength();
-                long fileSizeDown = 0;
                 inputStream = body.byteStream();
                 outputStream = new FileOutputStream(file);
                 while (true) {
@@ -61,8 +59,6 @@ public class DownLoadManager {
                         break;
                     }
                     outputStream.write(fileReader, 0, read);
-                    fileSizeDown += read;
-                    Log.e("tag", "file download: " + fileSizeDown + " of " + fileSize);
                 }
                 outputStream.flush();
                 return path;

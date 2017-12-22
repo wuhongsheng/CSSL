@@ -21,17 +21,17 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.gson.Gson;
+import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragLocalCensorBinding;
-import com.titan.model.ProjCensor;
 import com.titan.model.ProjDetailMeasure;
 import com.titan.util.MaterialDialogUtil;
 import com.titan.util.MyFileUtil;
 import com.titan.util.ResourcesManager;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +59,9 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
 
     private FragLocalCensorBinding binding;
     private Context mContext;
+    /**
+     * 水保措施详细信息
+     */
     private static ProjDetailMeasure.subBean mSubBean;
     /**
      * 照片地址
@@ -76,6 +79,7 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
      * 照片列表适配器
      */
     private ProjOpinionImageAdapter adapter;
+    private MaterialDialog dialog;
 
     public static ProjOpinionFragment getInstance(ProjDetailMeasure.subBean subBean) {
         mSubBean = subBean;
@@ -113,7 +117,7 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
 
             @Override
             public void selectedImgMax(Object t, boolean isChecked, int maxSize) {
-                Toast.makeText(mContext, "你最多只能选择" + maxSize + "张图片",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "你最多只能选择" + maxSize + "张图片", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -124,7 +128,7 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
     @Override
     public void addImage() {
         if (urlList.size() >= 3) {
-            Toast.makeText(mContext, "你最多只能选择3张图片",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "你最多只能选择3张图片", Toast.LENGTH_SHORT).show();
             return;
         }
         final String[] array = new String[]{"相机", "相册"};
@@ -135,14 +139,18 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         switch (position) {
                             case 0:
-                                ProjOpinionFragmentPermissionsDispatcher
-                                        .takePhotoWithCheck(ProjOpinionFragment.this);
-                                dialog.dismiss();
+                                if (isAdded()){
+                                    ProjOpinionFragmentPermissionsDispatcher
+                                            .takePhotoWithCheck(ProjOpinionFragment.this);
+                                    dialog.dismiss();
+                                }
                                 break;
                             case 1:
-                                ProjOpinionFragmentPermissionsDispatcher
-                                        .selectPhotoWithCheck(ProjOpinionFragment.this);
-                                dialog.dismiss();
+                                if (isAdded()){
+                                    ProjOpinionFragmentPermissionsDispatcher
+                                            .selectPhotoWithCheck(ProjOpinionFragment.this);
+                                    dialog.dismiss();
+                                }
                                 break;
                             default:
                                 break;
@@ -163,7 +171,7 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
     /**
      * 拍照
      */
-    @NeedsPermission({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void takePhoto() {
         try {
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
@@ -179,7 +187,7 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
                 File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
                 File image = File.createTempFile("img", ".jpg", path);
                 Uri uri = FileProvider.getUriForFile(mContext,
-                        mContext.getPackageName() + ".fileprovider", image);
+                        "com.titan.cssl.fileprovider", image);
                 foutPath = image.getAbsolutePath();
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(intent, 1);
@@ -238,6 +246,7 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
         }
         if (urlList != null && urlList.size() > 0) {
             binding.projPrompt.setVisibility(View.GONE);
+            GeometryEngine.project(new Point(0,0), SpatialReference.create(3857));
         }
     }
 
@@ -246,13 +255,13 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
      */
     @Override
     public void localCensorSubmit() {
-        if (urlList.size()<=0){
-            Toast.makeText(mContext,"图片不能为空",Toast.LENGTH_SHORT).show();
+        if (urlList.size() <= 0) {
+            Toast.makeText(mContext, "图片不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
         viewModel.urlList.set(urlList);
         viewModel.subBean.set(mSubBean);
-        viewModel.upData();
+        viewModel.submit();
     }
 
     /**
@@ -272,32 +281,35 @@ public class ProjOpinionFragment extends Fragment implements ProjOpinion {
 
     @Override
     public void showProgress() {
-        MaterialDialogUtil.showLoadProgress(mContext,getString(R.string.loading),null).show();
+        dialog = MaterialDialogUtil.showLoadProgress(mContext, getString(R.string.updata)).build();
+        dialog.show();
     }
 
     @Override
     public void stopProgress() {
-        MaterialDialogUtil.stopProgress();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
     @Override
     public void showToast(String info) {
-        Toast.makeText(mContext,info,Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, info, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ProjOpinionFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+        ProjOpinionFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showRationale(final PermissionRequest request){
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationale(final PermissionRequest request) {
         request.proceed();
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
-    void permissionDenied(){
-        Toast.makeText(mContext, "已拒绝权限，若想使用请开启权限",Toast.LENGTH_LONG).show();
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void permissionDenied() {
+        Toast.makeText(mContext, "已拒绝权限，若想使用请开启权限", Toast.LENGTH_LONG).show();
     }
 }

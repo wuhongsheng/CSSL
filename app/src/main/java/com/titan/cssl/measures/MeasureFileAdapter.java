@@ -7,19 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.bumptech.glide.Glide;
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
-import com.titan.cssl.databinding.ItemCensorImgBinding;
 import com.titan.cssl.databinding.ItemMeasureBinding;
-import com.titan.model.ProjDetailMeasure;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by hanyw on 2017/11/6/006.
- * 现场审查照片适配器
+ * 现场审查文件适配器
  */
 
 public class MeasureFileAdapter extends BaseAdapter {

@@ -16,6 +16,7 @@
 
 package com.titan.data.local;
 
+import com.esri.arcgisruntime.geometry.Point;
 import com.titan.model.ProjSearch;
 import com.titan.model.UserModel;
 
@@ -31,4 +32,8 @@ public interface DataSource {
     UserModel getUserModel();
 
     void setUserModel(UserModel userModel);
+
+    Point getLocalPoint();
+
+    void setLocalPoint(Point point);
 }

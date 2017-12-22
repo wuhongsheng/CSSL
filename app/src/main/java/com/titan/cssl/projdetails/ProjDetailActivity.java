@@ -3,7 +3,6 @@ package com.titan.cssl.projdetails;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,20 +16,24 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.titan.BaseActivity;
-import com.titan.BaseViewModel;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityProjDetailBinding;
+import com.titan.cssl.databinding.DialogDetailInfoBinding;
 import com.titan.cssl.map.MapBrowseActivity;
 import com.titan.cssl.measures.MeasureActivity;
+import com.titan.cssl.statistics.StatisticsFragment;
+import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.data.Injection;
 import com.titan.model.ProjDetailMeasure;
+import com.titan.util.ListViewUtil;
 import com.titan.util.MaterialDialogUtil;
 
 import java.io.Serializable;
@@ -51,6 +54,9 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
      */
     private List<Fragment> mList = new ArrayList<>();
 
+    /**
+     * 项目信息页码 0：基本信息；1：概要信息；2：水保措施
+     */
     private List<String> fragList = new ArrayList<>();
 
     /**
@@ -65,6 +71,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
      * 信息页面数组
      */
     private View[] views;
+    private MaterialDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,14 +108,25 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         return true;
     }
 
+    /**
+     * 打开地图
+     */
     @Override
     public void showMap() {
         Intent intent = new Intent(mContext, MapBrowseActivity.class);
         //传入坐标参数
         intent.putExtra("coordinate", (Serializable) viewModel.coordinateList.get());
+        intent.putExtra("location",viewModel.localPoint.get());
         startActivity(intent);
     }
 
+    /**
+     * 刷新状态按返回键取消刷新
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -125,7 +143,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
      */
     private void initView() {
         Toolbar toolbar = binding.detailToolbar;
-        toolbar.setTitle("长沙水土保持");
+        toolbar.setTitle(mContext.getString(R.string.proj_detail));
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -144,7 +162,13 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
             @Override
             public void onRefresh() {
                 if (!viewModel.isRefresh.get()) {
+                    if (viewModel.currentFrag.get()==3){
+                        getData(3,true);
+                        getData(4,true);
+                        return;
+                    }
                     getData(viewModel.currentFrag.get(), true);
+
                 }
             }
         });
@@ -160,10 +184,11 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
                         binding.detailTab.projMeasure};
             } else if (projType.contains("8万㎡以上")) {
                 viewModel.hasBaseinfo.set(false);
-                views = new View[]{binding.detailTab.survey, binding.detailTab.projMeasure};
+                views = new View[]{binding.detailTab.survey, binding.detailTab.projMeasure,
+                        binding.detailTab.projRecord};
             } else {
                 views = new View[]{binding.detailTab.baseInfo, binding.detailTab.survey,
-                        binding.detailTab.projMeasure};
+                        binding.detailTab.projMeasure, binding.detailTab.projRecord};
             }
         }
 
@@ -203,9 +228,12 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         surveyFragment.setViewModel(viewModel);
         ProjmeasureFragment measureFragment = ProjmeasureFragment.getInstance();
         measureFragment.setViewModel(viewModel);
-        boolean b = views.length == 3 ? mList.add(infoFragment) : mList.add(null);
+        ProjRecordFragment recordFragment = ProjRecordFragment.getInstance();
+        recordFragment.setViewModel(viewModel);
+        boolean b = views.length == 4 ? mList.add(infoFragment) : mList.add(null);
         mList.add(surveyFragment);
         mList.add(measureFragment);
+        mList.add(recordFragment);
         FragmentManager manager = getSupportFragmentManager();
         adapter = new ProjDetailViewPagerAdapter(manager, mList);
         getData(0, false);
@@ -213,6 +241,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 
     private void getData(int position, boolean flag) {
         String projType = getIntent().getExtras().get("projType").toString();
+//        String projType ="8万㎡以上";
         if (projType != null && projType.equals("8万㎡以上")) {
             viewModel.getData(position + 1, flag);
             viewModel.currentFrag.set(position + 1);
@@ -270,12 +299,12 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
     }
 
     @Override
-    public Fragment findOrCreateViewFragment() {
+    public StatisticsFragment findOrCreateViewFragment() {
         return null;
     }
 
     @Override
-    public BaseViewModel findOrCreateViewModel() {
+    public StatisticsViewModel findOrCreateViewModel() {
         return null;
     }
 
@@ -290,7 +319,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         if (pager < 0) {
             return;
         }
-        if (views.length == 2) {
+        if (views.length == 3) {
             pager = pager - 1;
         }
         binding.projInfoPager.setCurrentItem(pager);
@@ -314,16 +343,30 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 
     @Override
     public void showProgress() {
-        MaterialDialogUtil.showLoadProgress(mContext, mContext.getString(R.string.loading), null).show();
+        if (dialog==null){
+            dialog = MaterialDialogUtil.showLoadProgress(mContext, mContext.getString(R.string.loading)).build();
+            dialog.show();
+        }
     }
 
     @Override
     public void stopProgress() {
-        MaterialDialogUtil.stopProgress();
+        if (binding.detailRefresh.isRefreshing()){
+            binding.detailRefresh.setRefreshing(false);
+        }
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
+    /**
+     * 数据刷新
+     *
+     * @param type 信息类型
+     */
     @Override
     public void refresh(int type) {
+        binding.detailRefresh.setRefreshing(false);
         switch (type) {
             case 0:
                 ProjBaseInfoFragment fragment1 = (ProjBaseInfoFragment) mList.get(0);
@@ -337,14 +380,46 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
                 ProjmeasureFragment fragment3 = (ProjmeasureFragment) mList.get(2);
                 fragment3.setData();
                 break;
+            case 3:
+                ProjRecordFragment fragment4 = (ProjRecordFragment) mList.get(3);
+                fragment4.approve();
+                if (viewModel.projSupervise.get() != null && viewModel.projSupervise.get().size() > 0) {
+                    fragment4.supervise();
+                }
+                break;
+            case 4:
+                fragment4 = (ProjRecordFragment) mList.get(3);
+                fragment4.supervise();
+                break;
             default:
                 break;
         }
-        binding.detailRefresh.setRefreshing(false);
     }
 
+    /**
+     * 显示item的详细信息
+     *
+     * @param list
+     */
     @Override
-    public void showSubInfo(List<String> list) {
-        MaterialDialogUtil.showInfoDialog(mContext,"详细信息",list).show();
+    public void showSubInfo(List<String[]> list) {
+//        DialogDetailInfoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
+//                R.layout.dialog_detail_info,null,false);
+        List<String> stringList = new ArrayList<>();
+        for (String[] strings : list) {
+            if (strings[0].equals("电子签名")){
+//                binding.name.setText(strings[0]);
+//                binding.name.setVisibility(View.VISIBLE);
+//                Glide.with(mContext).load(strings[1]).placeholder(R.drawable.loading).error(R.drawable.error)
+//                        .override(1280, 768).into(binding.approvalImage);
+                continue;
+            }
+            stringList.add(strings[0] + ":  " + strings[1]);
+        }
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,R.layout.item_arrayadapter_test,stringList);
+//        binding.detailInfoList.setAdapter(adapter);
+//        ListViewUtil.setListViewHeightBasedOnChildren(binding.detailInfoList);
+//        MaterialDialogUtil.showCustomViewDialog(mContext, "详细信息",binding.getRoot()).show();
+        MaterialDialogUtil.showItemDialog(mContext, "详细信息", stringList).show();
     }
 }

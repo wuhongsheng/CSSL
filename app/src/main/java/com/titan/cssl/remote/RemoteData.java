@@ -31,4 +31,8 @@ public interface RemoteData {
     void ProjectInfo(String ID, int type, String projecttype, Callback callback);
 
     void InsertXCZFData(String json, infoCallback callback);
+
+    void Statistics(Callback callback);
+
+    void downLoadFile(String url,infoCallback callback);
 }

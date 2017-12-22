@@ -89,11 +89,19 @@ public class ProjOptionSelectDialog extends DialogFragment implements OptionSele
         return binding.getRoot();
     }
 
+    /**
+     * 初始化数据
+     */
     private void initData() {
         ProSearchSetAdapter adapter = new ProSearchSetAdapter(getActivity(), viewModel, list);
         binding.optionSelectList.setAdapter(adapter);
     }
 
+    /**
+     * 项目检索参数设置选择
+     *
+     * @param value 参数类型 1：项目类型；2：审批状态
+     */
     @Override
     public void select(String value) {
         this.dismiss();

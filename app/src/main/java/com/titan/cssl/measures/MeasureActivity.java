@@ -12,8 +12,11 @@ import com.titan.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityMeasureBinding;
+import com.titan.cssl.statistics.StatisticsFragment;
+import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
+import com.titan.data.Injection;
 import com.titan.model.ProjDetailMeasure;
 
 /**
@@ -49,7 +52,7 @@ public class MeasureActivity extends BaseActivity {
      */
     private void initView() {
         Toolbar toolbar = binding.measureToolbar;
-        toolbar.setTitle(mContext.getString(R.string.appname));
+        toolbar.setTitle(mContext.getString(R.string.measure));
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -89,7 +92,7 @@ public class MeasureActivity extends BaseActivity {
         ViewModelHolder<MeasureViewModel> holder = (ViewModelHolder<MeasureViewModel>)
                 getSupportFragmentManager().findFragmentByTag(MEASURE_VIEWMODEL_TAG);
         if (holder==null||holder.getViewmodel()==null){
-            MeasureViewModel model = new MeasureViewModel(fragment);
+            MeasureViewModel model = new MeasureViewModel(fragment, Injection.provideDataRepository(mContext));
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     ViewModelHolder.createContainer(model),MEASURE_VIEWMODEL_TAG);
             return model;

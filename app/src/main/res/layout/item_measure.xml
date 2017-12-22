@@ -24,6 +24,6 @@
             android:padding="10dp"
             android:textSize="16sp"
             android:singleLine="true"
-            android:onClick="@{()->viewmodel.openPhoto(url)}"/>
+            android:onClick="@{()->viewmodel.openPhoto(url,name)}"/>
     </LinearLayout>
 </layout>

@@ -11,6 +11,8 @@ import com.titan.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityLocalCensorBinding;
+import com.titan.cssl.statistics.StatisticsFragment;
+import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
 import com.titan.data.Injection;
@@ -47,8 +49,8 @@ public class ProjOpinionActivity extends BaseActivity {
      */
     private void initView() {
         Toolbar toolbar = binding.censorToolbar;
+        toolbar.setTitle(mContext.getResources().getString(R.string.proj_opinion));
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getResources().getString(R.string.appname));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         toolbar.setNavigationIcon(R.drawable.ic_back);

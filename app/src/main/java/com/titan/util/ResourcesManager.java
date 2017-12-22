@@ -99,9 +99,9 @@ public class ResourcesManager implements Serializable {
         return sdf.format(date) + ".jpg";
     }
 
-    public static String getCSPicName(String csName){
+    public static String getCSPicName(String csName,String id){
         Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat(csName+"_yyyyMMddHHmmss", Locale.CHINA);
+        SimpleDateFormat sdf = new SimpleDateFormat(csName+"_"+id+"_yyyyMMddHHmmss", Locale.CHINA);
         return sdf.format(date) + ".jpg";
     }
     /**

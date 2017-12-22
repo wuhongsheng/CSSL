@@ -38,6 +38,12 @@
                 style="@style/tab_tv"
                 android:onClick="@{()->viewmodel.pagerSelect(2)}"
                 android:text="@string/proj_measure"/>
+
+            <TextView
+                android:id="@+id/proj_record"
+                style="@style/tab_tv"
+                android:onClick="@{()->viewmodel.pagerSelect(3)}"
+                android:text="@string/proj_record"/>
         </LinearLayout>
 
         <View

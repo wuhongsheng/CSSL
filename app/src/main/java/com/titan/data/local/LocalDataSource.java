@@ -19,6 +19,7 @@ package com.titan.data.local;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.esri.arcgisruntime.geometry.Point;
 import com.titan.model.ProjSearch;
 import com.titan.model.UserModel;
 
@@ -38,6 +39,8 @@ public class LocalDataSource implements DataSource {
 
     private UserModel userModel;
 
+    private Point point;
+
     public ProjSearch getProjSearch() {
         return projSearch;
     }
@@ -54,6 +57,16 @@ public class LocalDataSource implements DataSource {
     @Override
     public void setUserModel(UserModel userModel) {
         this.userModel = userModel;
+    }
+
+    @Override
+    public Point getLocalPoint() {
+        return point;
+    }
+
+    @Override
+    public void setLocalPoint(Point point) {
+        this.point = point;
     }
 
     // Prevent direct instantiation.

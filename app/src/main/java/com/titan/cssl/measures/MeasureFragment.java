@@ -4,25 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.FragMeasureBinding;
 import com.titan.cssl.localcensor.ProjOpinionActivity;
 import com.titan.model.ProjDetailMeasure;
 import com.titan.util.ListViewUtil;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.titan.util.MaterialDialogUtil;
+import com.titan.util.MyFileUtil;
 
 /**
  * Created by hanyw on 2017/11/17/017.
@@ -35,6 +31,7 @@ public class MeasureFragment extends Fragment implements Measure {
     private FragMeasureBinding binding;
     private MeasureViewModel viewModel;
     private ProjDetailMeasure.subBean subBean;
+    private MaterialDialog dialog;
 
     public static MeasureFragment getInstance(ProjDetailMeasure.subBean subBean) {
         MeasureFragment sington = new MeasureFragment();
@@ -105,8 +102,29 @@ public class MeasureFragment extends Fragment implements Measure {
         startActivity(intent);
     }
 
+    /**
+     * 打开图片
+     */
     @Override
-    public void openPhoto(String url) {
-        viewModel.getPhoto(mContext,url);
+    public void openPhoto() {
+        viewModel.getPhoto(mContext);
+    }
+
+    @Override
+    public void showProgress() {
+        dialog = MaterialDialogUtil.showLoadProgress(mContext, mContext.getString(R.string.loading)).build();
+        dialog.show();
+    }
+
+    @Override
+    public void stopProgress() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showToast(String info) {
+        Toast.makeText(getActivity(), info, Toast.LENGTH_SHORT).show();
     }
 }

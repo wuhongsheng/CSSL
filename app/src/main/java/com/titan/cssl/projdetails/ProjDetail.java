@@ -49,7 +49,7 @@ public interface ProjDetail {
      * 展示项目某一条的信息
      * @param list
      */
-    void showSubInfo(List<String> list);
+    void showSubInfo(List<String[]> list);
 
     /**
      * 打开地图

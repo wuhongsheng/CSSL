@@ -23,7 +23,7 @@ import java.util.Map;
  * 项目概况
  */
 
-public class ProjSummaryFragment extends Fragment {
+public class ProjSummaryFragment extends Fragment{
 
     private Context mContext;
     private FragProjSurveyBinding binding;

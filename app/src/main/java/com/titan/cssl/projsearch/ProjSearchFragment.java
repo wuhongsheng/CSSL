@@ -85,7 +85,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     /**
      * 项目审批状态数组
      */
-    private String[] stateArray = new String[]{"草稿", "提交审核中", "核通过", "审核不通过", "出窗"};
+    private String[] stateArray = new String[]{"提交审核中", "审核通过", "审核不通过"};
 
     private Context mContext;
 
@@ -119,6 +119,8 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     private LocationService mLocationService;
 
     private Handler handler;
+    private MaterialDialog dialog;
+    private MyThread thread;
 
     public static ProjSearchFragment getInstance() {
         return new ProjSearchFragment();
@@ -151,12 +153,18 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
         binding.projectList.addFooterView(footViewBinding.getRoot(), null, false);
 
         Toolbar toolbar = binding.searchToolbar;
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
-        toolbar.setTitle(getResources().getString(R.string.appname));
+        toolbar.setTitle(mContext.getResources().getString(R.string.proj_search));
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finish();
+            }
+        });
         binding.searchRefresh.setColorSchemeResources(R.color.blue, R.color.colorAccent, R.color.aqua);
         binding.searchRefresh.setSize(SwipeRefreshLayout.DEFAULT);
         binding.searchRefresh.setDistanceToTriggerSync(100);
@@ -214,20 +222,20 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
             case R.id.proj_search:
                 searchSet();
                 break;
-            case R.id.proj_plan:
-                Intent intent = new Intent(mContext, ProjReservePlanActivity.class);
-                mContext.startActivity(intent);
-                break;
-            case R.id.proj_signout:
-                MaterialDialogUtil.showSureDialog(mContext, "确定退出登录吗")
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                signOut();
-                                dialog.dismiss();
-                            }
-                        }).build().show();
-                break;
+//            case R.id.proj_plan:
+//                Intent intent = new Intent(mContext, ProjReservePlanActivity.class);
+//                mContext.startActivity(intent);
+//                break;
+//            case R.id.proj_signout:
+//                MaterialDialogUtil.showSureDialog(mContext, "确定退出登录吗")
+//                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                            @Override
+//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                                signOut();
+//                                dialog.dismiss();
+//                            }
+//                        }).build().show();
+//                break;
             default:
                 break;
         }
@@ -291,6 +299,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             mViewModel.pageIndex.set(1);
+                            mViewModel.hasMore.set(true);
                             mViewModel.search(false);
                             dialog.dismiss();
                         }
@@ -337,69 +346,55 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
                 total_index = i2;
             }
         });
-        new Thread(new Runnable() {
+        if (thread==null){
+            thread = new MyThread();
+        }
+        thread.start();
+    }
+
+    /**
+     * 手动开启定位权限后刷新数据时获取位置信息
+     */
+    public class MyThread extends Thread {
             @Override
             public void run() {
+                int flag = ContextCompat.checkSelfPermission(mContext,
+                        Manifest.permission.ACCESS_FINE_LOCATION);
                 while (true) {
                     if (mExitTime == 0) {
                         mExitTime = System.currentTimeMillis();
                     }
-                    int flag = ContextCompat.checkSelfPermission(mContext,
-                            Manifest.permission.ACCESS_FINE_LOCATION);
-
                     //已经授予定位权限
                     if (flag == PackageManager.PERMISSION_GRANTED) {
                         //定位是否初始化
                         if (mLocationService == null) {
                             initBDLoc();
-                            MyThread thread = new MyThread();
-                            thread.start();
-                            try {
-                                //等待线程完成
-                                thread.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
                         }
-                        if (mViewModel.locPoint.get() == null &&
+                        //等待定位或超时
+                        if (mViewModel.locPoint.get() != null ||
                                 (System.currentTimeMillis() - mExitTime) > 5000) {
-                            Message message = new Message();
-                            message.what = NOLOCPOINT;
-                            handler.sendMessage(message);
                             break;
                         }
                     }
-                    //定位成功或没有授予定位权限
-                    if (mViewModel.locPoint.get() != null || flag == PackageManager.PERMISSION_DENIED) {
-                        Message message = new Message();
-                        message.what = GETDATA;
-                        handler.sendMessage(message);
-                        break;
-                    }
                 }
-            }
-        }).start();
-    }
-
-    public class MyThread extends Thread {
-        @Override
-        public void run() {
-            long mExitTime = 0;
-            while (true) {
-                if (mExitTime == 0) {
-                    mExitTime = System.currentTimeMillis();
+                if (mViewModel.locPoint.get() == null) {
+                    Message message = new Message();
+                    message.what = NOLOCPOINT;
+                    handler.sendMessage(message);
+                    return;
                 }
-                //等待定位或超时
-                if (mViewModel.locPoint.get() != null ||
-                        (System.currentTimeMillis() - mExitTime) > 5000) {
-                    break;
+                //定位成功或没有授予定位权限
+                if (mViewModel.locPoint.get() != null || flag == PackageManager.PERMISSION_DENIED) {
+                    Message message = new Message();
+                    message.what = GETDATA;
+                    handler.sendMessage(message);
                 }
-            }
         }
     }
 
     /**
      * 项目列表加载完成
+     *
      * @param state 内容是否结束标识位 true 未结束；false 结束
      */
     public void loadComplete(boolean state) {
@@ -448,13 +443,15 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
 
     @Override
     public void showProgress() {
-        MaterialDialogUtil.showLoadProgress(mContext,
-                mContext.getString(R.string.loading), null).show();
+        dialog = MaterialDialogUtil.showLoadProgress(mContext, mContext.getString(R.string.loading)).build();
+        dialog.show();
     }
 
     @Override
     public void stopProgress() {
-        MaterialDialogUtil.stopProgress();
+        if (dialog != null) {
+            dialog.dismiss();
+        }
         binding.searchRefresh.setRefreshing(false);
     }
 
@@ -503,7 +500,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     /**
      * 查看项目详细信息
      *
-     * @param type 项目类型
+     * @param type 项目类型 1：3万㎡以下；2：3-8万㎡；3：8万㎡以上
      */
     @Override
     public void projDetails(String type) {
@@ -534,6 +531,10 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ProjSearchFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        if (thread==null){
+            thread = new MyThread();
+        }
+        thread.start();
     }
 
     @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})

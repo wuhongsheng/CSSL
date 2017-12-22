@@ -65,7 +65,6 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <!--<action android:name="android.intent.action.MAIN"/>-->
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
@@ -77,7 +76,7 @@
         <activity android:name=".projdetails.ProjDetailActivity">
 
         </activity>
-        <activity android:name=".content.MapBrowseActivity"/>
+        <activity android:name=".map.MapBrowseActivity"/>
         <activity android:name=".localcensor.ProjOpinionActivity"/>
         <activity android:name=".reserveplan.ProjReservePlanActivity"/>
         <activity
@@ -93,7 +92,9 @@
         <activity android:name=".measures.MeasureActivity">
 
         </activity>
-        <activity android:name=".map.MapBrowseActivity"/>
+        <activity android:name=".statistics.StatisticsActivity">
+
+        </activity>
 
         <service
             android:name="com.baidu.location.f"

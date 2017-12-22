@@ -1,9 +1,12 @@
 package com.titan.cssl.measures;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 
@@ -11,10 +14,14 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.titan.BaseViewModel;
+import com.titan.MyApplication;
 import com.titan.cssl.R;
-import com.titan.model.ProjCensor;
+import com.titan.cssl.remote.RemoteData;
+import com.titan.data.source.DataRepository;
 import com.titan.model.ProjDetailMeasure;
+import com.titan.util.MyFileUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +41,6 @@ public class MeasureViewModel extends BaseViewModel {
      * 是否有整改意见 false：没有；true：有
      */
     public ObservableField<Boolean> hasInfo = new ObservableField<>(false);
-
-    public ObservableBoolean hasPic = new ObservableBoolean(false);
-
-    public ObservableBoolean hasDoc = new ObservableBoolean(false);
 
     /**
      * 描述
@@ -59,8 +62,13 @@ public class MeasureViewModel extends BaseViewModel {
      */
     public ObservableField<String> opinion = new ObservableField<>();
 
-    public MeasureViewModel(Measure measure) {
+    public ObservableField<String> picName = new ObservableField<>();
+
+    public ObservableField<String> picUrl = new ObservableField<>();
+
+    public MeasureViewModel(Measure measure, DataRepository dataRepository) {
         this.measure = measure;
+        this.mDataRepository = dataRepository;
     }
 
     /**
@@ -75,31 +83,63 @@ public class MeasureViewModel extends BaseViewModel {
      *
      * @param url 链接
      */
-    public void openPhoto(String url) {
+    public void openPhoto(String url,String name) {
         if (url.equals("")){
             return;
         }
-        measure.openPhoto(url);
+        picName.set(name);
+        picUrl.set(url);
+        measure.openPhoto();
     }
 
     /**
      * 查看图片
-     *
-     * @param url 图片地址
      */
-    public void getPhoto(Context context,String url) {
-        ImageView imageView = LayoutInflater.from(context)
-                .inflate(R.layout.item_img, null).findViewById(R.id.item_img);
-        Glide.with(context).load(url).placeholder(R.drawable.loading).error(R.drawable.error)
-                .override(1280, 768).into(imageView);
-        new MaterialDialog.Builder(context).customView(imageView, true)
-                .negativeText("取消")
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                }).build().show();
+    public void getPhoto(final Context context) {
+//        ImageView imageView = LayoutInflater.from(context)
+//                .inflate(R.layout.item_img, null).findViewById(R.id.item_img);
+//        Glide.with(context).load(url).placeholder(R.drawable.loading).error(R.drawable.error)
+//                .override(1280, 768).into(imageView);
+//        new MaterialDialog.Builder(context).customView(imageView, true)
+//                .negativeText("取消")
+//                .onNegative(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        dialog.dismiss();
+//                    }
+//                }).build().show();
+        final SharedPreferences sharedPreferences = MyApplication.sharedPreferences;
+        String picPath = sharedPreferences.getString(picName.get(),"");
+        File file = new File(picPath);
+        if (file.exists()){
+            Intent intent = MyFileUtil.getImageFileIntent(picPath);
+            context.startActivity(intent);
+            return;
+        }
+        String url = picUrl.get();
+        String path = context.getResources().getString(R.string.serverhost)+url.substring(2, url.length());
+        Log.e("tag","path:"+path);
+        measure.showProgress();
+        mDataRepository.downLoadFile(path, new RemoteData.infoCallback() {
+            @Override
+            public void onFailure(String info) {
+                measure.stopProgress();
+                measure.showToast(info);
+                Log.e("tag","picError:"+info);
+            }
+
+            @Override
+            public void onSuccess(String info) {
+                measure.stopProgress();
+                if (!info.equals("")){
+                    SharedPreferences.Editor edit = sharedPreferences.edit();
+                    edit.putString(picName.get(),info);
+                    edit.apply();
+                    Intent intent = MyFileUtil.getImageFileIntent(info);
+                    context.startActivity(intent);
+                }
+            }
+        });
     }
 
     /**
@@ -136,6 +176,11 @@ public class MeasureViewModel extends BaseViewModel {
         return list1;
     }
 
+    /**
+     * 转换空值
+     * @param value
+     * @return
+     */
     public String getString(String value){
         if (value.equals("null")||value.equals("")){
             value = "无";

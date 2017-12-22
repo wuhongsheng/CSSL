@@ -4,8 +4,8 @@ import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 import android.view.LayoutInflater;
 
 import com.titan.BaseActivity;
@@ -15,9 +15,6 @@ import com.titan.cssl.databinding.ActivityLoginBinding;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
 import com.titan.data.Injection;
-import com.titan.data.local.LocalDataSource;
-import com.titan.data.source.DataRepository;
-import com.titan.util.MyFileUtil;
 
 
 /**
@@ -48,10 +45,14 @@ public class LoginActivity extends BaseActivity {
         mFragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
         mFragment.setViewModel(mViewModel);
-        setSupportActionBar(binding.loginToolbar);
-        binding.loginToolbar.setTitle(getResources().getString(R.string.appname));
-        binding.loginToolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        binding.loginToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+//        setSupportActionBar(binding.loginToolbar);
+//        binding.loginToolbar.setTitle(getResources().getString(R.string.appname));
+//        binding.loginToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+//        binding.loginToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         initData();
         MyApplication.getInstance().addActivity(this);
     }
@@ -82,7 +83,7 @@ public class LoginActivity extends BaseActivity {
                 (ViewModelHolder<LoginViewModel>) getSupportFragmentManager()
                         .findFragmentByTag(LOGIN_VIEWMODEL_TAG);
         if (holder == null || holder.getViewmodel() == null) {
-            LoginViewModel viewModel = new LoginViewModel(mContext, mFragment, Injection.provideDataRepository(mContext));
+            LoginViewModel viewModel = new LoginViewModel(mFragment, Injection.provideDataRepository(mContext));
             ActivityUtils.addFragmentToActivity
                     (getSupportFragmentManager(), ViewModelHolder.createContainer(viewModel), LOGIN_VIEWMODEL_TAG);
             return viewModel;

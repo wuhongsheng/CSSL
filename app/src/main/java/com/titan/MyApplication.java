@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
+import android.support.multidex.MultiDexApplication;
 import android.widget.Toast;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -16,7 +17,7 @@ import com.titan.location.LocationService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyApplication extends Application {
+public class MyApplication extends MultiDexApplication {
 
     public static MyApplication mApplication;
 
