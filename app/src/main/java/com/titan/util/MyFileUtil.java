@@ -150,7 +150,13 @@ public class MyFileUtil {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (file.exists()) {
             Bitmap image = BitmapFactory.decodeFile(path);
-            image.compress(Bitmap.CompressFormat.PNG, 40, baos);//100表示不压缩，把压缩后的数据存放到baos中
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//100表示不压缩，把压缩后的数据存放到baos中
+            int options = 90;
+            while (baos.toByteArray().length / 1024 > 500) { // 循环判断如果压缩后图片是否大于500kb,大于继续压缩
+                baos.reset(); // 重置baos即清空baos
+                image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中
+                options -= 10;// 每次都减少10
+            }
             byte[] buffer = baos.toByteArray();
             return Base64.encodeToString(buffer, Base64.DEFAULT);
         } else {

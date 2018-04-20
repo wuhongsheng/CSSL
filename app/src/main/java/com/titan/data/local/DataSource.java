@@ -36,4 +36,8 @@ public interface DataSource {
     Point getLocalPoint();
 
     void setLocalPoint(Point point);
+
+    String getAddress();
+
+    void setAddress(String address);
 }

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewmodel"
+            type="com.titan.cssl.map.MapBrowseViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/map_browse_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/AppTheme.Actionbar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.esri.arcgisruntime.mapping.view.MapView
+                android:id="@+id/mapview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/iv_cross"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginBottom="100dp"
+                android:contentDescription="@string/cross"
+                android:visibility="@{viewmodel.isCollection?View.VISIBLE:View.GONE}"
+                app:srcCompat="@drawable/ic_pointer" />
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_loc"
+                style="@style/cardview"
+                android:layout_above="@+id/ll_measure"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="125dp"
+                android:layout_marginStart="15dp"
+                android:onClick="@{()->viewmodel.onLoction()}"
+                app:cardBackgroundColor="@color/white">
+
+                <ImageView
+                    android:id="@+id/btn_myloc"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:srcCompat="@drawable/ic_myloc" />
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/ll_measure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/btn_collect"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="@{viewmodel.isCollection?View.VISIBLE:View.GONE}">
+
+                <Button
+                    android:id="@+id/btn_confirm"
+                    style="@style/btn_commit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewmodel.addPoint()}"
+                    android:text="@string/confirmselect" />
+
+                <Button
+                    android:id="@+id/btn_concel"
+                    style="@style/btn_commit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewmodel.undo()}"
+                    android:text="@string/concelselect" />
+
+                <Button
+                    android:id="@+id/btn_delete"
+                    style="@style/btn_commit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewmodel.cancel()}"
+                    android:text="@string/collect_cancel" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_collect"
+                style="@style/btn_commit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="5dp"
+                android:onClick="@{()->viewmodel.onMeasure()}"
+                android:text="@{viewmodel.collectionStatu?@string/collect_save:@string/collect_start}"
+                android:visibility="@{viewmodel.isCollection?View.VISIBLE:View.GONE}" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

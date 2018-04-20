@@ -64,6 +64,16 @@ public class DataRepository implements DataSource, RemoteData {
     }
 
     @Override
+    public String getAddress() {
+        return mLocalDataSource.getAddress();
+    }
+
+    @Override
+    public void setAddress(String address) {
+        mLocalDataSource.setAddress(address);
+    }
+
+    @Override
     public void login(String name, String password, Callback callback) {
         dataSource.login(name, password, callback);
     }
@@ -92,7 +102,12 @@ public class DataRepository implements DataSource, RemoteData {
     }
 
     @Override
-    public void downLoadFile(String url,infoCallback callback) {
-        dataSource.downLoadFile(url,callback);
+    public void downLoadFile(String url, infoCallback callback) {
+        dataSource.downLoadFile(url, callback);
+    }
+
+    @Override
+    public void InsertZB(String projectBH, String projectType, String projectZB, infoCallback callback) {
+        dataSource.InsertZB(projectBH, projectType, projectZB, callback);
     }
 }

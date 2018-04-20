@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/map_navigation"
+        android:icon="@drawable/ic_navigation"
+        android:title="@string/project_navigation"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/map_change"
         android:icon="@drawable/ic_layer"
         android:title="@string/change_layer"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/map_location"
         android:icon="@drawable/ic_location"
-        android:title="@string/change_layer"
-        app:showAsAction="always"/>
+        android:title="@string/proj_location"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/proj_collection"
+        android:icon="@drawable/ic_location"
+        android:title="@string/proj_collection"
+        app:showAsAction="ifRoom" />
 
 
 </menu>

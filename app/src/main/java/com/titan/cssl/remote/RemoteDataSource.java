@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.titan.model.Approval;
 import com.titan.model.ResultModel;
+import com.titan.model.ResultModel2;
 import com.titan.model.Supervise;
 
 import java.io.StringReader;
@@ -177,6 +178,35 @@ public class RemoteDataSource implements RemoteData {
                 });
     }
 
+    @Override
+    public void InsertZB(String projectBH, String projectType, String projectZB, final infoCallback callback) {
+        Observable<String> observable = RetrofitHelper.getInstance(mContext).getServer()
+                .InsertZB(projectBH, projectType, projectZB);
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        setInsertErrorInfo(e, callback);
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Gson gson = new Gson();
+                        ResultModel2<?> resultModel = gson.fromJson(s, ResultModel2.class);
+                        if (resultModel.getResult().equals("成功")) {
+                            callback.onSuccess(resultModel.getMessage());
+                        } else {
+                            callback.onFailure(resultModel.getMessage());
+                        }
+                    }
+                });
+    }
+
     /**
      * 项目统计
      */
@@ -228,7 +258,7 @@ public class RemoteDataSource implements RemoteData {
                 String path = DownLoadManager.writeResponseBodyToDisk(mContext, responseBody);
                 if (!path.equals("")) {
                     callback.onSuccess(path);
-                    Log.e("tag", "success:"+path);
+                    Log.e("tag", "success:" + path);
                 } else {
                     callback.onFailure("文件加载错误");
                 }
@@ -304,6 +334,8 @@ public class RemoteDataSource implements RemoteData {
         }
         if (s.equals("1")) {
             callback.onSuccess("上传成功");
+        } else {
+            callback.onFailure(s);
         }
     }
 }

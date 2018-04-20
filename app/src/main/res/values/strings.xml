@@ -13,9 +13,16 @@
 
     <!--serverhost-->
     <!--公司云-->
-    <!--<string name="serverhost">http://101.201.54.143:8020/</string>-->
+    <!--帐号：superadmin 密码：123456-->
+    <string name="serverhost">http://101.201.54.143:8020/</string>
     <!--客户云-->
-    <string name="serverhost">http://218.77.44.9:8020/</string>
+    <!--帐号：superadmin 密码：cs_swjsadmin-->
+    <!--<string name="serverhost">http://218.77.44.9:8020/</string>-->
+
+    <!--影像图地址-->
+    <string name="img_201606">http://218.77.44.9:6080/arcgis/rest/services/BASEDATA/Image_201606/MapServer</string>
+    <string name="img_201612">http://218.77.44.9:6080/arcgis/rest/services/BASEDATA/Image_201612/MapServer</string>
+    <string name="img_201701">http://218.77.44.9:6080/arcgis/rest/services/BASEDATA/Image_201701/MapServer</string>
     <!--测试-->
     <string name="test">测试</string>
     <string name="test_more">测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试
@@ -58,10 +65,21 @@
     <string name="map_mode">地图模式</string>
     <string name="change_layer">图层切换</string>
     <string name="location">定位</string>
+    <string name="proj_location">项目定位</string>
     <string name="no_expert_opinion">暂无执法信息</string>
     <string name="opinion_add">新增</string>
     <string name="plan">预案</string>
     <string name="sign_out">退出登录</string>
     <string name="system_name">水土保持空天地一体化监督系统</string>
     <string name="no_data">暂无数据</string>
+    <string name="project_navigation">项目导航</string>
+    <string name="cross">指针</string>
+    <string name="confirmselect">确认选点</string>
+    <string name="concelselect">撤销</string>
+    <string name="coll_delete">删除</string>
+    <string name="collect_end">结束采集</string>
+    <string name="collect_start">开始采集</string>
+    <string name="collect_save">保存</string>
+    <string name="collect_cancel">取消</string>
+    <string name="proj_collection">项目范围采集</string>
 </resources>

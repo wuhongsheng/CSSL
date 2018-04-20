@@ -19,6 +19,7 @@ import com.titan.util.MyFileUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -105,6 +106,11 @@ public class ProjDetailViewModel extends BaseViewModel {
      * 设备当前位置
      */
     public ObservableField<Double[]> localPoint = new ObservableField<>();
+
+    /**
+     * 当前设备位置详细地址
+     */
+    public ObservableField<String> address = new ObservableField<>();
 
     /**
      * 水保措施是否有数据 true 有；false 无
@@ -271,6 +277,15 @@ public class ProjDetailViewModel extends BaseViewModel {
                     Type type1 = new TypeToken<List<Map<String, ?>>>() {
                     }.getType();
                     List<Map<String, ?>> mapList = gson.fromJson(gson.toJson(info), type1);
+                    if (type==4){
+                        Map<String, ?> tempMap = new HashMap<>();
+                        for (Map<String, ?> map : mapList) {
+                            if (map.containsKey("Reason")) {
+                                map.remove("Reason");
+                                break;
+                            }
+                        }
+                    }
                     List<List<String[]>> list = getLists(mapList);
                     if (type == 3) {
                         projApproval.set(list);
@@ -330,11 +345,12 @@ public class ProjDetailViewModel extends BaseViewModel {
                         if (isMap) {
                             Point point = mDataRepository.getLocalPoint();
                             Double[] latlon = new Double[2];
-                            if (point!=null){
+                            if (point != null) {
                                 latlon[0] = point.getX();
                                 latlon[1] = point.getY();
                             }
                             localPoint.set(latlon);
+                            address.set(mDataRepository.getAddress());
                             projDetail.showMap();
                             return;
                         }

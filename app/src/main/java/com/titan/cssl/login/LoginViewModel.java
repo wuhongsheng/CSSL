@@ -1,6 +1,5 @@
 package com.titan.cssl.login;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
@@ -121,5 +120,8 @@ public class LoginViewModel extends BaseViewModel {
      */
     private boolean checkEmpty() {
         return TextUtils.isEmpty(username.get()) || TextUtils.isEmpty(password.get());
+    }
+    public void test(){
+        Log.e("tag","test");
     }
 }

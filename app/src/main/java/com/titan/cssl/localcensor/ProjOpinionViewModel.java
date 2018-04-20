@@ -151,11 +151,11 @@ public class ProjOpinionViewModel extends BaseViewModel {
                 Toast.makeText(mContext, "图片转换错误", Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
-            Log.e("tag","tobase64Error:"+e);
+            Log.e("tag", "tobase64Error:" + e);
         }
         list.add(photo);
         ProjCensor censor = new ProjCensor(subBean.get().getID(), list,
-                isTrue.get() ? "属实" : "不属实", id);
+                isTrue.get() ? "属实" : "不属实", ids[0]);
         json.set(gson.toJson(censor));
         Message message = new Message();
         message.what = FINISH;

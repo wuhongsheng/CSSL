@@ -5,10 +5,22 @@
           package="com.titan.cssl">
 
     <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+    <uses-permission android:name="android.permission.ACCES_MOCK_LOCATION" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- SDK1.5需要android.permission.GET_TASKS权限判断本程序是否为当前运行的应用? -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <!-- 来电消音 -->
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- 写入扩展存储，向扩展卡写入数据 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -21,6 +33,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!-- 用于读取手机当前的状态-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -35,6 +48,14 @@
         android:supportsRtl="true"
         android:theme="@style/NoActionBar"
         tools:replace="android:label">
+
+        <meta-data
+            android:name="com.baidu.speech.APP_ID"
+            android:value="10356243" />
+
+        <meta-data
+            android:name="com.baidu.speech.SECRET_KEY"
+            android:value="FuN6la9lsfHmtxmEveFR3ddFbTCT6yIW" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -61,7 +82,7 @@
         </receiver>
 
         <activity
-            android:name=".login.LoginActivity"
+            android:name="com.titan.cssl.login.LoginActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -70,15 +91,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".projsearch.ProjSearchActivity"
+            android:name="com.titan.cssl.projsearch.ProjSearchActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
-        <activity android:name=".projdetails.ProjDetailActivity">
 
-        </activity>
-        <activity android:name=".map.MapBrowseActivity"/>
-        <activity android:name=".localcensor.ProjOpinionActivity"/>
-        <activity android:name=".reserveplan.ProjReservePlanActivity"/>
+        <activity android:name="com.titan.cssl.projdetails.ProjDetailActivity"/>
+        <activity android:name="com.titan.cssl.map.MapBrowseActivity"/>
+        <activity android:name="com.titan.cssl.localcensor.ProjOpinionActivity"/>
+        <activity android:name="com.titan.cssl.reserveplan.ProjReservePlanActivity"/>
+        <activity android:name="com.titan.cssl.measures.MeasureActivity"/>
+        <activity android:name="com.titan.cssl.statistics.StatisticsActivity"/>
+
         <activity
             android:name="cn.finalteam.rxgalleryfinal.ui.activity.MediaActivity"
             android:exported="true"
@@ -89,12 +112,7 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBar"/>
-        <activity android:name=".measures.MeasureActivity">
-
-        </activity>
-        <activity android:name=".statistics.StatisticsActivity">
-
-        </activity>
+        <activity android:name=".map.BNGuideActivity" />
 
         <service
             android:name="com.baidu.location.f"

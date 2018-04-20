@@ -41,6 +41,8 @@ public class LocalDataSource implements DataSource {
 
     private Point point;
 
+    private String address;
+
     public ProjSearch getProjSearch() {
         return projSearch;
     }
@@ -67,6 +69,16 @@ public class LocalDataSource implements DataSource {
     @Override
     public void setLocalPoint(Point point) {
         this.point = point;
+    }
+
+    @Override
+    public String getAddress() {
+        return address;
+    }
+
+    @Override
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     // Prevent direct instantiation.

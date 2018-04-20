@@ -540,6 +540,7 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
             locPoint.set(point);
             hasLocPoint.set(true);
             mDataRepository.setLocalPoint(point);
+            mDataRepository.setAddress(bdLocation.getAddrStr());
             //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
 //            Log.e("tag", "lat:" + latitude + "," + "lon:" + longitude + "radius：" + radius + "," + coorType);
         } else {

@@ -72,7 +72,6 @@ public interface RetrofitService {
      *
      * @return
      */
-    @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("/CSSTBCMobileWebservice.asmx/InsertXCZFData")
     Observable<String> InsertXCZFData(@Field("JsonString") String json);
@@ -91,4 +90,17 @@ public interface RetrofitService {
 
     @GET("/CSSTBCMobileWebservice.asmx/Statistics")
     Observable<String> Statistics();
+
+    /**
+     * 添加项目坐标范围
+     *
+     * @param projectBH   项目编号
+     * @param projectType 项目类型
+     * @param projectZB   坐标字符串
+     * @return
+     */
+    @GET("/CSSTBCMobileWebservice.asmx/InsertZB")
+    Observable<String> InsertZB(@Query("projectBH") String projectBH, @Query("projectType") String projectType,
+                                @Query("projectZB") String projectZB);
+
 }

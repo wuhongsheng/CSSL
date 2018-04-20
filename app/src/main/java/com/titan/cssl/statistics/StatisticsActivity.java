@@ -83,10 +83,10 @@ public class StatisticsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.proj_plan:
-                Intent intent = new Intent(mContext, ProjReservePlanActivity.class);
-                mContext.startActivity(intent);
-                break;
+//            case R.id.proj_plan:
+//                Intent intent = new Intent(mContext, ProjReservePlanActivity.class);
+//                mContext.startActivity(intent);
+//                break;
             case R.id.proj_signout:
                 MaterialDialogUtil.showSureDialog(mContext, "确定退出登录吗")
                         .onPositive(new MaterialDialog.SingleButtonCallback() {

@@ -16,7 +16,7 @@ public interface RemoteData {
         void onSuccess(List<? extends Map<String, ?>> info);
     }
 
-    interface infoCallback{
+    interface infoCallback {
         void onFailure(String info);
 
         void onSuccess(String info);
@@ -34,5 +34,7 @@ public interface RemoteData {
 
     void Statistics(Callback callback);
 
-    void downLoadFile(String url,infoCallback callback);
+    void downLoadFile(String url, infoCallback callback);
+
+    void InsertZB(String projectBH, String projectType, String projectZB, infoCallback callback);
 }

@@ -32,6 +32,7 @@ import com.titan.cssl.measures.MeasureActivity;
 import com.titan.cssl.statistics.StatisticsFragment;
 import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.data.Injection;
+import com.titan.model.LocationInfo;
 import com.titan.model.ProjDetailMeasure;
 import com.titan.util.ListViewUtil;
 import com.titan.util.MaterialDialogUtil;
@@ -114,9 +115,14 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
     @Override
     public void showMap() {
         Intent intent = new Intent(mContext, MapBrowseActivity.class);
+        LocationInfo locationInfo = new LocationInfo();
+        locationInfo.setLocalPoint(viewModel.localPoint.get());
+        locationInfo.setCoordinateList(viewModel.coordinateList.get());
+        locationInfo.setAddress(viewModel.address.get());
         //传入坐标参数
-        intent.putExtra("coordinate", (Serializable) viewModel.coordinateList.get());
-        intent.putExtra("location",viewModel.localPoint.get());
+//        intent.putExtra("coordinate", (Serializable) viewModel.coordinateList.get());
+//        intent.putExtra("location",viewModel.localPoint.get());
+        intent.putExtra("locationInfo",locationInfo);
         startActivity(intent);
     }
 

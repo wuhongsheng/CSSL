@@ -167,10 +167,10 @@ public class StatisticsFragment extends Fragment implements Statistics {
                 return name.get((int) value % name.size());
             }
 
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
+//            @Override
+//            public int getDecimalDigits() {
+//                return 0;
+//            }
         });
 
         Legend l = chartTianbao.getLegend();
