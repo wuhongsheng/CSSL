@@ -2,6 +2,7 @@ package com.titan.util;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -39,5 +40,33 @@ public class ListViewUtil {
          */
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount()));
         listView.setLayoutParams(params);
+    }
+
+    /**
+     * 收起子级时计算高度
+     *
+     * @param listView
+     */
+    public static void collapseListener(final ExpandableListView listView) {
+        listView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                setListViewHeightBasedOnChildren(listView);
+            }
+        });
+    }
+
+    /**
+     * 展开子级时计算高度
+     *
+     * @param listView
+     */
+    public static void groupExpandListener(final ExpandableListView listView) {
+        listView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                setListViewHeightBasedOnChildren(listView);
+            }
+        });
     }
 }

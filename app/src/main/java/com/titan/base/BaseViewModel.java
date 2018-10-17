@@ -1,4 +1,4 @@
-package com.titan;
+package com.titan.base;
 
 import android.content.Context;
 import android.databinding.BaseObservable;

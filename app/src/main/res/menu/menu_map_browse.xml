@@ -22,7 +22,7 @@
 
     <item
         android:id="@+id/proj_collection"
-        android:icon="@drawable/ic_location"
+        android:icon="@drawable/ic_edit"
         android:title="@string/proj_collection"
         app:showAsAction="ifRoom" />
 

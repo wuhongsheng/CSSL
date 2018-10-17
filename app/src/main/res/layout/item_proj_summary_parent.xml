@@ -12,31 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@drawable/divider_horizontal"
-        android:onClick="@{()->viewmodel.showSubInfo()}"
         android:orientation="vertical"
         android:showDividers="end">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:text="@{viewmodel.item.name}"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/item_detail_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:singleLine="true"
-            android:text="@{viewmodel.item.value}"
+            android:text="@{viewmodel.item.name}"
+            android:textColor="@color/black"
             android:textSize="16sp" />
-
-        <!--<ExpandableListView-->
-        <!--android:id="@+id/proj_detail_explv"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"/>-->
     </LinearLayout>
 </layout>

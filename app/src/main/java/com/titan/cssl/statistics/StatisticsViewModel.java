@@ -4,7 +4,8 @@ import android.content.Context;
 import android.databinding.ObservableField;
 import android.util.Log;
 
-import com.titan.BaseViewModel;
+import com.github.mikephil.charting.data.Entry;
+import com.titan.base.BaseViewModel;
 import com.titan.cssl.remote.RemoteData;
 import com.titan.data.source.DataRepository;
 import com.titan.util.MyFileUtil;
@@ -90,5 +91,22 @@ public class StatisticsViewModel extends BaseViewModel {
                 Log.e("tag","map:"+map.toString());
             }
         });
+    }
+
+    //通过点击的柱状图的点击位置判断项目审核状态
+    public String getProjStatu(Entry e){
+        String statu = "";
+        switch ((int) (e.getX()%3)){
+            case 0:
+               statu = "审核通过";
+               break;
+            case 1:
+                statu = "提交审核中";
+                break;
+            case 2:
+                statu = "审核不通过";
+                break;
+        }
+        return statu;
     }
 }

@@ -4,24 +4,25 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
+
+        <RelativeLayout
 
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/statistics_pie_chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:background="@color/white"/>
+                android:background="@color/white" />
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/statistics_bar_chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:layout_below="@+id/statistics_pie_chart"
                 android:background="@color/white" />
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
 </layout>

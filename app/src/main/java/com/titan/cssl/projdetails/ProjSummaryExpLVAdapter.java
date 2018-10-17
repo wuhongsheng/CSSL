@@ -2,6 +2,7 @@ package com.titan.cssl.projdetails;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,6 @@ import android.widget.BaseExpandableListAdapter;
 
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
-import com.titan.cssl.databinding.ItemProjMeasureParentBinding;
-import com.titan.cssl.databinding.ItemProjSummaryChildBinding;
 import com.titan.util.MyFileUtil;
 
 import java.util.ArrayList;
@@ -73,37 +72,45 @@ public class ProjSummaryExpLVAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        ItemProjMeasureParentBinding binding;
-        if (view == null) {
-            binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.item_proj_measure_parent
-                    , viewGroup, false);
-        } else {
-            binding = DataBindingUtil.getBinding(view);
-        }
-        binding.setVariable(BR.value, pName);
-        return binding.getRoot();
+//        ItemProjSummaryParentBinding binding;
+//        if (view == null) {
+//            binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.item_proj_summary_parent
+//                    , viewGroup, false);
+//        } else {
+//            binding = DataBindingUtil.getBinding(view);
+//        }
+//        binding.setVariable(BR.value, pName);
+//        return binding.getRoot();
+        return null;
     }
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        ItemProjSummaryChildBinding binding;
-        if (view == null) {
-            binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.item_proj_summary_child
-                    , viewGroup, false);
-        } else {
-            binding = DataBindingUtil.getBinding(view);
-        }
-        Map<String,?> map = cList.get(i1);
-        ArrayList<String[]> list = new ArrayList<>();
-        for (String k:map.keySet()){
-            String[] array = new String[2];
-            array[0] = MyFileUtil.getProperties(mContext,k);
-            array[1] = map.get(k)+"";
-            list.add(array);
-        }
-        binding.setList(list);
-        binding.setViewmodel(viewModel);
-        return binding.getRoot();
+//        ViewDataBinding binding;
+//        if (view == null) {
+//            if (pName.equals("项目组成")){
+//                binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.item_proj_summary_child
+//                        , viewGroup, false);
+//            }else {
+//                binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.item_proj_summary_child2
+//                        , viewGroup, false);
+//            }
+//        } else {
+//            binding = DataBindingUtil.getBinding(view);
+//        }
+//        Map<String,?> map = cList.get(i1);
+//        ArrayList<String[]> list = new ArrayList<>();
+//        for (String k:map.keySet()){
+//            String[] array = new String[2];
+//            array[0] = MyFileUtil.getProperties(mContext,k);
+//            array[1] = map.get(k)+"";
+//            list.add(array);
+//        }
+//        binding.setVariable(BR.type,pName.equals("项目组成"));
+//        binding.setVariable(BR.list,list);
+//        binding.setVariable(BR.viewmodel,viewModel);
+//        return binding.getRoot();
+        return null;
     }
 
     @Override

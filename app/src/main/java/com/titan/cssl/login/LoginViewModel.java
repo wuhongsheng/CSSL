@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.titan.BaseViewModel;
+import com.titan.base.BaseViewModel;
 import com.titan.MyApplication;
 import com.titan.cssl.remote.RemoteData;
 import com.titan.data.source.DataRepository;

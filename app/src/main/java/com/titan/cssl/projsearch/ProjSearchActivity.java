@@ -5,14 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.widget.Toast;
 
-import com.titan.BaseActivity;
+import com.titan.base.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivitySearchBinding;
-import com.titan.cssl.statistics.StatisticsFragment;
-import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
 import com.titan.data.Injection;
@@ -34,19 +31,21 @@ public class ProjSearchActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //SDKInitializer.initialize(getApplicationContext());
-        binding = DataBindingUtil.inflate(LayoutInflater.from(this),R.layout.activity_search,
-                null,false);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.activity_search,
+                null, false);
         setContentView(binding.getRoot());
         fragment = findOrCreateViewFragment();
         mViewModel = findOrCreateViewModel();
         fragment.setViewModel(mViewModel);
         mViewModel.projType.set(getIntent().getExtras().getInt("type"));
+        mViewModel.projectStatus.set(getIntent().getExtras().getString("statu"));
         mViewModel.getProjType();
         MyApplication.getInstance().addActivity(this);
     }
 
     /**
      * 按两次退出程序
+     *
      * @param keyCode
      * @param event
      * @return
@@ -81,10 +80,10 @@ public class ProjSearchActivity extends BaseActivity {
         @SuppressWarnings("unchecked")
         ViewModelHolder<ProjSearchViewModel> holder = (ViewModelHolder<ProjSearchViewModel>)
                 getSupportFragmentManager().findFragmentByTag(SEARCH_VIEWMODEL_TAG);
-        if (holder==null||holder.getViewmodel()==null){
-            ProjSearchViewModel model = new ProjSearchViewModel(mContext,fragment,Injection.provideDataRepository(mContext));
+        if (holder == null || holder.getViewmodel() == null) {
+            ProjSearchViewModel model = new ProjSearchViewModel(mContext, fragment, Injection.provideDataRepository(mContext));
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    ViewModelHolder.createContainer(model),SEARCH_VIEWMODEL_TAG);
+                    ViewModelHolder.createContainer(model), SEARCH_VIEWMODEL_TAG);
             return model;
         }
         return holder.getViewmodel();

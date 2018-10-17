@@ -1,7 +1,6 @@
 package com.titan.cssl.map;
 
 import android.databinding.ObservableBoolean;
-import android.databinding.ObservableField;
 import android.util.Log;
 
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -9,13 +8,10 @@ import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.PointCollection;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
-import com.titan.BaseViewModel;
+import com.titan.base.BaseViewModel;
 import com.titan.cssl.remote.RemoteData;
 import com.titan.data.source.DataRepository;
 import com.titan.model.ProjSearch;
-
-import java.util.List;
-import java.util.Map;
 
 public class MapBrowseViewModel extends BaseViewModel implements LocationDisplay.LocationChangedListener {
 
@@ -26,7 +22,7 @@ public class MapBrowseViewModel extends BaseViewModel implements LocationDisplay
     //采集状态 true正在采集 false关闭采集
     public ObservableBoolean collectionStatu = new ObservableBoolean(false);
     //点数据集合
-    public ObservableField<PointCollection> points = new ObservableField<>();
+    public PointCollection points;
 
     public MapBrowseViewModel(MapBrowse mapBrowse, DataRepository dataRepository) {
         this.mapBrowse = mapBrowse;
@@ -78,7 +74,7 @@ public class MapBrowseViewModel extends BaseViewModel implements LocationDisplay
     //保存
     public void save() {
         StringBuilder builder = new StringBuilder();
-        for (Point point : points.get()) {
+        for (Point point : points) {
             Point pp = (Point) GeometryEngine.project(point, SpatialReferences.getWgs84());
             builder.append(pp.getX()).append(",").append(pp.getY()).append(";");
         }
@@ -91,6 +87,26 @@ public class MapBrowseViewModel extends BaseViewModel implements LocationDisplay
     //取消
     public void cancel() {
         mapBrowse.cancel();
+    }
+
+    //导航
+    public void navigation() {
+        mapBrowse.navigate();
+    }
+
+    //项目定位
+    public void projLocation() {
+        mapBrowse.projLocation();
+    }
+
+    //图层切换
+    public void layerChange() {
+        mapBrowse.layerChange();
+    }
+
+    //坐标采集
+    public void collection() {
+        mapBrowse.collection();
     }
 
     public void InsertZB(String projectBH, String projectType, String projectZB) {
@@ -106,8 +122,9 @@ public class MapBrowseViewModel extends BaseViewModel implements LocationDisplay
             public void onSuccess(String info) {
                 mapBrowse.stopProgress();
                 mapBrowse.showToast(info);
+                mapBrowse.refreshGraphic();
                 isCollection.set(false);
-                points.set(null);
+                points = null;
             }
         });
     }

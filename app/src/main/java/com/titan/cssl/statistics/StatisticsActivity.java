@@ -13,12 +13,11 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.titan.BaseActivity;
+import com.titan.base.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityStatisticsBinding;
 import com.titan.cssl.login.LoginActivity;
-import com.titan.cssl.reserveplan.ProjReservePlanActivity;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
 import com.titan.data.Injection;

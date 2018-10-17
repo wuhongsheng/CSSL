@@ -8,7 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 
-import com.titan.BaseActivity;
+import com.titan.base.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityLoginBinding;

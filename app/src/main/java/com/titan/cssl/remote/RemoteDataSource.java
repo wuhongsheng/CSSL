@@ -81,14 +81,14 @@ public class RemoteDataSource implements RemoteData {
      *
      * @param starttime   开始时间 yyyy-MM-dd HH:mm
      * @param endtime     结束时间 yyyy-MM-dd HH:mm
-     * @param projecttype 项目类型
+     * @param projecttype 项目类型 -1:"全部",1：3万㎡以下；2：3-8万㎡；3：8万㎡以上
      * @param state       审批状态
      * @param keyword     关键词
-     * @param role        用户角色ID
+     * @param role        用户角色ID 3.0
      * @param org         用户所属区域ID
-     * @param id          用户ID
-     * @param pageSize    每页所包含数据条目数量
-     * @param pageIndex   页码
+     * @param id          用户ID 29.0
+     * @param pageSize    每页所包含数据条目数量 10
+     * @param pageIndex   页码 1
      * @param callback    信息处理回调接口
      */
     @Override
@@ -123,7 +123,7 @@ public class RemoteDataSource implements RemoteData {
      *
      * @param ID          项目ID
      * @param type        信息类别(0，基本信息；1，概要信息；2，水保措施，3、行政审批记录；4、日常监督记录
-     * @param projecttype 项目类型 1：3万㎡以下；2：3-8万㎡；3：8万㎡以上
+     * @param projecttype 项目类型 -1:"全部",1：3万㎡以下；2：3-8万㎡；3：8万㎡以上
      * @param callback    信息处理回调接口
      */
     @Override

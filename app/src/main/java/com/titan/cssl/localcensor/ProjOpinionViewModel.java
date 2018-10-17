@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.titan.BaseViewModel;
+import com.titan.base.BaseViewModel;
 import com.titan.cssl.remote.RemoteData;
 import com.titan.data.source.DataRepository;
 import com.titan.model.ProjCensor;
@@ -152,6 +152,7 @@ public class ProjOpinionViewModel extends BaseViewModel {
             }
         } catch (IOException e) {
             Log.e("tag", "tobase64Error:" + e);
+            projOpinion.showToast("图片转换错误" + e);
         }
         list.add(photo);
         ProjCensor censor = new ProjCensor(subBean.get().getID(), list,

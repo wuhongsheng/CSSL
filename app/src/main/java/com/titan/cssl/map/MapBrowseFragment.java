@@ -222,8 +222,8 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
 
     @Override
     public void undo() {
-        if (viewModel.points.get() != null && !viewModel.points.get().isEmpty()) {
-            viewModel.points.get().remove(viewModel.points.get().size() - 1);
+        if (viewModel.points != null && !viewModel.points.isEmpty()) {
+            viewModel.points.remove(viewModel.points.size() - 1);
             refreshDraw();
         } else {
             Toast.makeText(getActivity(), "当前没有可撤销的点", Toast.LENGTH_SHORT).show();
@@ -232,13 +232,13 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
 
     @Override
     public void cancel() {
-        if (viewModel.points.get() != null && !viewModel.points.get().isEmpty()) {
+        if (viewModel.points != null && !viewModel.points.isEmpty()) {
             MaterialDialogUtil.showSureDialog(getActivity(), "当前范围没有保存，确定取消吗?")
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             viewModel.isCollection.set(false);
-                            viewModel.points.set(null);
+                            viewModel.points = null;
                             graphicsOverlay.getGraphics().remove(newGraphic);
                             dialog.dismiss();
                         }
@@ -246,18 +246,29 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
             return;
         }
         viewModel.isCollection.set(false);
-        viewModel.points.set(null);
+        viewModel.points = null;
         graphicsOverlay.getGraphics().remove(newGraphic);
     }
 
     @Override
     public void endMeasure() {
-        if (viewModel.points.get() == null || viewModel.points.get().size() == 0) {
+        if (viewModel.points == null || viewModel.points.size() == 0) {
             showToast("采集范围不符合要求");
             return;
         }
         viewModel.collectionStatu.set(!viewModel.collectionStatu.get());
         viewModel.save();
+    }
+
+    @Override
+    public void refreshGraphic() {
+        if (viewModel.points != null && viewModel.points.size() == 1) {
+            graphic = new Graphic(viewModel.points.get(0), markerSymbol);
+        } else if (viewModel.points != null && viewModel.points.size() > 1) {
+            graphic = newGraphic;
+        }
+        graphicsOverlay.getGraphics().clear();
+        graphicsOverlay.getGraphics().add(graphic);
     }
 
     /**
@@ -266,25 +277,25 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
     public void drawPolygon() {
         try {
             Point point = binding.mapview.getVisibleArea().getExtent().getCenter();
-            if (viewModel.points.get() == null) {
-                viewModel.points.set(new PointCollection(binding.mapview.getSpatialReference()));
+            if (viewModel.points == null) {
+                viewModel.points = new PointCollection(binding.mapview.getSpatialReference());
             }
-            viewModel.points.get().add(point);
-            switch (viewModel.points.get().size()) {
+            viewModel.points.add(point);
+            switch (viewModel.points.size()) {
                 case 1:
 //                    if (newGraphic == null) {
-                    newGraphic = new Graphic(viewModel.points.get().get(0), SymbolUtil.startpoint);
+                    newGraphic = new Graphic(viewModel.points.get(0), SymbolUtil.startpoint);
                     graphicsOverlay.getGraphics().add(newGraphic);
 //                    }
                     break;
                 case 2:
                     graphicsOverlay.getGraphics().remove(newGraphic);
-                    mPolylineBuilder = new PolylineBuilder(viewModel.points.get());
+                    mPolylineBuilder = new PolylineBuilder(viewModel.points);
                     newGraphic = new Graphic(mPolylineBuilder.toGeometry(), SymbolUtil.measureline);
                     graphicsOverlay.getGraphics().add(newGraphic);
                     break;
                 default:
-                    mPolygonBuilder = new PolygonBuilder(viewModel.points.get());
+                    mPolygonBuilder = new PolygonBuilder(viewModel.points);
                     if (mPolygonBuilder.isSketchValid()) {
                         graphicsOverlay.getGraphics().remove(newGraphic);
                         newGraphic = new Graphic(mPolygonBuilder.toGeometry(), SymbolUtil.getFillSymbol());
@@ -299,21 +310,21 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
 
     //刷新撤销后的绘制范围图斑
     private void refreshDraw() {
-        if (viewModel.points.get() != null && !viewModel.points.get().isEmpty()) {
-            switch (viewModel.points.get().size()) {
+        if (viewModel.points != null && !viewModel.points.isEmpty()) {
+            switch (viewModel.points.size()) {
                 case 1:
                     graphicsOverlay.getGraphics().remove(newGraphic);
-                    newGraphic = new Graphic(viewModel.points.get().get(0), SymbolUtil.startpoint);
+                    newGraphic = new Graphic(viewModel.points.get(0), SymbolUtil.startpoint);
                     graphicsOverlay.getGraphics().add(newGraphic);
                     break;
                 case 2:
-                    mPolylineBuilder = new PolylineBuilder(viewModel.points.get());
+                    mPolylineBuilder = new PolylineBuilder(viewModel.points);
                     graphicsOverlay.getGraphics().remove(newGraphic);
                     newGraphic = new Graphic(mPolylineBuilder.toGeometry(), SymbolUtil.measureline);
                     graphicsOverlay.getGraphics().add(newGraphic);
                     break;
                 default:
-                    mPolygonBuilder = new PolygonBuilder(viewModel.points.get());
+                    mPolygonBuilder = new PolygonBuilder(viewModel.points);
                     if (mPolygonBuilder.isSketchValid()) {
                         graphicsOverlay.getGraphics().remove(newGraphic);
                         newGraphic = new Graphic(mPolygonBuilder.toGeometry(), SymbolUtil.getFillSymbol());
@@ -337,12 +348,12 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
             if (list == null || list.isEmpty()) {
                 locationCur();
             } else {
-                locationProj(list);
-//                if (judgmentRange(list)) {
-//                    locationProj(list);
-//                } else {
-//                    locationCur();
-//                }
+//                locationProj(list);
+                if (judgmentRange(list)) {
+                    locationProj(list);
+                } else {
+                    locationCur();
+                }
             }
         }
     }
@@ -421,8 +432,8 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
         }
         Polygon polygon = new Polygon(collection);
         SimpleLineSymbol outlineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID,
-                Color.BLUE, 2.0f);
-        SimpleFillSymbol symbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID,
+                Color.RED, 2.0f);
+        SimpleFillSymbol symbol = new SimpleFillSymbol(SimpleFillSymbol.Style.NULL,
                 Color.BLUE, outlineSymbol);
         graphic = new Graphic(polygon, symbol);
 //        locationLable();
@@ -433,72 +444,14 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_map_browse, menu);
+//        inflater.inflate(R.menu.menu_map_browse, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.map_change:
-//                final List<File> list = fileList;
-                String[] strs = {"201606", "201612", "201701", "原始影像图"};
-                List<String> serverList = new ArrayList<>(Arrays.asList(strs));
-//                if (fileList == null || fileList.size() <= 0) {
-//                    Toast.makeText(getActivity(), "没有图层数据", Toast.LENGTH_SHORT).show();
-//                    break;
-//                }
-//                List<String> stringList = new ArrayList<>();
-//                for (File file : list) {
-//                    stringList.add(file.getName());
-//                }
-                MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                        .title("图层切换")
-                        .negativeText("取消")
-                        .items(serverList)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                                try {
-//                                    cache = new TileCache(list.get(position).getAbsolutePath());
-//                                    tiledLayer = new ArcGISTiledLayer(cache);
-
-//                                    basemap = new Basemap(tiledLayer);
-//                                    arcGISMap = new ArcGISMap();
-//                                    arcGISMap.setBasemap(basemap);
-//                                    binding.mapview.setMap(arcGISMap);
-                                    switch (text.toString()) {
-                                        case "201606":
-                                            ArcGISTiledLayer arcGISTiledLayer1 = new ArcGISTiledLayer(getActivity().getResources().getString(R.string.img_201606));
-                                            arcGISMap = new ArcGISMap(new Basemap(arcGISTiledLayer1));
-                                            break;
-                                        case "201612":
-                                            ArcGISTiledLayer arcGISTiledLayer2 = new ArcGISTiledLayer(getActivity().getResources().getString(R.string.img_201612));
-                                            arcGISMap = new ArcGISMap(new Basemap(arcGISTiledLayer2));
-                                            break;
-                                        case "201701":
-                                            ArcGISTiledLayer arcGISTiledLayer3 = new ArcGISTiledLayer(getActivity().getResources().getString(R.string.img_201701));
-                                            arcGISMap = new ArcGISMap(new Basemap(arcGISTiledLayer3));
-                                            break;
-                                        case "原始影像图":
-                                            arcGISMap = new ArcGISMap(Basemap.createImageryWithLabelsVector());
-                                            break;
-                                    }
-                                    binding.mapview.setMap(arcGISMap);
-                                    createLable();
-                                    Log.e("tag", "spat:" + binding.mapview.getSpatialReference());
-                                } catch (Exception e) {
-                                    Log.e("tag", "dialogError:" + e);
-                                }
-                            }
-                        })
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .build();
-                dialog.show();
+                showLayerChangeDilog();
                 break;
             case R.id.map_location:
 //                locationLable();
@@ -508,16 +461,117 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
                 MapBrowseFragmentPermissionsDispatcher.navigationWithCheck(this);
                 break;
             case R.id.proj_collection:
-                if (graphic == null) {
-                    viewModel.isCollection.set(true);
-                } else {
-                    showToast("当前项目范围已存在");
-                }
+                collectionDialog();
                 break;
             default:
                 break;
         }
         return true;
+    }
+
+    //项目坐标采集提示弹窗
+    private void collectionDialog() {
+        if (graphic == null) {
+            viewModel.isCollection.set(true);
+        } else {
+//                    showToast("当前项目范围已存在");
+            new MaterialDialog.Builder(getActivity())
+                    .positiveText("确定")
+                    .negativeText("取消")
+                    .content("当前项目范围已存在，是否确定重新采集")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            viewModel.isCollection.set(true);
+                        }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
+    }
+
+    //图层切换弹窗
+    private void showLayerChangeDilog() {
+        String[] strs = {"201606", "201612", "201701", "原始影像图"};
+        List<String> serverList = new ArrayList<>(Arrays.asList(strs));
+//                if (fileList == null || fileList.size() <= 0) {
+//                    Toast.makeText(getActivity(), "没有图层数据", Toast.LENGTH_SHORT).show();
+//                    break;
+//                }
+//                List<String> stringList = new ArrayList<>();
+//                for (File file : list) {
+//                    stringList.add(file.getName());
+//                }
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                .title("图层切换")
+                .negativeText("取消")
+                .items(serverList)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                        try {
+                            switch (text.toString()) {
+                                case "201606":
+                                    ArcGISTiledLayer arcGISTiledLayer1 = new ArcGISTiledLayer(getActivity().getResources().getString(R.string.img_201606));
+//                                    arcGISMap = new ArcGISMap(new Basemap(arcGISTiledLayer1));
+                                    arcGISMap.setBasemap(new Basemap(arcGISTiledLayer1));
+                                    break;
+                                case "201612":
+                                    ArcGISTiledLayer arcGISTiledLayer2 = new ArcGISTiledLayer(getActivity().getResources().getString(R.string.img_201612));
+                                    arcGISMap = new ArcGISMap(new Basemap(arcGISTiledLayer2));
+                                    break;
+                                case "201701":
+                                    ArcGISTiledLayer arcGISTiledLayer3 = new ArcGISTiledLayer(getActivity().getResources().getString(R.string.img_201701));
+                                    arcGISMap = new ArcGISMap(new Basemap(arcGISTiledLayer3));
+                                    break;
+                                case "原始影像图":
+                                    arcGISMap = new ArcGISMap(Basemap.createImageryWithLabelsVector());
+                                    break;
+                            }
+                            binding.mapview.setMap(arcGISMap);
+                            createLable();
+                            Log.e("tag", "spat:" + binding.mapview.getSpatialReference());
+                        } catch (Exception e) {
+                            Log.e("tag", "dialogError:" + e);
+                        }
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .build();
+        dialog.show();
+    }
+
+    //导航
+    @Override
+    public void navigate() {
+        MapBrowseFragmentPermissionsDispatcher.navigationWithCheck(this);
+    }
+
+    //项目定位
+    @Override
+    public void projLocation() {
+        createLable();
+    }
+
+    //图层切换
+    @Override
+    public void layerChange() {
+        showLayerChangeDilog();
+    }
+
+    //坐标采集
+    @Override
+    public void collection() {
+        collectionDialog();
     }
 
     /**
@@ -528,8 +582,8 @@ public class MapBrowseFragment extends Fragment implements MapBrowse {
     void navigation() {
         Double[] point = mLocationInfo.getLocalPoint();
         List<Double[]> list = mLocationInfo.getCoordinateList();
-//        if (!judgmentRange(list)) {
-        if (list.isEmpty()) {
+        if (!judgmentRange(list)) {
+//        if (list.isEmpty()) {
             Toast.makeText(getActivity(), "当前项目坐标有误，无法导航", Toast.LENGTH_SHORT).show();
             return;
         }

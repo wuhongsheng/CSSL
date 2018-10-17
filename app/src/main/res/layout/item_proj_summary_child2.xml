@@ -22,12 +22,12 @@
 
             <TextView
                 style="@style/proj_summary_child_name"
-                android:text="@{viewmodel.subItem.buildArea}" />
+                android:text="@{viewmodel.subItem.year}" />
 
             <!--@{nameList[0]}-->
             <TextView
                 style="@style/proj_summary_child_value"
-                android:text="@{viewmodel.subItem.buildAreaValue}" />
+                android:text="@{viewmodel.subItem.yearValue}" />
             <!--@{valueList[0]}-->
 
         </LinearLayout>
@@ -38,11 +38,11 @@
 
             <TextView
                 style="@style/proj_summary_child_name"
-                android:text="@{viewmodel.subItem.lengArea}" />
+                android:text="@{viewmodel.subItem.investment}" />
 
             <TextView
                 style="@style/proj_summary_child_value"
-                android:text="@{viewmodel.subItem.lengAreaValue}" />
+                android:text="@{viewmodel.subItem.investmentValue}" />
 
         </LinearLayout>
 
@@ -52,25 +52,11 @@
 
             <TextView
                 style="@style/proj_summary_child_name"
-                android:text="@{viewmodel.subItem.wfl}" />
+                android:text="@{viewmodel.subItem.instructions}" />
 
             <TextView
                 style="@style/proj_summary_child_value"
-                android:text="@{viewmodel.subItem.wflValue}" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/proj_summary_child_name"
-                android:text="@{viewmodel.subItem.tfl}" />
-
-            <TextView
-                style="@style/proj_summary_child_value"
-                android:text="@{viewmodel.subItem.tflValue}" />
+                android:text="@{viewmodel.subItem.instructionsValue}" />
 
         </LinearLayout>
     </LinearLayout>

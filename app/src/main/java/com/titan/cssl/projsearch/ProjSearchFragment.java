@@ -77,16 +77,6 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
      */
     private int total_index;
 
-    /**
-     * 项目类型数组
-     */
-    private String[] typeArray = new String[]{"3万㎡以下", "3-8万㎡", "8万㎡以上"};
-
-    /**
-     * 项目审批状态数组
-     */
-    private String[] stateArray = new String[]{"提交审核中", "审核通过", "审核不通过"};
-
     private Context mContext;
 
     private FragSearchBinding binding;
@@ -476,7 +466,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
      */
     @Override
     public void projectTypeSet() {
-        List<String> list = Arrays.asList(typeArray);
+        List<String> list = Arrays.asList(getResources().getStringArray(R.array.proj_type));
         ProjOptionSelectDialog dialog = ProjOptionSelectDialog.getInstance(1);
         ProjSearchViewModel model = new ProjSearchViewModel(dialog);
         dialog.setList(list);
@@ -489,7 +479,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
      */
     @Override
     public void approvalStatuSet() {
-        List<String> list = Arrays.asList(stateArray);
+        List<String> list = Arrays.asList(getResources().getStringArray(R.array.proj_state));
         ProjOptionSelectDialog dialog = ProjOptionSelectDialog.getInstance(2);
         ProjSearchViewModel model = new ProjSearchViewModel(dialog);
         dialog.setList(list);
@@ -500,7 +490,7 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     /**
      * 查看项目详细信息
      *
-     * @param type 项目类型 1：3万㎡以下；2：3-8万㎡；3：8万㎡以上
+     * @param type 项目类型 -1:"全部",1：3万㎡以下；2：3-8万㎡；3：8万㎡以上
      */
     @Override
     public void projDetails(String type) {
@@ -531,10 +521,10 @@ public class ProjSearchFragment extends Fragment implements ProjSearchSet {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ProjSearchFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        if (thread==null){
-            thread = new MyThread();
-        }
-        thread.start();
+//        if (thread==null){
+//            thread = new MyThread();
+//        }
+//        thread.start();
     }
 
     @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})

@@ -10,9 +10,10 @@ import android.util.Log;
 import com.esri.arcgisruntime.geometry.Point;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.titan.BaseViewModel;
+import com.titan.base.BaseViewModel;
 import com.titan.cssl.remote.RemoteData;
 import com.titan.data.source.DataRepository;
+import com.titan.model.ProjDetailItemModel;
 import com.titan.model.ProjDetailMeasure;
 import com.titan.model.ProjSearch;
 import com.titan.util.MyFileUtil;
@@ -68,6 +69,9 @@ public class ProjDetailViewModel extends BaseViewModel {
      */
     public ObservableField<List<Map<String, ?>>> projInfoChild = new ObservableField<>();
 
+    //项目基本信息、概况集合
+    public List<ProjDetailItemModel> detailItemModelList;
+
     /**
      * 是否在刷新状态
      */
@@ -84,14 +88,22 @@ public class ProjDetailViewModel extends BaseViewModel {
     public ObservableField<ProjDetailMeasure> projDetailMeasure = new ObservableField<>();
 
     /**
-     * 项目措施父级名称
+     * 项目措施父级名称场平期
      */
-    public ObservableField<List<String>> projMeasureP = new ObservableField<>();
+    public List<String> measurePCpq = new ArrayList<>();
+    /**
+     * 项目措施父级名称建设期
+     */
+    public List<String> measurePJsq = new ArrayList<>();
 
     /**
-     * 项目措施子级
+     * 项目措施子级场平期
      */
-    public ObservableField<List<List<ProjDetailMeasure.subBean>>> projMeasureC = new ObservableField<>();
+    public List<List<ProjDetailMeasure.subBean>> measureCCpq = new ArrayList<>();
+    /**
+     * 项目措施子级建设期
+     */
+    public List<List<ProjDetailMeasure.subBean>> measureCJsq = new ArrayList<>();
     /**
      * 项目类型
      */
@@ -134,6 +146,8 @@ public class ProjDetailViewModel extends BaseViewModel {
      * 日常监督记录列表是否显示 true 显示；false 隐藏
      */
     public ObservableBoolean showSupervise = new ObservableBoolean(false);
+
+    public ObservableBoolean is = new ObservableBoolean(false);
 
     public ProjDetailViewModel(Context context, DataRepository mDataRepository, ProjDetail projDetail) {
         this.mContext = context;
@@ -264,8 +278,16 @@ public class ProjDetailViewModel extends BaseViewModel {
                     for (String k : map2.keySet()) {
                         setListData(map2.get(k), cList, pList, k);
                     }
-                    projMeasureC.set(cList);
-                    projMeasureP.set(pList);
+                    for (int i = 0; i < pList.size(); i++) {
+                        if (pList.get(i).contains("1")) {
+                            measurePCpq.add(pList.get(i));
+                            measureCCpq.add(cList.get(i));
+                        }
+                        if (pList.get(i).contains("2")) {
+                            measurePJsq.add(pList.get(i));
+                            measureCJsq.add(cList.get(i));
+                        }
+                    }
                     projDetailMeasure.set(measure);
                     projDetail.refresh(type);
                     Log.e("tag", "detaInfo:" + map2);
@@ -277,7 +299,7 @@ public class ProjDetailViewModel extends BaseViewModel {
                     Type type1 = new TypeToken<List<Map<String, ?>>>() {
                     }.getType();
                     List<Map<String, ?>> mapList = gson.fromJson(gson.toJson(info), type1);
-                    if (type==4){
+                    if (type == 4) {
                         Map<String, ?> tempMap = new HashMap<>();
                         for (Map<String, ?> map : mapList) {
                             if (map.containsKey("Reason")) {
@@ -299,6 +321,8 @@ public class ProjDetailViewModel extends BaseViewModel {
                 Log.e("tag", "detaMap:" + map);
                 List<String[]> list1 = new ArrayList<>();
 //                List<List<String[]>> child = new ArrayList<>();
+                List<ProjDetailItemModel> tempList1 = new ArrayList<>();
+                List<ProjDetailItemModel> tempList2 = new ArrayList<>();
                 for (String key : map.keySet()) {
                     if (key.equals("ID")) {
                         continue;
@@ -308,17 +332,51 @@ public class ProjDetailViewModel extends BaseViewModel {
                     if (key.equals("FNDSSJH") || key.equals("XMZC")) {
                         projInfoParent.set(getAlias(key));
                         List<Map<String, ?>> mapList = (List<Map<String, ?>>) map.get(key);
-
-//                        for (Map<String, ?> map1 : mapList) {
-//                            List<String[]> cList = new ArrayList<>();
-//                            for (String k : map1.keySet()) {
-//                                String[] array1 = new String[2];
-//                                array1[0] = getAlias(k);
-//                                setValue(map1, k, array1);
-//                                cList.add(array1);
-//                            }
-//                            child.add(cList);
-//                        }
+                        ProjDetailItemModel model = new ProjDetailItemModel(getAlias(key), 1, setValue(map, key));
+                        tempList2.add(model);
+                        for (Map<String, ?> map1 : mapList) {
+                            ProjDetailItemModel model1 = new ProjDetailItemModel();
+                            if (key.equals("FNDSSJH")) {
+                                model1.setType(3);
+                            } else {
+                                model1.setType(2);
+                            }
+                            ProjDetailItemModel.SubContent subContent = new ProjDetailItemModel.SubContent();
+                            for (String k : map1.keySet()) {
+                                switch (k) {
+                                    case "ND":
+                                        subContent.setYear(getAlias(k));
+                                        subContent.setYearValue(setValue(map1, k));
+                                        break;
+                                    case "TZ":
+                                        subContent.setInvestment(getAlias(k));
+                                        subContent.setInvestmentValue(setValue(map1, k));
+                                        break;
+                                    case "BZ":
+                                        subContent.setInstructions(getAlias(k));
+                                        subContent.setInstructionsValue(setValue(map1, k));
+                                        break;
+                                    case "JSQY":
+                                        subContent.setBuildArea(getAlias(k));
+                                        subContent.setBuildAreaValue(setValue(map1, k));
+                                        break;
+                                    case "CDMJ":
+                                        subContent.setLengArea(getAlias(k));
+                                        subContent.setLengAreaValue(setValue(map1, k));
+                                        break;
+                                    case "WFL":
+                                        subContent.setWfl(getAlias(k));
+                                        subContent.setWflValue(setValue(map1, k));
+                                        break;
+                                    case "TFL":
+                                        subContent.setTfl(getAlias(k));
+                                        subContent.setTflValue(setValue(map1, k));
+                                        break;
+                                }
+                            }
+                            model1.setSubContent(subContent);
+                            tempList2.add(model1);
+                        }
 
                         projInfoChild.set(mapList);
                         continue;
@@ -356,9 +414,14 @@ public class ProjDetailViewModel extends BaseViewModel {
                         }
                     }
                     array[0] = getAlias(key);
-                    setValue(map, key, array);
+                    array[1] = setValue(map, key);
                     list1.add(array);
+
+                    tempList1.add(new ProjDetailItemModel(getAlias(key), 0, setValue(map, key)));
                 }
+
+                tempList1.addAll(tempList2);
+                detailItemModelList = tempList1;
 
                 projDetailInfo.set(list1);
                 projDetail.refresh(type);
@@ -374,7 +437,7 @@ public class ProjDetailViewModel extends BaseViewModel {
             for (String k : map.keySet()) {
                 String[] array = new String[2];
                 array[0] = getAlias(k);
-                setValue(map, k, array);
+                array[1] = setValue(map, k);
                 list1.add(array);
             }
             list.add(list1);
@@ -407,18 +470,19 @@ public class ProjDetailViewModel extends BaseViewModel {
      *
      * @param map
      * @param key
-     * @param array
      */
-    private void setValue(Map<String, ?> map, String key, String[] array) {
+    private String setValue(Map<String, ?> map, String key) {
+        String result;
         if (map.get(key) == null || map.get(key).toString().trim().equals("")) {
-            array[1] = "无";
+            result = "无";
         } else {
             if (key.equals("TYPE")) {
-                array[1] = getAlias(map.get(key).toString());
-                return;
+                result = getAlias(map.get(key).toString());
+            } else {
+                result = map.get(key).toString();
             }
-            array[1] = map.get(key).toString();
         }
+        return result;
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.titan.cssl.reserveplan;
 
-import com.titan.BaseViewModel;
+import com.titan.base.BaseViewModel;
 
 /**
  * Created by hanyw on 2017/11/9/009.

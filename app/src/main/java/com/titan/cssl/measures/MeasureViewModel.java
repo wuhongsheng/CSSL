@@ -3,17 +3,10 @@ package com.titan.cssl.measures;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.widget.ImageView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.titan.BaseViewModel;
+import com.titan.base.BaseViewModel;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.remote.RemoteData;
@@ -43,17 +36,17 @@ public class MeasureViewModel extends BaseViewModel {
     public ObservableField<Boolean> hasInfo = new ObservableField<>(false);
 
     /**
-     * 描述
+     * 防治分区
      */
     public ObservableField<String> depict = new ObservableField<>();
 
     /**
-     * 简要描述
+     * 措施具体说明
      */
     public ObservableField<String> brief = new ObservableField<>();
 
     /**
-     * 投资
+     * 投资/万元
      */
     public ObservableField<String> invest = new ObservableField<>();
 

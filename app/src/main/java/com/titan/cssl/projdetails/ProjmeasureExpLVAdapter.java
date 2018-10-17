@@ -1,30 +1,19 @@
 package com.titan.cssl.projdetails;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
-import android.os.AsyncTask;
-import android.os.Message;
-import android.util.Log;
+import android.databinding.ViewDataBinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
 import com.titan.cssl.BR;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ItemProjMeasureChildBinding;
-import com.titan.cssl.databinding.ItemProjMeasureParentBinding;
 import com.titan.model.ProjDetailMeasure;
-import com.titan.util.MaterialDialogUtil;
-import com.titan.util.MyFileUtil;
-import com.titan.util.ResourcesManager;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,14 +27,18 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
     private List<String> pList;
     private List<List<ProjDetailMeasure.subBean>> cList;
     private ProjDetailViewModel viewModel;
-    private AsyncTask task;
+    private boolean type;
+    private boolean first = false;
+    private int j = -1;
+    private List<Boolean> typeList = new ArrayList<>();
 
-    public ProjmeasureExpLVAdapter(Context context, List<String> pList,List<List<ProjDetailMeasure.subBean>> cList,
-                                   ProjDetailViewModel viewModel){
+    public ProjmeasureExpLVAdapter(Context context, List<String> pList, List<List<ProjDetailMeasure.subBean>> cList,
+                                   ProjDetailViewModel viewModel, boolean type) {
         this.pList = pList;
         this.cList = cList;
         this.mContext = context;
         this.viewModel = viewModel;
+        this.type = type;
     }
 
     @Override
@@ -85,24 +78,25 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        ItemProjMeasureParentBinding binding;
-        if (view==null){
+        ViewDataBinding binding;
+        if (view == null) {
             binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.item_proj_measure_parent,
-                    viewGroup,false);
-        }else {
+                    viewGroup, false);
+        } else {
             binding = DataBindingUtil.getBinding(view);
         }
-        binding.setVariable(BR.value, pList.get(i));
+        String pStr = pList.get(i);
+        binding.setVariable(BR.value, pStr.substring(1, pStr.length()));
         return binding.getRoot();
     }
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
         ItemProjMeasureChildBinding binding;
-        if (view==null){
+        if (view == null) {
             binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.item_proj_measure_child,
-                    viewGroup,false);
-        }else {
+                    viewGroup, false);
+        } else {
             binding = DataBindingUtil.getBinding(view);
         }
 //        List<String> jpgList = new ArrayList<>();
@@ -132,7 +126,7 @@ public class ProjmeasureExpLVAdapter extends BaseExpandableListAdapter {
 //            }
 //        });
         binding.setViewmodel(viewModel);
-        binding.setVariable(BR.subBean,cList.get(i).get(i1));
+        binding.setVariable(BR.subBean, cList.get(i).get(i1));
         return binding.getRoot();
     }
 

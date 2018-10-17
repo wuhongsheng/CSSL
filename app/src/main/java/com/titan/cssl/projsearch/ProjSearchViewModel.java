@@ -3,10 +3,8 @@ package com.titan.cssl.projsearch;
 import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.databinding.ObservableFloat;
 import android.databinding.ObservableInt;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -23,7 +21,7 @@ import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.titan.BaseViewModel;
+import com.titan.base.BaseViewModel;
 import com.titan.cssl.remote.RemoteData;
 import com.titan.data.source.DataRepository;
 import com.titan.model.Gps;
@@ -145,7 +143,7 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
     public ObservableBoolean hasMore = new ObservableBoolean(true);
 
     /**
-     * 项目类型 1："3",2:"3-8",3:"8"
+     * 项目类型 -1:"全部",1：3万㎡以下；2：3-8万㎡；3：8万㎡以上
      */
     public ObservableInt projType = new ObservableInt();
 
@@ -254,8 +252,8 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
         if (userModel == null) {
             return;
         }
-        Log.e("tag","search:"+projectType.get()+","+
-                projectStatus.get()+","+userModel.toString());
+        Log.e("tag", "search:" + projectType.get() + "," +
+                projectStatus.get() + "," + userModel.toString());
 //        mDataRepository.projSearch(getString(startTime), getString(endTime), getAlias(getString(projectType)),
 //                getAlias(getString(projectStatus)), getString(keyWord), userModel.getROLE(),
         mDataRepository.projSearch(getString(startTime), getString(endTime), getAlias(getString(projectType)),
@@ -267,7 +265,7 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
                         projSearchSet.stopProgress();
                         projSearchSet.showToast(info);
                         isRefresh.set(false);
-                        if (info.equals("未查询到数据记录！")) {
+                        if (info != null && info.equals("未查询到数据记录！")) {
                             projSearchSet.showEnd();
                         }
                         Log.e("tag", "searchError:" + info);
@@ -382,6 +380,9 @@ public class ProjSearchViewModel extends BaseViewModel implements BDLocationList
 
     public void getProjType() {
         switch (projType.get()) {
+            case -1:
+                projectType.set("全部");
+                break;
             case 1:
                 projectType.set("3万㎡以下");
                 break;

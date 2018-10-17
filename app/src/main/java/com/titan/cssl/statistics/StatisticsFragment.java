@@ -18,7 +18,6 @@ import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -90,8 +89,8 @@ public class StatisticsFragment extends Fragment implements Statistics {
         chartClass.setUsePercentValues(true);
         chartClass.getDescription().setEnabled(false);//描述
         chartClass.setExtraOffsets(5, 10, 5, 5);
-        chartClass.setDrawSliceText(false);//设置隐藏饼图上文字，只显示百分比
-        chartClass.setDrawHoleEnabled(true);
+        chartClass.setDrawEntryLabels(false);//设置隐藏饼图上文字，只显示百分比
+        chartClass.setDrawHoleEnabled(false);//是否显示内部圆形，当该条件设为true时，对内部圆形的设置才能起作用
         chartClass.setTransparentCircleColor(getResources().getColor(R.color.blue));
         chartClass.setTransparentCircleAlpha(110);
         chartClass.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
@@ -99,7 +98,7 @@ public class StatisticsFragment extends Fragment implements Statistics {
             public void onValueSelected(Entry e, Highlight h) {
                 Log.e("tag", "e:" + e.toString() + ",h:" + h.getX());
                 Intent intent = new Intent(mContext, ProjSearchActivity.class);
-                intent.putExtra("type", (int) h.getX()+1);
+                intent.putExtra("type", (int) h.getX() + 1);
                 mContext.startActivity(intent);
             }
 
@@ -115,14 +114,17 @@ public class StatisticsFragment extends Fragment implements Statistics {
         // 如果没有数据的时候，会显示这个，类似ListView的EmptyView
         chartClass.setNoDataText(getResources().getString(R.string.nodata));
         chartClass.setUsePercentValues(true);//设置显示成比例
-        chartClass.setCenterText("各类型占比");
+//        chartClass.setCenterText("各类型占比");
         chartClass.setRotationAngle(0); // 初始旋转角度
         //enable rotation of the chart by touch
         chartClass.setRotationEnabled(true); // 可以手动旋转
         chartClass.setHighlightPerTapEnabled(true);
         chartClass.animateY(1000, Easing.EasingOption.EaseInOutQuad); //设置动画
         Legend mLegend = chartClass.getLegend();  //设置比例图
-        mLegend.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);  //左下边显示
+//        mLegend.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);  //左下边显示
+        mLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);//水平方向靠右
+        mLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);//竖直方向居中
+        mLegend.setOrientation(Legend.LegendOrientation.VERTICAL);//比例图竖直排列
         mLegend.setFormSize(12f);//比例块字体大小
         mLegend.setXEntrySpace(2f);//设置距离饼图的距离，防止与饼图重合
         mLegend.setYEntrySpace(2f);
@@ -145,6 +147,23 @@ public class StatisticsFragment extends Fragment implements Statistics {
         chartTianbao.setScaleXEnabled(false);//X轴缩放
         chartTianbao.setScaleYEnabled(false);//Y轴缩放
         chartTianbao.setDragEnabled(false);//是否可以拖拽
+        chartTianbao.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.e("tag", "e.x:" + Math.ceil(e.getX() / 3f) + ",h:" + h.getX());
+                if (e.getY() > 0) {
+                    Intent intent = new Intent(mContext, ProjSearchActivity.class);
+                    intent.putExtra("type", (int) Math.ceil(e.getX() / 3f));
+                    intent.putExtra("statu", viewModel.getProjStatu(e));
+                    mContext.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
         YAxis leftAxis = chartTianbao.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
@@ -207,7 +226,7 @@ public class StatisticsFragment extends Fragment implements Statistics {
         BarDataSet set143 = new BarDataSet(yVals3, "8万㎡以上");
         set142.setColor(Color.rgb(164, 150, 251));
 
-        BarData data1 = new BarData(set141, set142,set143);
+        BarData data1 = new BarData(set141, set142, set143);
         data1.setValueFormatter(new DefaultValueFormatter(0));//bar上的数值样式
         chartTianbao.setData(data1);
         data1.setValueTextSize(10f);
@@ -219,15 +238,8 @@ public class StatisticsFragment extends Fragment implements Statistics {
      * 设置饼图的数据
      */
     public void setData() {
-//        viewModel.getData();
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        String[] xcountry = new String[]{"3万㎡以下未通过", "3万㎡以下通过", "3–8万㎡未通过", "3–8万㎡通过",
-                "8万㎡以上未通过", "8万㎡以上通过"};
-        Float[] zhanbi = new Float[]{20f, 10f, 30f, 15f, 5f, 20f};
-//        for (int i = 0; i < xcountry.length; i++) {
-//            entries.add(new PieEntry(zhanbi[i], xcountry[i]));
-//        }
         List<String> name = viewModel.name.get();
         List<Float> scale = viewModel.scale.get();
         for (int i = 0; i < name.size(); i++) {
@@ -238,7 +250,7 @@ public class StatisticsFragment extends Fragment implements Statistics {
         dataSet.setSliceSpace(2f);
         dataSet.setSelectionShift(5f);
 
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+        ArrayList<Integer> colors = new ArrayList<>();
         for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
 

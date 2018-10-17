@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--项目类型-->
+    <array name="proj_type">
+        <item>全部</item>
+        <item>3万㎡以下</item>
+        <item>3-8万㎡</item>
+        <item>8万㎡以上</item>
+    </array>
+
+    <!--项目审批状态-->
+    <array name="proj_state">
+        <item>全部</item>
+        <item>提交审核中</item>
+        <item>审核通过</item>
+        <item>审核不通过</item>
+    </array>
+</resources>

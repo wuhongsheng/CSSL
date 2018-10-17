@@ -2,7 +2,6 @@ package com.titan.cssl.reserveplan;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -11,21 +10,17 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.titan.BaseActivity;
+import com.titan.base.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityReservePlanBinding;
-import com.titan.cssl.remote.DownLoadManager;
-import com.titan.cssl.remote.RetrofitHelper;
 import com.titan.cssl.statistics.StatisticsFragment;
 import com.titan.cssl.statistics.StatisticsViewModel;
-import com.titan.util.MaterialDialogUtil;
 import com.titan.util.MyFileUtil;
 
 import java.util.ArrayList;
@@ -39,7 +34,6 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.Subscriber;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by hanyw on 2017/11/9/009.

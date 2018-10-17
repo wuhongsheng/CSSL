@@ -34,6 +34,7 @@
     <!-- 用于读取手机当前的状态-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -72,6 +73,17 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
+        <provider
+            android:name="com.tencent.bugly.beta.utils.BuglyFileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="name,authorities,exported,grantUriPermissions">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"
+                tools:replace="name,resource"/>
+        </provider>
         <!-- 注册监听网络变化的广播 -->
         <receiver
             android:name="com.titan.broadcastreceiver.ConnectionChangeReceiver"
@@ -118,5 +130,11 @@
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote"/>
+
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+
     </application>
 </manifest>

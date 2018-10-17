@@ -8,12 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.titan.BaseActivity;
+import com.titan.base.BaseActivity;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityMeasureBinding;
-import com.titan.cssl.statistics.StatisticsFragment;
-import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.cssl.util.ActivityUtils;
 import com.titan.cssl.util.ViewModelHolder;
 import com.titan.data.Injection;

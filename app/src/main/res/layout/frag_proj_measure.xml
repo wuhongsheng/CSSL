@@ -2,29 +2,65 @@
 <layout>
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewmodel"
-            type="com.titan.cssl.projdetails.ProjDetailViewModel"/>
+            type="com.titan.cssl.projdetails.ProjDetailViewModel" />
     </data>
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ExpandableListView
-            android:id="@+id/proj_measure_explv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/proj_measure_nodata"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="暂无数据"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:visibility="@{viewmodel.hasData?View.GONE:View.VISIBLE}"/>
-    </LinearLayout>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_cpq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-10dp"
+                android:padding="10dp"
+                android:text="@string/cpq_measure"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:visibility="gone"/>
+
+            <ExpandableListView
+                android:id="@+id/proj_measure_explv_pcq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:groupIndicator="@null" />
+
+            <TextView
+                android:id="@+id/tv_jsq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-10dp"
+                android:padding="10dp"
+                android:text="@string/jsq_measure"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <ExpandableListView
+                android:id="@+id/proj_measure_explv_jsq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:groupIndicator="@null" />
+
+            <TextView
+                android:id="@+id/proj_measure_nodata"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="暂无数据"
+                android:textSize="24sp"
+                android:visibility="@{viewmodel.hasData?View.GONE:View.VISIBLE}" />
+        </LinearLayout>
+    </ScrollView>
 </layout>

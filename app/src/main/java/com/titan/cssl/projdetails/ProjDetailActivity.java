@@ -16,17 +16,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.titan.BaseActivity;
 import com.titan.MyApplication;
+import com.titan.base.BaseActivity;
 import com.titan.cssl.R;
 import com.titan.cssl.databinding.ActivityProjDetailBinding;
-import com.titan.cssl.databinding.DialogDetailInfoBinding;
 import com.titan.cssl.map.MapBrowseActivity;
 import com.titan.cssl.measures.MeasureActivity;
 import com.titan.cssl.statistics.StatisticsFragment;
@@ -34,10 +31,8 @@ import com.titan.cssl.statistics.StatisticsViewModel;
 import com.titan.data.Injection;
 import com.titan.model.LocationInfo;
 import com.titan.model.ProjDetailMeasure;
-import com.titan.util.ListViewUtil;
 import com.titan.util.MaterialDialogUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,7 +117,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         //传入坐标参数
 //        intent.putExtra("coordinate", (Serializable) viewModel.coordinateList.get());
 //        intent.putExtra("location",viewModel.localPoint.get());
-        intent.putExtra("locationInfo",locationInfo);
+        intent.putExtra("locationInfo", locationInfo);
         startActivity(intent);
     }
 
@@ -168,9 +163,10 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
             @Override
             public void onRefresh() {
                 if (!viewModel.isRefresh.get()) {
-                    if (viewModel.currentFrag.get()==3){
-                        getData(3,true);
-                        getData(4,true);
+                    Log.e("tag", "position current:" + viewModel.currentFrag.get());
+                    if (viewModel.currentFrag.get() == 3) {
+                        getData(3, true);
+                        getData(4, true);
                         return;
                     }
                     getData(viewModel.currentFrag.get(), true);
@@ -230,8 +226,10 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
     private void initData() {
         ProjBaseInfoFragment infoFragment = ProjBaseInfoFragment.getInstance();
         infoFragment.setViewModel(viewModel);
+        infoFragment.setDetail(this);
         ProjSummaryFragment surveyFragment = ProjSummaryFragment.getInstance();
         surveyFragment.setViewModel(viewModel);
+        surveyFragment.setDetail(this);
         ProjmeasureFragment measureFragment = ProjmeasureFragment.getInstance();
         measureFragment.setViewModel(viewModel);
         ProjRecordFragment recordFragment = ProjRecordFragment.getInstance();
@@ -250,13 +248,15 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 //        String projType ="8万㎡以上";
         if (projType != null && projType.equals("8万㎡以上")) {
             viewModel.getData(position + 1, flag);
-            viewModel.currentFrag.set(position + 1);
+            Log.e("tag", "position8:" + position + 1);
+//            viewModel.currentFrag.set(position + 1);
             if (!fragList.contains((position + 1) + "")) {
                 fragList.add((position + 1) + "");
             }
         } else {
             viewModel.getData(position, flag);
             viewModel.currentFrag.set(position);
+            Log.e("tag", "position:" + position);
             if (!fragList.contains(position + "")) {
                 fragList.add(position + "");
             }
@@ -275,6 +275,8 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
             }
         }
         getData(position, false);
+        Log.e("tag", "position up:" + position);
+
     }
 
     /**
@@ -349,7 +351,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 
     @Override
     public void showProgress() {
-        if (dialog==null){
+        if (dialog == null) {
             dialog = MaterialDialogUtil.showLoadProgress(mContext, mContext.getString(R.string.loading)).build();
             dialog.show();
         }
@@ -357,7 +359,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 
     @Override
     public void stopProgress() {
-        if (binding.detailRefresh.isRefreshing()){
+        if (binding.detailRefresh.isRefreshing()) {
             binding.detailRefresh.setRefreshing(false);
         }
         if (dialog != null && dialog.isShowing()) {
@@ -376,18 +378,22 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
         switch (type) {
             case 0:
                 ProjBaseInfoFragment fragment1 = (ProjBaseInfoFragment) mList.get(0);
+                Log.e("tag", "0");
                 fragment1.setData();
                 break;
             case 1:
                 ProjSummaryFragment fragment2 = (ProjSummaryFragment) mList.get(1);
+                Log.e("tag", "1");
                 fragment2.setData();
                 break;
             case 2:
                 ProjmeasureFragment fragment3 = (ProjmeasureFragment) mList.get(2);
+                Log.e("tag", "2");
                 fragment3.setData();
                 break;
             case 3:
                 ProjRecordFragment fragment4 = (ProjRecordFragment) mList.get(3);
+                Log.e("tag", "3");
                 fragment4.approve();
                 if (viewModel.projSupervise.get() != null && viewModel.projSupervise.get().size() > 0) {
                     fragment4.supervise();
@@ -396,6 +402,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
             case 4:
                 fragment4 = (ProjRecordFragment) mList.get(3);
                 fragment4.supervise();
+                Log.e("tag", "4");
                 break;
             default:
                 break;
@@ -413,7 +420,7 @@ public class ProjDetailActivity extends BaseActivity implements ProjDetail {
 //                R.layout.dialog_detail_info,null,false);
         List<String> stringList = new ArrayList<>();
         for (String[] strings : list) {
-            if (strings[0].equals("电子签名")){
+            if (strings[0].equals("电子签名") || strings[0].contains("措施工程量")) {
 //                binding.name.setText(strings[0]);
 //                binding.name.setVisibility(View.VISIBLE);
 //                Glide.with(mContext).load(strings[1]).placeholder(R.drawable.loading).error(R.drawable.error)

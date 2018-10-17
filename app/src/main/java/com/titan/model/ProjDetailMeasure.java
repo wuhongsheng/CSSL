@@ -13,6 +13,52 @@ public class ProjDetailMeasure implements Serializable {
     private List<subBean> ZWCS;
     private List<subBean> LSCS;
     private List<subBean> GLCS;
+    private List<subBean> QTCS;
+    private List<subBean> SGGCCS;
+    private List<subBean> SGZWCS;
+    private List<subBean> SGLSCS;
+    private List<subBean> SGGLCS;
+    private List<subBean> SZQTCS;
+
+    public List<subBean> getSGGCCS() {
+        return SGGCCS;
+    }
+
+    public void setSGGCCS(List<subBean> SGGCCS) {
+        this.SGGCCS = SGGCCS;
+    }
+
+    public List<subBean> getSGZWCS() {
+        return SGZWCS;
+    }
+
+    public void setSGZWCS(List<subBean> SGZWCS) {
+        this.SGZWCS = SGZWCS;
+    }
+
+    public List<subBean> getSGLSCS() {
+        return SGLSCS;
+    }
+
+    public void setSGLSCS(List<subBean> SGLSCS) {
+        this.SGLSCS = SGLSCS;
+    }
+
+    public List<subBean> getSGGLCS() {
+        return SGGLCS;
+    }
+
+    public void setSGGLCS(List<subBean> SGGLCS) {
+        this.SGGLCS = SGGLCS;
+    }
+
+    public List<subBean> getSZQTCS() {
+        return SZQTCS;
+    }
+
+    public void setSZQTCS(List<subBean> SZQTCS) {
+        this.SZQTCS = SZQTCS;
+    }
 
     public List<subBean> getGCCS() {
         return GCCS;
@@ -54,7 +100,6 @@ public class ProjDetailMeasure implements Serializable {
         this.QTCS = QTCS;
     }
 
-    private List<subBean> QTCS;
 
 
     public static class subBean implements Serializable {

@@ -27,7 +27,7 @@ public class SymbolUtil {
     /**
      * 测量线样式
      */
-    public static SimpleLineSymbol measureline = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLUE, 3);
+    public static SimpleLineSymbol measureline = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.RED, 3);
 
     //节点样式
     public static MarkerSymbol vertexSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.GREEN, 5);
@@ -45,7 +45,7 @@ public class SymbolUtil {
 
     //项目范围样式
     public static SimpleFillSymbol getFillSymbol() {
-        return new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.BLUE, null);
+        return new SimpleFillSymbol(SimpleFillSymbol.Style.NULL, Color.BLUE, measureline);
     }
 
     //新增面

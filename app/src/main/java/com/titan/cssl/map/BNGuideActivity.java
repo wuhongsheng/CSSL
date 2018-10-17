@@ -16,8 +16,6 @@ import com.baidu.navisdk.adapter.BNaviBaseCallbackModel;
 import com.baidu.navisdk.adapter.BaiduNaviCommonModule;
 import com.baidu.navisdk.adapter.NaviModuleFactory;
 import com.baidu.navisdk.adapter.NaviModuleImpl;
-import com.titan.BaseActivity;
-import com.titan.MyApplication;
 
 /**
  * Created by hanyw on 2018/3/1.

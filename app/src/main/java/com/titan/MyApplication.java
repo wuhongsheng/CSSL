@@ -2,11 +2,14 @@ package com.titan;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.widget.Toast;
 
+import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.titan.broadcastreceiver.ConnectionChangeReceiver;
 import com.titan.cssl.util.BussUtil;
@@ -73,7 +76,8 @@ public class MyApplication extends MultiDexApplication {
          * 发布新版本时需要修改以及bugly isbug需要改成false等部分
          * 腾讯bugly 在android 4.4版本上有bug 启动报错
          */
-        CrashReport.initCrashReport(getApplicationContext(), "c979af8785", true);
+//        CrashReport.initCrashReport(getApplicationContext(), "c979af8785", true);
+        Bugly.init(getApplicationContext(), "c979af8785", true);
         instance = this;
         /** 百度定位初始化 */
         locationService = new LocationService(getApplicationContext());
@@ -84,11 +88,11 @@ public class MyApplication extends MultiDexApplication {
         getMbInfo();
     }
 
-	/*@Override
-    protected void attachBaseContext(Context base) {
-		super.attachBaseContext(base);
-		//MultiDex.install(this);
-	}*/
+//	@Override
+//    protected void attachBaseContext(Context base) {
+//		super.attachBaseContext(base);
+//		MultiDex.install(base);
+//	}
 
     /**
      * 获取设备信息

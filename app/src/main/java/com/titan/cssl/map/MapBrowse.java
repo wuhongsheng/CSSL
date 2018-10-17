@@ -18,6 +18,18 @@ public interface MapBrowse {
     //结束采集
     void endMeasure();
 
+    //导航
+    void navigate();
+
+    //项目定位
+    void projLocation();
+
+    //图层切换
+    void layerChange();
+
+    //坐标采集
+    void collection();
+
     /**
      * 显示进度条
      */
@@ -34,4 +46,7 @@ public interface MapBrowse {
      * @param info 信息内容
      */
     void showToast(String info);
+
+    //采集完成之后刷新项目范围显示
+    void refreshGraphic();
 }

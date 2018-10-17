@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.titan.BaseActivity;
-import com.titan.BaseViewModel;
+import com.titan.base.BaseActivity;
+import com.titan.base.BaseViewModel;
 import com.titan.MyApplication;
 import com.titan.cssl.R;
 import com.titan.cssl.util.ActivityUtils;
